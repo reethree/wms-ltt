@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 
 class BniEcollectionController extends Controller
 {
-    protected $token;
     protected $client_id;
     protected $secret_key;
     protected $url;
@@ -16,8 +15,7 @@ class BniEcollectionController extends Controller
 
     public function __construct() {
         
-        $this->url = 'https://apibeta.bni-ecollection.com/';
-        $this->client_id = 585;
+        $this->client_id = '585';
         $this->secret_key = 'e68cc6c6a3f5fa59be436534757439e';
         $this->TIME_DIFF_LIMIT = 480;
     }
