@@ -62,7 +62,7 @@
 
             <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper" style="min-height: 960px;">
-                <div class="container" style="width: 100% !important;">
+                <div class="container">
                     <!-- Content Header (Page header) -->
                     <section class="content-header">
                         <h1>

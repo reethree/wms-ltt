@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>Primanata Login | Administrator</title>
+        <title>LTT WMS Login | Administrator</title>
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
         <!-- Bootstrap 3.3.2 -->
         <link href="{{ asset("/bower_components/AdminLTE/bootstrap/css/bootstrap.min.css") }}" rel="stylesheet" type="text/css" />
@@ -18,7 +18,7 @@
               page. However, you can choose any other skin. Make sure you
               apply the skin class to the body tag so the changes take effect.
         -->
-        <link href="{{ asset("/bower_components/AdminLTE/dist/css/skins/skin-black-light.min.css")}}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset("/bower_components/AdminLTE/dist/css/skins/skin-red-light.min.css")}}" rel="stylesheet" type="text/css" />
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -27,10 +27,10 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
     </head>
-<body class="hold-transition login-page skin-black-light">
+<body class="hold-transition login-page skin-red-light">
 <div class="login-box">
   <div class="login-logo">
-    <a href="#"><b>PRIMANATA</b>WMH</a>
+    <a href="#"><b>LTT</b>WMS</a>
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
@@ -51,7 +51,7 @@
         <div class="row">
           <!-- /.col -->
           <div class="col-xs-4 pull-right">
-                <button type="submit" class="btn btn-default btn-block btn-flat">Sign In</button>
+                <button type="submit" class="btn btn-danger btn-block btn-flat">Sign In</button>
           </div>
           <!-- /.col -->
         </div>
@@ -59,7 +59,7 @@
 
   </div>
   <!-- /.login-box-body -->
-  <p style="text-align: center;padding-top: 10px;">2016 &copy; PT Primanata Jasa Persada</p>
+  <p style="text-align: center;padding-top: 10px;">{{date('Y')}} &copy; PT. Lautan Tirta Transportama</p>
 </div>
 <!-- /.login-box -->
 
