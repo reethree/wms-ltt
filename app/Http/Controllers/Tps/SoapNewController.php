@@ -33,9 +33,9 @@ class SoapNewController extends DefaultController {
         $this->soapWrapper = $soapWrapper;
         
         $this->wsdl = 'https://tpsonline.beacukai.go.id/tps/service.asmx?WSDL';
-        $this->user = 'PRJP';
-        $this->password = 'PRIMANATA';
-        $this->kode = 'PRJP';
+        $this->user = 'LTT';
+        $this->password = '';
+        $this->kode = 'LTT';
     }
     
 //    public function demo()

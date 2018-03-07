@@ -20,9 +20,9 @@ class PengirimanController extends Controller
     public function __construct() {
         
         $this->wsdl = 'https://tpsonline.beacukai.go.id/tps/service.asmx?WSDL';
-        $this->user = 'PRJP';
-        $this->password = 'PRIMANATA';
-        $this->kode = 'PRJP';
+        $this->user = 'LTT';
+        $this->password = '';
+        $this->kode = 'LTT';
     }
     /**
      * Display a listing of the resource.
