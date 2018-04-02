@@ -483,6 +483,7 @@
                         ->addColumn(array('label'=>'No.BC11','index'=>'NO_BC11', 'width'=>150,'hidden'=>true))
                         ->addColumn(array('label'=>'Tgl.BC11','index'=>'TGL_BC11', 'width'=>150,'hidden'=>true))
                         ->addColumn(array('label'=>'No.POS BC11','index'=>'NO_POS_BC11', 'width'=>150, 'align'=>'center'))
+                        ->addColumn(array('label'=>'No.MBL','index'=>'NOMBL', 'width'=>150, 'align'=>'center'))
                         ->addColumn(array('label'=>'No.PLP','index'=>'NO_PLP', 'width'=>150,'hidden'=>true))                
                         ->addColumn(array('label'=>'Tgl.PLP','index'=>'TGL_PLP', 'width'=>150,'hidden'=>true))                
                         ->addColumn(array('label'=>'Surcharge (DG)','index'=>'DG_SURCHARGE', 'width'=>150,'hidden'=>true))
@@ -507,7 +508,7 @@
                         </div>
                         <div id="btn-group-4" class="btn-group pull-right">
                             <button class="btn btn-default" id="btn-print-tally" onclick="window.open('{{ route('lcl-manifest-cetak', array('id'=>$container->TCONTAINER_PK,'type'=>'tally')) }}','preview tally sheet','width=600,height=600,menubar=no,status=no,scrollbars=yes');"><i class="fa fa-print"></i> Cetak Tally Sheet</button>
-                            <button class="btn btn-default" id="btn-print-log" onclick="window.open('{{ route('lcl-manifest-cetak', array('id'=>$container->TCONTAINER_PK,'type'=>'log')) }}','preview log stripping','width=600,height=600,menubar=no,status=no,scrollbars=yes');"><i class="fa fa-print"></i> Cetak Log Stripping</button>
+                            <!--<button class="btn btn-default" id="btn-print-log" onclick="window.open('{{ route('lcl-manifest-cetak', array('id'=>$container->TCONTAINER_PK,'type'=>'log')) }}','preview log stripping','width=600,height=600,menubar=no,status=no,scrollbars=yes');"><i class="fa fa-print"></i> Cetak Log Stripping</button>-->
                         </div>
                         <div id="btn-group-5" class="btn-group pull-right">
                             <button class="btn btn-default" id="btn-upload"><i class="fa fa-upload"></i> Upload TPS Online</button>

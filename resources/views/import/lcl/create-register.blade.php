@@ -51,7 +51,7 @@
                             </select>
                         </div>
                     </div>            
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                       <label for="PARTY" class="col-sm-3 control-label">Party</label>
                       <div class="col-sm-8">
                           <input type="text" name="PARTY" class="form-control"  value="{{ old('PARTY') }}"> 
@@ -126,7 +126,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label class="col-sm-3 control-label">Tgl. ETD</label>
                         <div class="col-sm-8">
                             <div class="input-group date">
@@ -166,17 +166,20 @@
                             <input type="text" name="JENISKEGIATAN" value="CY/CFS" class="form-control"  readonly>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label class="col-sm-3 control-label">Gross Weight</label>
                         <div class="col-sm-3">
                             <input type="text" name="GROSSWEIGHT" class="form-control"  value="{{ old('GROSSWEIGHT') }}">
                         </div>
-                        <label class="col-sm-2 control-label">Total HBL</label>
-                        <div class="col-sm-3">
-                            <input type="number" name="JUMLAHHBL" class="form-control"  value="{{ old('JUMLAHHBL') }}">
-                        </div>
+                        
                     </div> 
                     <div class="form-group">
+                        <label class="col-sm-3 control-label">Total HBL</label>
+                        <div class="col-sm-8">
+                            <input type="number" name="JUMLAHHBL" class="form-control"  value="{{ old('JUMLAHHBL') }}">
+                        </div>
+                    </div>
+                    <div class="form-group" style="display: none;">
                         <label class="col-sm-3 control-label">Measurment</label>
                         <div class="col-sm-3">
                             <input type="text" name="MEASUREMENT" class="form-control"  value="{{ old('MEASUREMENT') }}">
@@ -237,7 +240,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label class="col-sm-3 control-label">Pel. Transit</label>
                         <div class="col-sm-8">
                             <select class="form-control select2" id="PEL_TRANSIT" name="PEL_TRANSIT" style="width: 100%;" tabindex="-1" aria-hidden="true" >

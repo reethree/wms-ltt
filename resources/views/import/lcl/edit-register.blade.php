@@ -51,7 +51,7 @@
                             </select>
                         </div>
                     </div>            
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                       <label for="PARTY" class="col-sm-3 control-label">Party</label>
                       <div class="col-sm-8">
                           <input type="text" name="PARTY" class="form-control"  value="{{ $joborder->PARTY }}"> 
@@ -126,7 +126,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label class="col-sm-3 control-label">Tgl. ETD</label>
                         <div class="col-sm-8">
                             <div class="input-group date">
@@ -166,17 +166,20 @@
                             <input type="text" name="JENISKEGIATAN" value="{{ $joborder->JENISKEGIATAN }}" class="form-control"  readonly>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label class="col-sm-3 control-label">Gross Weight</label>
                         <div class="col-sm-3">
                             <input type="text" name="GROSSWEIGHT" class="form-control"  value="{{ $joborder->GROSSWEIGHT }}">
                         </div>
-                        <label class="col-sm-2 control-label">Total HBL</label>
-                        <div class="col-sm-3">
-                            <input type="number" name="JUMLAHHBL" class="form-control"  value="{{ $joborder->JUMLAHHBL }}">
-                        </div>
+                        
                     </div> 
                     <div class="form-group">
+                        <label class="col-sm-3 control-label">Total HBL</label>
+                        <div class="col-sm-8">
+                            <input type="number" name="JUMLAHHBL" class="form-control"  value="{{ $joborder->JUMLAHHBL }}">
+                        </div>
+                    </div>
+                    <div class="form-group" style="display: none;">
                         <label class="col-sm-3 control-label">Measurment</label>
                         <div class="col-sm-3">
                             <input type="text" name="MEASUREMENT" class="form-control"  value="{{ $joborder->MEASUREMENT }}">
@@ -240,7 +243,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label class="col-sm-3 control-label">Pel. Transit</label>
                         <div class="col-sm-8">
                             <select class="form-control select2" id="PEL_TRANSIT" name="PEL_TRANSIT" style="width: 100%;" tabindex="-1" aria-hidden="true" >
@@ -331,10 +334,10 @@
                         ->addColumn(array('label'=>'No. Seal','index'=>'NO_SEAL', 'width'=>120,'editable' => true, 'align'=>'right'))
                         ->addColumn(array('label'=>'Weight','index'=>'WEIGHT', 'width'=>120,'editable' => true, 'align'=>'right','editrules' => array('' => true)))
                         ->addColumn(array('label'=>'Measurment','index'=>'MEAS', 'width'=>120,'editable' => true, 'align'=>'right','editrules' => array('' => true)))
-                        ->addColumn(array('label'=>'Layout','index'=>'layout', 'width'=>80,'editable' => true,'align'=>'center','editoptions'=>array('defaultValue'=>"C-1")))
-                        ->addColumn(array('label'=>'UID','index'=>'UID', 'width'=>150))
-                        ->addColumn(array('label'=>'Tgl. Entry','index'=>'TGLENTRY', 'width'=>150, 'search'=>false))
-                        ->addColumn(array('label'=>'Updated','index'=>'last_update', 'width'=>150, 'search'=>false))
+//                        ->addColumn(array('label'=>'Layout','index'=>'layout', 'width'=>80,'editable' => true,'align'=>'center','editoptions'=>array('defaultValue'=>"C-1")))
+                        ->addColumn(array('label'=>'Tgl. Entry','index'=>'TGLENTRY', 'width'=>150, 'search'=>false, 'align'=>'center'))
+                        ->addColumn(array('label'=>'Updated','index'=>'last_update', 'width'=>150, 'search'=>false, 'align'=>'center'))
+                        ->addColumn(array('label'=>'UID','index'=>'UID', 'width'=>150, 'align'=>'center'))
                         ->renderGrid()
                     }}
                 </div>
