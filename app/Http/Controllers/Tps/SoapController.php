@@ -293,7 +293,7 @@ class SoapController extends DefaultController {
                 ->wsdl($this->wsdl)
                 ->trace(true)                                                                                                  
 //                ->certificate(url('cert/cacert.pem'))                                                 
-                ->cache(WSDL_CACHE_NONE)                                        
+//                ->cache(WSDL_CACHE_NONE)                                        
                 ->options([
 //                    'ssl' => [
 //                        'ciphers'=>'RC4-SHA', 
