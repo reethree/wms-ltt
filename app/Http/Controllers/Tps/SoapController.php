@@ -545,7 +545,7 @@ class SoapController extends DefaultController {
                 ->name('TpsOnline')
                 ->wsdl($this->wsdl)
                 ->trace(true)                                                                                                  
-//                ->certificate(url('cert/cacert.pem'))                                                 
+                ->certificate(url('cert/tpsonlinebc.crt'))                                                 
                 ->cache(WSDL_CACHE_NONE)                                        
                 ->options([
                     'soap_version' => SOAP_1_2,
