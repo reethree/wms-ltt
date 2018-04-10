@@ -546,19 +546,19 @@ class SoapController extends DefaultController {
                 ->wsdl($this->wsdl)
                 ->trace(true)                                                                                                  
 //                ->certificate(url('cert/cacert.pem'))  
-//                ->certificate(url('cert/tpsonlinebc.crt')) 
-                ->certificate(url('cert/trust-ca.crt')) 
+                ->certificate(url('cert/tpsonlinebc.crt')) 
+//                ->certificate(url('cert/trust-ca.crt')) 
                 ->cache(WSDL_CACHE_NONE)                                        
                 ->options([
                     'soap_version' => SOAP_1_2,
-                    'ssl'           => array(
-                        'ciphers'=> "SHA1",
-                        'verify_peer' => false, 
+                    'ssl' => array(
+                        'ciphers' => "SHA1",
+                        'verify_peer' => true, 
                         'allow_self_signed' => true
                     ),
                     'https' => array(
-                        'curl_verify_ssl_peer'  => false,
-                        'curl_verify_ssl_host'  => false
+                        'curl_verify_ssl_peer'  => true,
+                        'curl_verify_ssl_host'  => true
                     ),
                     'exceptions' => 0
                 ]);                                                     
