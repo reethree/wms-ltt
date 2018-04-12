@@ -36,21 +36,26 @@ class SoapController extends DefaultController {
     public function getXmlDemo()
     {
         /* Initialize webservice with your WSDL */
-        $client = new \SoapClient("https://demo.docusign.net/api/3.0/api.asmx?WSDL");
-
+//        $client = new \SoapClient("https://demo.docusign.net/api/3.0/api.asmx?WSDL");
+//        $client = new \SoapClient("http://currencyconverter.kowabunga.net/converter.asmx?WSDL");
+        $client = new \SoapClient("https://tpsonline.beacukai.go.id/tps/service.asmx?WSDL");
+        
         /* Set your parameters for the request */
+//        $params = [
+//            'CurrencyFrom' => 'USD',
+//            'CurrencyTo'   => 'EUR',
+//            'RateDate'     => '2017-06-05',
+//            'Amount'       => '1000'
+//        ];
         $params = [
-            'AccountId' => '1234kkk12'
+            'UserName' => $this->user, 
+            'Password' => $this->password,
+            'Kd_Tps' => $this->kode
         ];
 
         /* Invoke webservice method with your parameters, in this case: Function1 */
+        $response = $client->__soapCall("GetSPJM", array($params));
 
-        try{
-            $response = $client->__soapCall("GetAccountBrands", array($params));
-        }catch (\SoapFault $exception){
-            var_dump($exception);
-        }
-        
         /* Print webservice response */
         var_dump($response);
     }
