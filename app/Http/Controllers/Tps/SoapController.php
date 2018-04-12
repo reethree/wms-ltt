@@ -541,7 +541,21 @@ class SoapController extends DefaultController {
     public function GetSPJM()
     {
 
-        $client = new \SoapClient($this->wsdl, array('soap_version' => SOAP_1_2));
+        $client = new \SoapClient($this->wsdl, [
+                'exceptions' => 1,
+                'trace' => TRUE,
+                'local_cert' => url('cert/tpsonlinebc.crt'),
+            //    'passphrase' => $this->passphrase,
+                //'ssl_method' => SOAP_SSL_METHOD_SSLv2, // not work!
+                'authentication' => SOAP_AUTHENTICATION_DIGEST,
+                "soap_version"  => SOAP_1_2,
+                'cache_wsdl' => WSDL_CACHE_NONE,
+                'stream_context' => stream_context_create([
+                    'ssl' => [
+                        'crypto_method' => STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT, // it's work!
+                    ]
+                ])
+        ]);
 
         /* Set your parameters for the request */
         $params = [
