@@ -550,6 +550,7 @@ class SoapController extends DefaultController {
 //                ->certificate(url('cert/trust-ca.crt')) 
                 ->cache(WSDL_CACHE_NONE)                                        
                 ->options([
+                    'local_cert' => url('cert/tpsonlinebc.pem'),
                     'soap_version' => SOAP_1_2,
                     'ssl' => array(
                         'ciphers' => "SHA-256",
