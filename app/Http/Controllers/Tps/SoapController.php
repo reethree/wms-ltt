@@ -542,7 +542,7 @@ class SoapController extends DefaultController {
     {
         \SoapWrapper::add(function ($service) {
             $service
-                ->name('TpsOnline')
+                ->name('TpsOnline_GetSPJM')
                 ->wsdl($this->wsdl)
                 ->trace(true)                                                                                                  
                 ->certificate(url('cert/tpsonlinebc.pem'))  
@@ -553,7 +553,6 @@ class SoapController extends DefaultController {
                     'local_cert' => url('cert/tpsonlinebc.pem'),
                     'soap_version' => SOAP_1_2,
                     'ssl' => array(
-                        'ciphers' => "SHA-256",
                         'verify_peer' => false, 
                         'allow_self_signed' => true
                     ),
@@ -561,7 +560,7 @@ class SoapController extends DefaultController {
                         'curl_verify_ssl_peer'  => false,
                         'curl_verify_ssl_host'  => false
                     ),
-                    'exceptions' => 0
+                    'exceptions' => 1
                 ])
                 ;                                                     
         });
@@ -572,12 +571,22 @@ class SoapController extends DefaultController {
             'Kd_Tps' => $this->kode
         ];
         
-        // Using the added service
-        \SoapWrapper::service('TpsOnline', function ($service) use ($data) {        
-            $this->response = $service->call('GetSPJM', [$data])->GetSPJMResult;      
-        });
+        try {
+            // Using the added service
+            \SoapWrapper::service('TpsOnline_GetSPJM', function ($service) use ($data) {        
+                $this->response = $service->call('GetSPJM', [$data])->GetSPJMResult;      
+            });
+        } catch (\SoapFault $e) {
+            \Log::error($e->getMessage());
+
+            set_error_handler('var_dump', 0); // Never called because of empty mask.
+            @trigger_error("");
+            restore_error_handler();
+        }
         
-//        var_dump($this->response);
+        var_dump($this->response);
+        
+        return false;
         
         libxml_use_internal_errors(true);
         $xml = simplexml_load_string($this->response);
