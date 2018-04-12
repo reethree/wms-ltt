@@ -540,6 +540,22 @@ class SoapController extends DefaultController {
     
     public function GetSPJM()
     {
+
+        $client = new \SoapClient($this->wsdl, array('soap_version' => SOAP_1_2));
+
+        /* Set your parameters for the request */
+        $params = [
+            'UserName' => $this->user, 
+            'Password' => $this->password,
+            'Kd_Tps' => $this->kode
+        ];
+
+        $response = $client->__soapCall("GetSPJM", array($params));
+
+        var_dump($response);
+        
+        return false;
+        
         \SoapWrapper::add(function ($service) {
             $service
                 ->name('TpsOnline_GetSPJM')
@@ -571,22 +587,12 @@ class SoapController extends DefaultController {
             'Kd_Tps' => $this->kode
         ];
         
-        try {
-            // Using the added service
-            \SoapWrapper::service('TpsOnline_GetSPJM', function ($service) use ($data) {        
-                $this->response = $service->call('GetSPJM', [$data])->GetSPJMResult;      
-            });
-        } catch (\SoapFault $e) {
-            \Log::error($e->getMessage());
-
-            set_error_handler('var_dump', 0); // Never called because of empty mask.
-            @trigger_error("");
-            restore_error_handler();
-        }
+        // Using the added service
+        \SoapWrapper::service('TpsOnline_GetSPJM', function ($service) use ($data) {        
+            $this->response = $service->call('GetSPJM', [$data])->GetSPJMResult;      
+        });
         
-        var_dump($this->response);
-        
-        return false;
+//        var_dump($this->response);
         
         libxml_use_internal_errors(true);
         $xml = simplexml_load_string($this->response);
