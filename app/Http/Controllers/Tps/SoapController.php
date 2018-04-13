@@ -554,7 +554,7 @@ class SoapController extends DefaultController {
         $client = new \SoapClient($this->wsdl, [
                 'exceptions' => 1,
                 'trace' => TRUE,
-                'local_cert' => url('cert/cacert.pem'),
+                'local_cert' => url('cert/bc.pem'),
             //    'passphrase' => $this->passphrase,
                 //'ssl_method' => SOAP_SSL_METHOD_SSLv2, // not work!
                 'authentication' => SOAP_AUTHENTICATION_DIGEST,
