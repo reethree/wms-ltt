@@ -550,47 +550,18 @@ class SoapController extends DefaultController {
     
     public function GetSPJM()
     {
-
-        $client = new \SoapClient($this->wsdl, [
-                'exceptions' => 1,
-                'trace' => TRUE,
-                'local_cert' => url('cert/bc.pem'),
-            //    'passphrase' => $this->passphrase,
-                //'ssl_method' => SOAP_SSL_METHOD_SSLv2, // not work!
-                'authentication' => SOAP_AUTHENTICATION_DIGEST,
-                "soap_version"  => SOAP_1_2,
-                'cache_wsdl' => WSDL_CACHE_NONE,
-                'stream_context' => stream_context_create([
-                    'ssl' => [
-                        'crypto_method' => STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT, // it's work!
-                    ]
-                ])
-        ]);
-
-        /* Set your parameters for the request */
-        $params = [
-            'UserName' => $this->user, 
-            'Password' => $this->password,
-            'Kd_Tps' => $this->kode
-        ];
-
-        $response = $client->__soapCall("GetSPJM", array($params));
-
-        var_dump($response);
-        
-        return false;
         
         \SoapWrapper::add(function ($service) {
             $service
                 ->name('TpsOnline_GetSPJM')
                 ->wsdl($this->wsdl)
                 ->trace(true)                                                                                                  
-                ->certificate(url('cert/tpsonlinebc.pem'))  
+                ->certificate(url('cert/bc.pem'))  
 //                ->certificate(url('cert/tpsonlinebc.crt')) 
 //                ->certificate(url('cert/trust-ca.crt')) 
                 ->cache(WSDL_CACHE_NONE)                                        
                 ->options([
-                    'local_cert' => url('cert/tpsonlinebc.pem'),
+                    'local_cert' => url('cert/bc.pem'),
                     'soap_version' => SOAP_1_2,
                     'ssl' => array(
                         'verify_peer' => false, 
