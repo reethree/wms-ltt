@@ -188,6 +188,26 @@ class PenerimaanController extends Controller
         return view('tpsonline.index-sppb-bc')->with($data);
     }
     
+    public function infoNomorBcIndex()
+    {
+        if ( !$this->access->can('show.tps.infoNomorBc.index') ) {
+            return view('errors.no-access');
+        }
+        // Create Roles Access
+        $this->insertRoleAccess(array('name' => 'Index TPS Info Nomor BC11', 'slug' => 'show.tps.infoNomorBc.index', 'description' => ''));
+        
+        $data['page_title'] = "TPS Info Nomor BC11";
+        $data['page_description'] = "";
+        $data['breadcrumbs'] = [
+            [
+                'action' => '',
+                'title' => 'TPS Info Nomor BC11'
+            ]
+        ];        
+        
+        return view('tpsonline.index-infonomor-bc')->with($data);
+    }
+    
     /**
      * Show the form for creating a new resource.
      *
@@ -256,6 +276,33 @@ class PenerimaanController extends Controller
         $data['respon'] = \App\Models\TpsResponPlp::find($id);
         
         return view('tpsonline.edit-respon-plp')->with($data);
+    }
+    
+    public function responBatalPlpEdit($id)
+    {
+        if ( !$this->access->can('show.tps.responBatalPlp.edit') ) {
+            return view('errors.no-access');
+        }
+        
+        // Create Roles Access
+        $this->insertRoleAccess(array('name' => 'Edit TPS Respon Batal PLP', 'slug' => 'show.tps.responBatalPlp.edit', 'description' => ''));
+        
+        $data['page_title'] = "Edit TPS Respon Batal PLP";
+        $data['page_description'] = "";
+        $data['breadcrumbs'] = [
+            [
+                'action' => route('tps-responBatalPlp-index'),
+                'title' => 'Edit TPS Respon Batal PLP'
+            ],
+            [
+                'action' => '',
+                'title' => 'Edit'
+            ]
+        ];
+        
+        $data['respon'] = \App\Models\TpsResponBatalPlp::find($id);
+        
+        return view('tpsonline.edit-respon-batal-plp')->with($data);
     }
     
     public function obEdit($id)
@@ -352,6 +399,11 @@ class PenerimaanController extends Controller
     }
     
     public function responPlpUpdate(Request $request, $id)
+    {
+        
+    }
+    
+    public function responBatalPlpUpdate(Request $request, $id)
     {
         
     }
@@ -618,7 +670,7 @@ class PenerimaanController extends Controller
                     $spk_last_id = \App\Models\Jobordercy::select('TJOBORDER_PK as id')->orderBy('TJOBORDER_PK', 'DESC')->first(); 
                     $regID = str_pad(intval((isset($spk_last_id->id) ? $spk_last_id->id : 0)+1), 4, '0', STR_PAD_LEFT);
 
-                    $data['NOJOBORDER'] = 'LTTG'.$regID.'/'.date('y');
+                    $data['NOJOBORDER'] = 'PRJPG'.$regID.'/'.date('y');
                     $data['NO_BC11'] = $plp->NO_BC11;
                     $data['NO_POS_BC11'] = $nopos;
                     $data['TNO_PLP'] = $plp->NO_PLP;

@@ -24,28 +24,6 @@
               <span class="hidden-xs">{{ \Auth::getUser()->name }}</span>
             </a>
             <ul class="dropdown-menu">
-              <!-- User image -->
-<!--              <li class="user-header">
-                <p>
-                  Alexander Pierce - Web Developer
-                  <small>Member since Nov. 2012</small>
-                </p>
-              </li>
-               Menu Body 
-              <li class="user-body">
-                <div class="row">
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Followers</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Sales</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Friends</a>
-                  </div>
-                </div>
-                 /.row 
-              </li>-->
               <!-- Menu Footer-->
               <li class="user-footer">
 <!--                <div class="pull-left">
@@ -68,7 +46,7 @@
     <section class="sidebar" style="height: auto;">
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu tree" data-widget="tree">
-        <li class="active">
+        <li>
           <a href="{{route('index')}}">
             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
           </a>
@@ -229,6 +207,7 @@
                 <li><a href="{{ route('tps-dokManual-index') }}">Data Dok Manual</a></li>
                 <li><a href="{{ route('tps-sppbPib-index') }}">Data SPPB</a></li>
                 <li><a href="{{ route('tps-sppbBc-index') }}">Data SPPB BC23</a></li>
+                <li><a href="{{ route('tps-infoNomorBc-index') }}">Info Nomor BC11</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -261,6 +240,8 @@
                         <li><a href="{{ route('tps-codecoKms-index') }}">Codeco KMS</a></li>
                     </ul>
                 </li>
+                <li><a href="{{ route('tps-realisasiBongkarMuat-index') }}">Realisasi Bongkar Muat</a></li>
+                <li><a href="{{ route('tps-laporanYor-index') }}">Laporan YOR</a></li>
               </ul>
             </li>
             

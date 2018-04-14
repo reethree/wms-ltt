@@ -24,43 +24,36 @@ class SoapController extends DefaultController {
         $this->password = 'TRMA12345678';
         $this->kode = 'TRMA';
         
-//        \SoapWrapper::add(function ($service) {
-//            $service
-//                ->name('TpsOnlineSoap')
-//                ->wsdl('https://tpsonline.beacukai.go.id/tps/service.asmx?WSDL')
-//                ->trace(true)                                                                                                                                                  
-//                ->cache(WSDL_CACHE_NONE);                                                    
-//        });
     }
     
     public function getXmlDemo()
     {
         
-        echo phpinfo();
+//        echo phpinfo();
         
-//        /* Initialize webservice with your WSDL */
-////        $client = new \SoapClient("https://demo.docusign.net/api/3.0/api.asmx?WSDL");
-//        $client = new \SoapClient("http://currencyconverter.kowabunga.net/converter.asmx?WSDL");
-////        $client = new \SoapClient("https://tpsonline.beacukai.go.id/tps/service.asmx?WSDL");
-//        
-//        /* Set your parameters for the request */
+        /* Initialize webservice with your WSDL */
+//        $client = new \SoapClient("https://demo.docusign.net/api/3.0/api.asmx?WSDL");
+        $client = new \SoapClient("http://currencyconverter.kowabunga.net/converter.asmx?WSDL");
+//        $client = new \SoapClient("https://tpsonline.beacukai.go.id/tps/service.asmx?WSDL");
+        
+        /* Set your parameters for the request */
+        $params = [
+            'CurrencyFrom' => 'USD',
+            'CurrencyTo'   => 'EUR',
+            'RateDate'     => '2017-06-05',
+            'Amount'       => '1000'
+        ];
 //        $params = [
-//            'CurrencyFrom' => 'USD',
-//            'CurrencyTo'   => 'EUR',
-//            'RateDate'     => '2017-06-05',
-//            'Amount'       => '1000'
+//            'UserName' => $this->user, 
+//            'Password' => $this->password,
+//            'Kd_Tps' => $this->kode
 //        ];
-////        $params = [
-////            'UserName' => $this->user, 
-////            'Password' => $this->password,
-////            'Kd_Tps' => $this->kode
-////        ];
-//
-//        /* Invoke webservice method with your parameters, in this case: Function1 */
-//        $response = $client->__soapCall("GetConversionAmount", array($params));
-//
-//        /* Print webservice response */
-//        var_dump($response);
+
+        /* Invoke webservice method with your parameters, in this case: Function1 */
+        $response = $client->__soapCall("GetConversionAmount", array($params));
+
+        /* Print webservice response */
+        var_dump($response);
     }
     
     public function demo()
