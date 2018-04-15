@@ -32,25 +32,30 @@ class SoapController extends DefaultController {
 //        echo phpinfo();
         
         /* Initialize webservice with your WSDL */
-//        $client = new \SoapClient("https://demo.docusign.net/api/3.0/api.asmx?WSDL");
-        $client = new \SoapClient("http://currencyconverter.kowabunga.net/converter.asmx?WSDL");
+        $client = new \SoapClient("https://demo.docusign.net/api/3.0/api.asmx?WSDL");
+//        $client = new \SoapClient("http://currencyconverter.kowabunga.net/converter.asmx?WSDL");
 //        $client = new \SoapClient("https://tpsonline.beacukai.go.id/tps/service.asmx?WSDL");
         
         /* Set your parameters for the request */
-        $params = [
-            'CurrencyFrom' => 'USD',
-            'CurrencyTo'   => 'EUR',
-            'RateDate'     => '2017-06-05',
-            'Amount'       => '1000'
-        ];
+//        $params = [
+//            'CurrencyFrom' => 'USD',
+//            'CurrencyTo'   => 'EUR',
+//            'RateDate'     => '2017-06-05',
+//            'Amount'       => '1000'
+//        ];
 //        $params = [
 //            'UserName' => $this->user, 
 //            'Password' => $this->password,
 //            'Kd_Tps' => $this->kode
 //        ];
+        $params = [
+            'EnvelopeID' => '123'
+        ];
 
         /* Invoke webservice method with your parameters, in this case: Function1 */
-        $response = $client->__soapCall("GetConversionAmount", array($params));
+//        $response = $client->__soapCall("GetConversionAmount", array($params));
+        $response = $client->__soapCall("RequestPDFNoWaterMark", array($params));
+        
 
         /* Print webservice response */
         var_dump($response);
