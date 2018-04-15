@@ -49,12 +49,12 @@ class SoapController extends DefaultController {
 //            'Kd_Tps' => $this->kode
 //        ];
         $params = [
-            'EnvelopeID' => '123'
+            'AccountId' => '123'
         ];
 
         /* Invoke webservice method with your parameters, in this case: Function1 */
 //        $response = $client->__soapCall("GetConversionAmount", array($params));
-        $response = $client->__soapCall("RequestPDFNoWaterMark", array($params));
+        $response = $client->__soapCall("GetAccountBrands", array($params));
         
 
         /* Print webservice response */
