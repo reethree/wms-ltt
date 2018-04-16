@@ -32,9 +32,10 @@ class SoapController extends DefaultController {
 //        echo phpinfo();
         
         /* Initialize webservice with your WSDL */
-        $client = new \SoapClient("https://demo.docusign.net/api/3.0/api.asmx?WSDL");
+//        $client = new \SoapClient("https://demo.docusign.net/api/3.0/api.asmx?WSDL");
 //        $client = new \SoapClient("http://currencyconverter.kowabunga.net/converter.asmx?WSDL");
 //        $client = new \SoapClient("https://tpsonline.beacukai.go.id/tps/service.asmx?WSDL");
+        $client = new \SoapClient("https://www.iatspayments.com/NetGate/CustomerLink.asmx?WSDL");
         
         /* Set your parameters for the request */
 //        $params = [
@@ -49,12 +50,16 @@ class SoapController extends DefaultController {
 //            'Kd_Tps' => $this->kode
 //        ];
         $params = [
-            'AccountId' => '123'
+            'agentCode' => '123',
+            'password' => '123',
+            'customerIPAddress' => '123',
+            'FromDate' => '123',
+            'ToDate' => '123'
         ];
 
         /* Invoke webservice method with your parameters, in this case: Function1 */
 //        $response = $client->__soapCall("GetConversionAmount", array($params));
-        $response = $client->__soapCall("GetAccountBrands", array($params));
+        $response = $client->__soapCall("GetCustomerListByCreationTimeXML", array($params));
         
 
         /* Print webservice response */
