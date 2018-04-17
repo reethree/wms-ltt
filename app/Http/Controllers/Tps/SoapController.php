@@ -580,29 +580,35 @@ class SoapController extends DefaultController {
     
     public function GetSPJM()
     {     
-        $context = stream_context_create(array(
-                'ssl' => array(
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                    'allow_self_signed' => true
-                )
-        ));
+//        $context = stream_context_create(array(
+//                'ssl' => array(
+//                    'verify_peer' => false,
+//                    'verify_peer_name' => false,
+//                    'allow_self_signed' => true
+//                )
+//        ));
 
-        $client = new \SoapClient($this->wsdl, array('stream_context' => $context));
+//        $client = new \SoapClient($this->wsdl, array('stream_context' => $context));
         
-//        \SoapWrapper::add(function ($service) {
-//            $service
-//                ->name('TpsOnline_GetSPJM')
-//                ->wsdl($this->wsdl)
-//                ->trace(true)                                                                                                  
-////                ->certificate(url('cert/bc.pem'))  
-////                ->certificate(url('cert/tpsonlinebc.crt')) 
-////                ->certificate(url('cert/trust-ca.crt')) 
-//                ->cache(WSDL_CACHE_NONE)
-//                ->options([
-//                    'stream_context' => $context
-//                ]);
-//        });
+        \SoapWrapper::add(function ($service) {
+            $service
+                ->name('TpsOnline_GetSPJM')
+                ->wsdl($this->wsdl)
+                ->trace(true)                                                                                                  
+//                ->certificate(url('cert/bc.pem'))  
+//                ->certificate(url('cert/tpsonlinebc.crt')) 
+//                ->certificate(url('cert/trust-ca.crt')) 
+                ->cache(WSDL_CACHE_NONE)
+                ->options([
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
+                ]);
+        });
         
         $data = [
             'UserName' => $this->user, 
@@ -611,11 +617,11 @@ class SoapController extends DefaultController {
         ];
         
         // Using the added service
-//        \SoapWrapper::service('TpsOnline_GetSPJM', function ($service) use ($data) {        
-//            $this->response = $service->call('GetSPJM', [$data])->GetSPJMResult;      
-//        });
+        \SoapWrapper::service('TpsOnline_GetSPJM', function ($service) use ($data) {        
+            $this->response = $service->call('GetSPJM', [$data])->GetSPJMResult;      
+        });
         
-        $this->response = $client->__soapCall("GetSPJM", array($data));
+//        $this->response = $client->__soapCall("GetSPJM", array($data));
         
 //        var_dump($this->response);
         
