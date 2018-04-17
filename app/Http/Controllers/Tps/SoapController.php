@@ -146,10 +146,14 @@ class SoapController extends DefaultController {
 //                ->certificate()                                                 
                 ->cache(WSDL_CACHE_NONE)                                        
                 ->options([
-                    'UserName' => $this->user, 
-                    'Password' => $this->password,
-                    'Kd_asp' => $this->kode
-                ]);                                                    
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
+                ]);                                                   
         });
         
         $data = [
@@ -177,17 +181,13 @@ class SoapController extends DefaultController {
 //                ->certificate()                                                 
                 ->cache(WSDL_CACHE_NONE)  
                 ->options([
-                    'soap_version' => SOAP_1_2,
-                    'ssl'           => array(
-                        'ciphers'=> "SHA1",
-                        'verify_peer' => false, 
-                        'allow_self_signed' => true
-                    ),
-                    'https' => array(
-                        'curl_verify_ssl_peer'  => false,
-                        'curl_verify_ssl_host'  => false
-                    ),
-                    'exceptions' => 0
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
                 ]);                                                    
         });
         
@@ -260,18 +260,14 @@ class SoapController extends DefaultController {
 //                ->certificate()                                                 
                 ->cache(WSDL_CACHE_NONE)  
                 ->options([
-                    'soap_version' => SOAP_1_2,
-                    'ssl'           => array(
-                        'ciphers'=> "SHA1",
-                        'verify_peer' => false, 
-                        'allow_self_signed' => true
-                    ),
-                    'https' => array(
-                        'curl_verify_ssl_peer'  => false,
-                        'curl_verify_ssl_host'  => false
-                    ),
-                    'exceptions' => 0
-                ]);                                                    
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
+                ]);                                                   
         });
         
         $data = [
@@ -357,18 +353,14 @@ class SoapController extends DefaultController {
 //                ->certificate()                                                 
                 ->cache(WSDL_CACHE_NONE)  
                 ->options([
-                    'soap_version' => SOAP_1_2,
-                    'ssl'           => array(
-                        'ciphers'=> "SHA1",
-                        'verify_peer' => false, 
-                        'allow_self_signed' => true
-                    ),
-                    'https' => array(
-                        'curl_verify_ssl_peer'  => false,
-                        'curl_verify_ssl_host'  => false
-                    ),
-                    'exceptions' => 0
-                ]);                                                    
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
+                ]);                                                   
         });
         
         $data = [
@@ -441,17 +433,13 @@ class SoapController extends DefaultController {
 //                ->certificate()                                                 
                 ->cache(WSDL_CACHE_NONE)  
                 ->options([
-                    'soap_version' => SOAP_1_2,
-                    'ssl'           => array(
-                        'ciphers'=> "SHA1",
-                        'verify_peer' => false, 
-                        'allow_self_signed' => true
-                    ),
-                    'https' => array(
-                        'curl_verify_ssl_peer'  => false,
-                        'curl_verify_ssl_host'  => false
-                    ),
-                    'exceptions' => 0
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
                 ]);                                                    
         });
         
@@ -528,9 +516,13 @@ class SoapController extends DefaultController {
 //                ->certificate()                                                 
                 ->cache(WSDL_CACHE_NONE)                                        
                 ->options([
-                    'UserName' => $this->user, 
-                    'Password' => $this->password,
-                    'Kd_ASP' => $this->kode
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
                 ]);                                                    
         });
         
@@ -714,9 +706,13 @@ class SoapController extends DefaultController {
 //                ->certificate()                                                 
                 ->cache(WSDL_CACHE_NONE)                                        
                 ->options([
-                    'UserName' => $this->user, 
-                    'Password' => $this->password,
-                    'Kd_Gudang' => $this->kode
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
                 ]);                                                    
         });
         
@@ -786,12 +782,15 @@ class SoapController extends DefaultController {
                 ->trace(true)                                                                                                  
 //                ->certificate()                                                 
                 ->cache(WSDL_CACHE_NONE)                                        
-//                ->options([
-//                    'UserName' => $this->user, 
-//                    'Password' => $this->password,
-//                    'Kd_Gudang' => $this->kode
-//                ])
-                ;                                                    
+                ->options([
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
+                ]);                                                   
         });
         
         $data = [
@@ -861,10 +860,14 @@ class SoapController extends DefaultController {
 //                ->certificate()                                                 
                 ->cache(WSDL_CACHE_NONE)                                        
                 ->options([
-                    'UserName' => $this->user, 
-                    'Password' => $this->password,
-                    'Kd_Gudang' => $this->kode
-                ]);                                                    
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
+                ]);                                                     
         });
         
         $data = [
@@ -933,7 +936,16 @@ class SoapController extends DefaultController {
                 ->name('TpsOnline_GetInfoNomorBC11')
                 ->wsdl($this->wsdl)
                 ->trace(true)                                                                                                                                                 
-                ->cache(WSDL_CACHE_NONE);                                                    
+                ->cache(WSDL_CACHE_NONE)
+                ->options([
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
+                ]); 
         });
         
         $data = [
@@ -979,10 +991,14 @@ class SoapController extends DefaultController {
 //                ->certificate()                                                 
                 ->cache(WSDL_CACHE_NONE)                                        
                 ->options([
-                    'UserName' => $this->user, 
-                    'Password' => $this->password,
-                    'Kd_Tps' => $this->kode
-                ]);                                                    
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
+                ]);                                                     
         });
         
         $data = [
@@ -1010,10 +1026,14 @@ class SoapController extends DefaultController {
 //                ->certificate()                                                 
                 ->cache(WSDL_CACHE_NONE)                                        
                 ->options([
-                    'UserName' => $this->user, 
-                    'Password' => $this->password,
-                    'Kd_Tps' => $this->kode
-                ]);                                                    
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
+                ]);                                                   
         });
         
         $data = [
@@ -1041,10 +1061,13 @@ class SoapController extends DefaultController {
 //                ->certificate()                                                 
                 ->cache(WSDL_CACHE_NONE)                                        
                 ->options([
-                    'UserName' => $this->user, 
-                    'Password' => $this->password,
-                    'Tgl_Awal' => date('d-m-Y', strtotime($request->tgl_awal)),
-                    'Tgl_Akhir' => date('d-m-Y', strtotime($request->tgl_akhir))
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
                 ]);                                                    
         });
         
@@ -1074,11 +1097,14 @@ class SoapController extends DefaultController {
 //                ->certificate()                                                 
                 ->cache(WSDL_CACHE_NONE)                                        
                 ->options([
-                    'UserName' => $this->user, 
-                    'Password' => $this->password,
-                    'Tgl_Awal' => date('d-m-Y', strtotime($request->tgl_awal)),
-                    'Tgl_Akhir' => date('d-m-Y', strtotime($request->tgl_akhir))
-                ]);                                                    
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
+                ]);                                                     
         });
         
         $data = [
@@ -1107,10 +1133,14 @@ class SoapController extends DefaultController {
 //                ->certificate()                                                 
                 ->cache(WSDL_CACHE_NONE)                                        
                 ->options([
-                    'Username' => $this->user, 
-                    'Password' => $this->password,
-                    'fStream' => ''
-                ]);                                                    
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
+                ]);                                                     
         });
         
         $data = [
@@ -1137,9 +1167,13 @@ class SoapController extends DefaultController {
 //                ->certificate()                                                 
                 ->cache(WSDL_CACHE_NONE)                                        
                 ->options([
-                    'Username' => $this->user, 
-                    'Password' => $this->password,
-                    'fStream' => ''
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
                 ]);                                                    
         });
         
