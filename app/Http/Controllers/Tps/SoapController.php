@@ -29,26 +29,39 @@ class SoapController extends DefaultController {
     public function getXmlDemo()
     {
         
+        $url     = "https://tpsonline.beacukai.go.id/tps/service.asmx?WSDL";
+        $context = stream_context_create(array(
+                'ssl' => array(
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+                )
+        ));
+
+
+        $client = new \SoapClient($url, array('stream_context' => $context));
+        
+        
 //        echo phpinfo();
         
         /* Initialize webservice with your WSDL */
 //        $client = new \SoapClient("https://demo.docusign.net/api/3.0/api.asmx?WSDL");
 //        $client = new \SoapClient("http://currencyconverter.kowabunga.net/converter.asmx?WSDL");
-        $client = new \SoapClient("https://tpsonline.beacukai.go.id/tps/service.asmx?WSDL",[
-            'exceptions' => 1,
-            'trace' => TRUE,
-            'local_cert' => url('cert/bc.pem'),
-//            'passphrase' => $this->passphrase,
-//            'ssl_method' => SOAP_SSL_METHOD_SSLv2, // not work!
-//            'authentication' => SOAP_AUTHENTICATION_DIGEST,
-            "soap_version"  => SOAP_1_2,
-            'cache_wsdl' => WSDL_CACHE_NONE,
-            'stream_context' => stream_context_create([
-                'ssl' => [
-                    'cafile' => '/etc/ssl/certs/ca-certificates.crt'
-                ]
-            ]),
-        ]);
+//        $client = new \SoapClient("https://tpsonline.beacukai.go.id/tps/service.asmx?WSDL",[
+//            'exceptions' => 1,
+//            'trace' => TRUE,
+//            'local_cert' => url('cert/bc.pem'),
+////            'passphrase' => $this->passphrase,
+////            'ssl_method' => SOAP_SSL_METHOD_SSLv2, // not work!
+////            'authentication' => SOAP_AUTHENTICATION_DIGEST,
+//            "soap_version"  => SOAP_1_2,
+//            'cache_wsdl' => WSDL_CACHE_NONE,
+//            'stream_context' => stream_context_create([
+//                'ssl' => [
+//                    'cafile' => '/etc/ssl/certs/ca-certificates.crt'
+//                ]
+//            ]),
+//        ]);
 //        $client = new \SoapClient("https://www.iatspayments.com/NetGate/CustomerLink.asmx?WSDL");
         
         /* Set your parameters for the request */
