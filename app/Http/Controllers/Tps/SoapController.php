@@ -58,11 +58,11 @@ class SoapController extends DefaultController {
 //            'RateDate'     => '2017-06-05',
 //            'Amount'       => '1000'
 //        ];
-//        $params = [
-//            'UserName' => $this->user, 
-//            'Password' => $this->password,
-//            'Kd_Tps' => $this->kode
-//        ];
+        $params = [
+            'UserName' => $this->user, 
+            'Password' => $this->password,
+            'Kd_Tps' => $this->kode
+        ];
 //        $params = [
 //            'agentCode' => '123',
 //            'password' => '123',
@@ -73,7 +73,7 @@ class SoapController extends DefaultController {
 
         /* Invoke webservice method with your parameters, in this case: Function1 */
 //        $response = $client->__soapCall("GetConversionAmount", array($params));
-        $response = $client->__soapCall("GetSPJM");
+        $response = $client->__soapCall("GetSPJM", array($params));
         
 
         /* Print webservice response */
