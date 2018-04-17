@@ -34,7 +34,21 @@ class SoapController extends DefaultController {
         /* Initialize webservice with your WSDL */
 //        $client = new \SoapClient("https://demo.docusign.net/api/3.0/api.asmx?WSDL");
 //        $client = new \SoapClient("http://currencyconverter.kowabunga.net/converter.asmx?WSDL");
-        $client = new \SoapClient("https://tpsonline.beacukai.go.id/tps/service.asmx?WSDL");
+        $client = new \SoapClient("https://tpsonline.beacukai.go.id/tps/service.asmx?WSDL",[
+            'exceptions' => 1,
+            'trace' => TRUE,
+            'local_cert' => url('cert/bc.pem'),
+//            'passphrase' => $this->passphrase,
+            //'ssl_method' => SOAP_SSL_METHOD_SSLv2, // not work!
+            'authentication' => SOAP_AUTHENTICATION_DIGEST,
+            "soap_version"  => SOAP_1_2,
+            'cache_wsdl' => WSDL_CACHE_NONE,
+            'stream_context' => stream_context_create([
+                'ssl' => [
+                    'crypto_method' => STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT, // it's work!
+                ]
+            ]),
+        ]);
 //        $client = new \SoapClient("https://www.iatspayments.com/NetGate/CustomerLink.asmx?WSDL");
         
         /* Set your parameters for the request */
