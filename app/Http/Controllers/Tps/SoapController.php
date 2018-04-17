@@ -34,8 +34,8 @@ class SoapController extends DefaultController {
         /* Initialize webservice with your WSDL */
 //        $client = new \SoapClient("https://demo.docusign.net/api/3.0/api.asmx?WSDL");
 //        $client = new \SoapClient("http://currencyconverter.kowabunga.net/converter.asmx?WSDL");
-//        $client = new \SoapClient("https://tpsonline.beacukai.go.id/tps/service.asmx?WSDL");
-        $client = new \SoapClient("https://www.iatspayments.com/NetGate/CustomerLink.asmx?WSDL");
+        $client = new \SoapClient("https://tpsonline.beacukai.go.id/tps/service.asmx?WSDL");
+//        $client = new \SoapClient("https://www.iatspayments.com/NetGate/CustomerLink.asmx?WSDL");
         
         /* Set your parameters for the request */
 //        $params = [
@@ -49,17 +49,17 @@ class SoapController extends DefaultController {
 //            'Password' => $this->password,
 //            'Kd_Tps' => $this->kode
 //        ];
-        $params = [
-            'agentCode' => '123',
-            'password' => '123',
-            'customerIPAddress' => '123',
-            'FromDate' => '123',
-            'ToDate' => '123'
-        ];
+//        $params = [
+//            'agentCode' => '123',
+//            'password' => '123',
+//            'customerIPAddress' => '123',
+//            'FromDate' => '123',
+//            'ToDate' => '123'
+//        ];
 
         /* Invoke webservice method with your parameters, in this case: Function1 */
 //        $response = $client->__soapCall("GetConversionAmount", array($params));
-        $response = $client->__soapCall("GetCustomerListByCreationTimeXML", array($params));
+        $response = $client->__soapCall("GetSPJM");
         
 
         /* Print webservice response */
