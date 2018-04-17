@@ -39,15 +39,15 @@ class SoapController extends DefaultController {
             'trace' => TRUE,
             'local_cert' => url('cert/bc.pem'),
 //            'passphrase' => $this->passphrase,
-            //'ssl_method' => SOAP_SSL_METHOD_SSLv2, // not work!
-            'authentication' => SOAP_AUTHENTICATION_DIGEST,
+//            'ssl_method' => SOAP_SSL_METHOD_SSLv2, // not work!
+//            'authentication' => SOAP_AUTHENTICATION_DIGEST,
             "soap_version"  => SOAP_1_2,
             'cache_wsdl' => WSDL_CACHE_NONE,
-            'stream_context' => stream_context_create([
-                'ssl' => [
-                    'crypto_method' => STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT, // it's work!
-                ]
-            ]),
+//            'stream_context' => stream_context_create([
+//                'ssl' => [
+//                    'crypto_method' => STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT, // it's work!
+//                ]
+//            ]),
         ]);
 //        $client = new \SoapClient("https://www.iatspayments.com/NetGate/CustomerLink.asmx?WSDL");
         
