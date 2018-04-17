@@ -559,24 +559,10 @@ class SoapController extends DefaultController {
                 ->name('TpsOnline_GetSPJM')
                 ->wsdl($this->wsdl)
                 ->trace(true)                                                                                                  
-                ->certificate(url('cert/bc.pem'))  
-//                ->certificate(url('cert/tpsonlinebc.crt')) 
+//                ->certificate(url('cert/bc.pem'))  
+                ->certificate(url('cert/tpsonlinebc.crt')) 
 //                ->certificate(url('cert/trust-ca.crt')) 
-                ->cache(WSDL_CACHE_NONE)                                        
-                ->options([
-                    'local_cert' => url('cert/bc.pem'),
-                    'soap_version' => SOAP_1_2,
-                    'ssl' => array(
-                        'verify_peer' => false, 
-                        'allow_self_signed' => true
-                    ),
-                    'https' => array(
-                        'curl_verify_ssl_peer'  => false,
-                        'curl_verify_ssl_host'  => false
-                    ),
-                    'exceptions' => 1
-                ])
-                ;                                                     
+                ->cache(WSDL_CACHE_NONE);                                                     
         });
         
         $data = [
