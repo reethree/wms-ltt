@@ -43,11 +43,11 @@ class SoapController extends DefaultController {
 //            'authentication' => SOAP_AUTHENTICATION_DIGEST,
             "soap_version"  => SOAP_1_2,
             'cache_wsdl' => WSDL_CACHE_NONE,
-//            'stream_context' => stream_context_create([
-//                'ssl' => [
-//                    'crypto_method' => STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT, // it's work!
-//                ]
-//            ]),
+            'stream_context' => stream_context_create([
+                'ssl' => [
+                    'cafile' => '/etc/ssl/certs/ca-certificates.crt'
+                ]
+            ]),
         ]);
 //        $client = new \SoapClient("https://www.iatspayments.com/NetGate/CustomerLink.asmx?WSDL");
         
