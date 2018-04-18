@@ -190,8 +190,8 @@ class PengirimanController extends Controller
         $reff_number = $this->getReffNumber();
         
         $lapYor->REF_NUMBER = $reff_number;
-        $lapYor->KD_TPS = 'PRJP';
-        $lapYor->KD_GUDANG = 'PRJP';
+        $lapYor->KD_TPS = 'TRMA';
+        $lapYor->KD_GUDANG = 'TRMA';
         $lapYor->TGL_LAPORAN = date('Ymd', strtotime($request->TGL_LAPORAN));
         $lapYor->RESPONSE = 'Belum Upload';
         $lapYor->uid = \Auth::getUser()->name;

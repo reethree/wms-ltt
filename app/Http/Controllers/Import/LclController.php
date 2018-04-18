@@ -270,7 +270,7 @@ class LclController extends Controller
 //        $spk_last_id = $this->getSpkNumber();
         $regID = str_pad(intval((isset($spk_last_id->id) ? $spk_last_id->id : 0)+1), 4, '0', STR_PAD_LEFT);
         
-        $data['spk_number'] = 'LTTL'.$regID.'/'.date('y');
+        $data['spk_number'] = 'TRMAG'.$regID.'/'.date('y');
         $data['consolidators'] = DBConsolidator::select('TCONSOLIDATOR_PK as id','NAMACONSOLIDATOR as name')->get();
         $data['countries'] = DBNegara::select('TNEGARA_PK as id','NAMANEGARA as name')->get();
         $data['pelabuhans'] = array();
