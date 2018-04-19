@@ -341,7 +341,7 @@
                         </div>
                     </div>
                     
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label class="col-sm-3 control-label">Perkiraan Tgl.Kaluar</label>
                         <div class="col-sm-8">
                             <div class="input-group date">

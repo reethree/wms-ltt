@@ -71,7 +71,7 @@
                             <button type="button" class="btn btn-info" id="add-consignee-btn">Add Consignee</button>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                       <label for="PARTY" class="col-sm-3 control-label">Party</label>
                       <div class="col-sm-8">
                           <input type="text" name="PARTY" class="form-control"  value="{{ $joborder->PARTY }}"> 
@@ -149,7 +149,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label class="col-sm-3 control-label">Tgl. ETD</label>
                         <div class="col-sm-8">
                             <div class="input-group date">
@@ -189,7 +189,7 @@
                             <input type="text" name="JENISKEGIATAN" value="{{ $joborder->JENISKEGIATAN }}" class="form-control"  readonly>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label class="col-sm-3 control-label">Gross Weight</label>
                         <div class="col-sm-3">
                             <input type="text" name="GROSSWEIGHT" class="form-control"  value="{{ $joborder->GROSSWEIGHT }}">
@@ -203,14 +203,14 @@
                             <input type="text" name="MEASUREMENT" class="form-control"  value="{{ $joborder->MEASUREMENT }}">
                         </div>
                     </div> 
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         
                         <label class="col-sm-3 control-label">ISO Code</label>
                         <div class="col-sm-8">
                             <input type="text" name="ISO_CODE" class="form-control"  value="{{ $joborder->ISO_CODE }}">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                       <label class="col-sm-3 control-label">Description</label>
                       <div class="col-sm-8">
                           <textarea class="form-control" name="KETERANGAN" rows="3" placeholder="Description...">{{ $joborder->KETERANGAN }}</textarea>
@@ -270,7 +270,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label class="col-sm-3 control-label">Pel. Transit</label>
                         <div class="col-sm-8">
                             <select class="form-control select2" id="PEL_TRANSIT" name="PEL_TRANSIT" style="width: 100%;" tabindex="-1" aria-hidden="true" >

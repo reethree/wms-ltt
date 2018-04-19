@@ -68,7 +68,7 @@
                             <button type="button" class="btn btn-info" id="add-consignee-btn">Add Consignee</button>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                       <label for="PARTY" class="col-sm-3 control-label">Party</label>
                       <div class="col-sm-8">
                           <input type="text" name="PARTY" class="form-control"  value="{{ old('PARTY') }}"> 
@@ -143,7 +143,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label class="col-sm-3 control-label">Tgl. ETD</label>
                         <div class="col-sm-8">
                             <div class="input-group date">
@@ -170,11 +170,11 @@
                     <div class="form-group">                       
                         <label class="col-sm-3 control-label">Kode Gudang</label>
                         <div class="col-sm-3">
-                            <input type="text" name="KODE_GUDANG" value="LTT" class="form-control"  readonly>
+                            <input type="text" name="KODE_GUDANG" value="TRMA" class="form-control"  readonly>
                         </div>
                         <label class="col-sm-2 control-label">Tujuan</label>
                         <div class="col-sm-3">
-                            <input type="text" name="GUDANG_TUJUAN" value="LTT" class="form-control"  readonly>
+                            <input type="text" name="GUDANG_TUJUAN" value="TRMA" class="form-control"  readonly>
                         </div>
                     </div>
                     <div class="form-group">
@@ -183,7 +183,7 @@
                             <input type="text" name="JENISKEGIATAN" value="CY/CFS" class="form-control"  readonly>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label class="col-sm-3 control-label">Gross Weight</label>
                         <div class="col-sm-3">
                             <input type="text" name="GROSSWEIGHT" class="form-control"  value="{{ old('GROSSWEIGHT') }}">
@@ -197,13 +197,13 @@
                             <input type="text" name="MEASUREMENT" class="form-control"  value="{{ old('MEASUREMENT') }}">
                         </div>
                     </div> 
-                    <div class="form-group">  
+                    <div class="form-group" style="display: none;">  
                         <label class="col-sm-3 control-label">ISO Code</label>
                         <div class="col-sm-8">
                             <input type="text" name="ISO_CODE" class="form-control"  value="{{ old('ISO_CODE') }}">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                       <label class="col-sm-3 control-label">Description</label>
                       <div class="col-sm-8">
                           <textarea class="form-control" name="KETERANGAN" rows="3" placeholder="Description...">{{ old('KETERANGAN') }}</textarea>
@@ -260,7 +260,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label class="col-sm-3 control-label">Pel. Transit</label>
                         <div class="col-sm-8">
                             <select class="form-control select2" id="PEL_TRANSIT" name="PEL_TRANSIT" style="width: 100%;" tabindex="-1" aria-hidden="true" >
