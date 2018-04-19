@@ -1696,7 +1696,7 @@ class LclController extends Controller
                     $dataFinals[] = $dataval;              
                 endforeach;
                 
-                return $dataFinals;
+//                return $dataFinals;
                 
                 // INSERT FILE TO DATABASE
                 foreach ($dataFinals as $df):
