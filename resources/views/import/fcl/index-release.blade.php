@@ -74,7 +74,8 @@
             $('#ID_CONSIGNEE').val(rowdata.ID_CONSIGNEE);
             $('#KD_DOK_INOUT').val(rowdata.KD_DOK_INOUT).trigger('change');
             $('#bcf_consignee').val(rowdata.bcf_consignee).trigger('change');
-
+            $('#KD_TPS_ASAL').val(rowdata.KD_TPS_ASAL);
+            
 //            if(!rowdata.TGLRELEASE && !rowdata.JAMRELEASE) {
                 $('#btn-group-2').enableButtonGroup();
                 $('#release-form').enableFormGroup();
@@ -231,6 +232,7 @@
                     ->addColumn(array('label'=>'No. MBL','index'=>'NOMBL','width'=>160))
                     ->addColumn(array('label'=>'Tgl. MBL','index'=>'TGLMBL','width'=>150,'align'=>'center'))
                     ->addColumn(array('label'=>'Consolidator','index'=>'NAMACONSOLIDATOR','width'=>250,'align'=>'center'))
+                    ->addColumn(array('label'=>'TPS Asal','index'=>'KD_TPS_ASAL', 'width'=>100,'align'=>'center','hidden'=>true))
                     ->addColumn(array('label'=>'Tgl. Behandle','index'=>'TGLBEHANDLE','width'=>150,'align'=>'center'))
                     ->addColumn(array('label'=>'Jam. Behandle','index'=>'JAMBEHANDLE', 'width'=>150,'align'=>'center','hidden'=>true))
                     ->addColumn(array('label'=>'Tgl. Fiat','index'=>'TGLFIAT','width'=>150,'align'=>'center'))
@@ -326,10 +328,16 @@
                             <input type="text" id="NOCONTAINER" name="NOCONTAINER" class="form-control" readonly>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display:none;">
                         <label class="col-sm-3 control-label">Consolidator</label>
                         <div class="col-sm-8">
                             <input type="text" id="NAMACONSOLIDATOR" name="NAMACONSOLIDATOR" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">TPS Asal</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="KD_TPS_ASAL" name="KD_TPS_ASAL" class="form-control" readonly>
                         </div>
                     </div>
 <!--                    <div class="form-group">
@@ -431,7 +439,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display:none;">
                         <label class="col-sm-3 control-label">No. Kuitansi</label>
                         <div class="col-sm-8">
                             <input type="text" id="NO_KUITANSI" name="NO_KUITANSI" class="form-control" required>
@@ -457,13 +465,13 @@
                     
                 </div>
                 <div class="col-md-6">
-                    <div class="form-group">
+                    <div class="form-group" style="display:none;">
                         <label class="col-sm-3 control-label">No. Pabean</label>
                         <div class="col-sm-8">
                             <input type="text" id="NO_DAFTAR_PABEAN" name="NO_DAFTAR_PABEAN" class="form-control" required>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display:none;">
                         <label class="col-sm-3 control-label">Tgl. Pabean</label>
                         <div class="col-sm-8">
                             <div class="input-group date">
