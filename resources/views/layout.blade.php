@@ -25,7 +25,7 @@
               page. However, you can choose any other skin. Make sure you
               apply the skin class to the body tag so the changes take effect.
         -->
-        <link href="{{ asset("/bower_components/AdminLTE/dist/css/skins/skin-red-light.min.css")}}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset("/bower_components/AdminLTE/dist/css/skins/skin-red-light.css")}}" rel="stylesheet" type="text/css" />
 
         <!-- jQuery 2.2.3 -->
         <script src="{{ asset ("/bower_components/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js") }}"></script>

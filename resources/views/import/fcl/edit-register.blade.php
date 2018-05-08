@@ -570,6 +570,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 <script type="text/javascript">
     $('select').select2();
+    $('#npwp').mask("99.999.999.9-999.999");
     $('.datepicker').datepicker({
         autoclose: true,
         todayHighlight: true,

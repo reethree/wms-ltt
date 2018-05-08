@@ -510,7 +510,7 @@ class SoapController extends DefaultController {
     {
         \SoapWrapper::add(function ($service) {
             $service
-                ->name('TpsOnline')
+                ->name('TpsOnline_GetDataOB')
                 ->wsdl($this->wsdl)
                 ->trace(true)                                                                                                  
 //                ->certificate()                                                 
@@ -534,7 +534,7 @@ class SoapController extends DefaultController {
         
         
         try{
-            \SoapWrapper::service('TpsOnline', function ($service) use ($data) {        
+            \SoapWrapper::service('TpsOnline_GetDataOB', function ($service) use ($data) {        
                 $this->response = $service->call('GetDataOB', [$data])->GetDataOBResult;      
             });
         }catch (\SoapFault $exception){

@@ -347,7 +347,7 @@
     $('.datepicker').datepicker({
         autoclose: true,
         todayHighlight: true,
-        format: 'yyyy-mm-dd' 
+        format: 'yyyy-mm-dd'
     });
     $('#vessel').on("change", function (e) { 
         $('input[name="CALLSIGN"]').val($(this).find(":selected").data("callsign"));

@@ -567,6 +567,7 @@
         minuteStep: 1,
         secondStep: 1
     });
+    $("#NPWP_IMP").mask("99.999.999.9-999.999");
 </script>
 
 @endsection

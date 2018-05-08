@@ -133,3 +133,69 @@ Route::group(['prefix' => 'invoice', 'namespace' => 'Invoice'], function(){
     
     
 });
+
+Route::group(['prefix' => 'billing', 'namespace' => 'Invoice'], function(){
+    
+    // Template
+    Route::get('/template', [
+        'as' => 'billing-template',
+        'uses' => 'BillingController@template'
+    ]);
+    
+    Route::post('/template/grid-data', function()
+    {
+        GridEncoder::encodeRequestedData(new \App\Models\InvoiceTablesRepository('billing_template',Illuminate\Support\Facades\Request::all()) ,Illuminate\Support\Facades\Request::all());
+    });
+    
+    Route::get('/template/create', [
+        'as' => 'billing-template-create',
+        'uses' => 'BillingController@templateCreate'
+    ]);
+    
+    Route::post('/template/create', [
+        'as' => 'billing-template-store',
+        'uses' => 'BillingController@templateStore'
+    ]);
+    
+    Route::get('/template/edit/{id}', [
+        'as' => 'billing-template-edit',
+        'uses' => 'BillingController@templateEdit'
+    ]);
+    
+    Route::post('/template/edit/{id}', [
+        'as' => 'billing-template-update',
+        'uses' => 'BillingController@templateUpdate'
+    ]);
+    
+    // ITEM
+    Route::get('/template/item', [
+        'as' => 'billing-template-item',
+        'uses' => 'BillingController@itemTemplate'
+    ]);
+    
+    Route::post('/template/item/create', [
+        'as' => 'billing-template-item-store',
+        'uses' => 'BillingController@itemTemplateStore'
+    ]);
+        
+    Route::post('/template/item/edit/{id}', [
+        'as' => 'billing-template-item-update',
+        'uses' => 'BillingController@itemTemplateUpdate'
+    ]);
+    
+    Route::get('/template/item/delete/{id}', [
+        'as' => 'billing-template-item-destroy',
+        'uses' => 'BillingController@itemTemplateDestroy'
+    ]);
+    
+    Route::post('/template/item/grid-data', function()
+    {
+        GridEncoder::encodeRequestedData(new \App\Models\InvoiceTablesRepository('billing_template_item',Illuminate\Support\Facades\Request::all()) ,Illuminate\Support\Facades\Request::all());
+    });
+    
+    Route::get('/template/delete', [
+        'as' => 'billing-template-delete',
+        'uses' => 'BillingController@templateDelete'
+    ]);
+    
+});

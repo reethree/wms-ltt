@@ -27,6 +27,10 @@ class InvoiceTablesRepository extends EloquentRepositoryAbstract {
             $Model = InvoiceTarifNct::select('*');
         }elseif($ModelRef == 'invoice_nct'){
             $Model = InvoiceNct::select('*');
+        }elseif($ModelRef == 'billing_template_item'){
+            $Model = \DB::table($ModelRef)->where('billing_template_id',$request['templateid']);
+        }else{
+            $Model = \DB::table($ModelRef);
         }
         
         $this->Database = $Model;        

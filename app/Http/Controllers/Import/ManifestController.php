@@ -115,7 +115,7 @@ class ManifestController extends Controller
         $data['jammasuk'] = $container->JAMMASUK;
         $data['tglentry'] = date('Y-m-d');
         $data['jamentry'] = date('H:i:s');
-        $data['UID'] = $data['UID'] = \Auth::getUser()->name;
+        $data['UID'] = \Auth::getUser()->name;
         
         $insert_id = DBManifest::insertGetId($data);
         
