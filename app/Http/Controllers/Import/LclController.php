@@ -1423,9 +1423,14 @@ class LclController extends Controller
         $invoice->subtotal_amount = array_sum($subtotal_amount);
         $invoice->total_tax = array_sum($total_tax);
         $invoice->total_amount = $invoice->subtotal_amount+$invoice->total_tax;
-        $invoice->save();
         
-        return json_encode($invoice);
+        if($invoice->save()){
+            return back()->with('success', 'No. HBL '.$manifest->NOHBL.', invoice berhasih dibuat.');
+        }
+        
+        return back()->with('error', 'Something went wrong, please try again later.');
+        
+//        return json_encode($invoice);
     }
     
     public function releaseCreateInvoice(Request $request)
