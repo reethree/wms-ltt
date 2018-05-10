@@ -52,9 +52,9 @@
 <div class="box">
     <div class="box-header with-border">
         <h3 class="box-title">LCL Invoices Lists</h3>
-        <div class="box-tools">
+<!--        <div class="box-tools">
             <button class="btn btn-block btn-info btn-sm" id="cetak-rekap"><i class="fa fa-print"></i> Cetak Rekap Harian</button>
-        </div>
+        </div>-->
     </div>
     <div class="box-body table-responsive">
         <div class="row" style="margin-bottom: 30px;margin-right: 0;">
@@ -116,8 +116,7 @@
 //            ->addColumn(array('label'=>'Tgl. PLP','index'=>'TTGL_PLP','width'=>150,'align'=>'center'))
 //            ->addColumn(array('label'=>'ETA','index'=>'ETA', 'width'=>150,'align'=>'center'))
 //            ->addColumn(array('label'=>'ETD','index'=>'ETD', 'width'=>150,'align'=>'center'))
-            ->addColumn(array('label'=>'No. Invoice','index'=>'no_invoice','width'=>200))
-            ->addColumn(array('label'=>'Type','index'=>'INVOICE','width'=>80,'align'=>'center'))
+            ->addColumn(array('label'=>'No. Invoice','index'=>'number','width'=>150,'align'=>'center'))
             ->addColumn(array('label'=>'Consolidator','index'=>'NAMACONSOLIDATOR','width'=>250))
             ->addColumn(array('label'=>'Vessel','index'=>'VESSEL', 'width'=>150))
             ->addColumn(array('label'=>'Voy','index'=>'VOY','width'=>80,'align'=>'center'))
@@ -128,16 +127,11 @@
             ->addColumn(array('label'=>'No. B/L','index'=>'NOHBL','width'=>160))          
             ->addColumn(array('label'=>'Consignee','index'=>'CONSIGNEE', 'width'=>250,))
             ->addColumn(array('label'=>'CBM<br r/>eq','index'=>'cbm', 'width'=>60,'align'=>'center'))
-            ->addColumn(array('label'=>'Hari','index'=>'hari','width'=>60,'align'=>'center'))
-            ->addColumn(array('label'=>'Bhndl','index'=>'behandle', 'width'=>60,'align'=>'center'))
-            ->addColumn(array('label'=>'Storage','index'=>'storage','width'=>120,'align'=>'right', 'formatter'=>'currency', 'formatoptions'=>array('decimalSeparator'=>',', 'thousandsSeparator'=> '.', 'decimalPlaces'=> '2')))
-            ->addColumn(array('label'=>'RDM','index'=>'rdm','width'=>100,'align'=>'right', 'formatter'=>'currency', 'formatoptions'=>array('decimalSeparator'=>',', 'thousandsSeparator'=> '.', 'decimalPlaces'=> '2')))
-            ->addColumn(array('label'=>'Behandle','index'=>'harga_behandle', 'width'=>120,'align'=>'right', 'formatter'=>'currency', 'formatoptions'=>array('decimalSeparator'=>',', 'thousandsSeparator'=> '.', 'decimalPlaces'=> '2')))
-            ->addColumn(array('label'=>'Adm/Doc','index'=>'adm','width'=>100,'align'=>'right', 'formatter'=>'currency', 'formatoptions'=>array('decimalSeparator'=>',', 'thousandsSeparator'=> '.', 'decimalPlaces'=> '2')))
-            ->addColumn(array('label'=>'Surcharge','index'=>'weight_surcharge', 'width'=>120,'align'=>'right', 'formatter'=>'currency', 'formatoptions'=>array('decimalSeparator'=>',', 'thousandsSeparator'=> '.', 'decimalPlaces'=> '2')))
-            ->addColumn(array('label'=>'Sub Total','index'=>'sub_total', 'width'=>120,'align'=>'right', 'formatter'=>'currency', 'formatoptions'=>array('decimalSeparator'=>',', 'thousandsSeparator'=> '.', 'decimalPlaces'=> '2')))
-//            ->addColumn(array('label'=>'PPN','index'=>'ppn', 'width'=>120,'align'=>'right', 'formatter'=>'currency', 'formatoptions'=>array('decimalSeparator'=>',', 'thousandsSeparator'=> '.', 'decimalPlaces'=> '2')))
-            ->addColumn(array('label'=>'UID','index'=>'UID', 'width'=>150))
+            ->addColumn(array('label'=>'Hari','index'=>'days','width'=>60,'align'=>'center'))
+            ->addColumn(array('label'=>'Sub Total','index'=>'subtotal_amount', 'width'=>120,'align'=>'right', 'formatter'=>'currency', 'formatoptions'=>array('decimalSeparator'=>',', 'thousandsSeparator'=> '.', 'decimalPlaces'=> '2')))
+            ->addColumn(array('label'=>'PPn','index'=>'total_tax', 'width'=>120,'align'=>'right', 'formatter'=>'currency', 'formatoptions'=>array('decimalSeparator'=>',', 'thousandsSeparator'=> '.', 'decimalPlaces'=> '2')))
+            ->addColumn(array('label'=>'Total','index'=>'total_amount', 'width'=>120,'align'=>'right', 'formatter'=>'currency', 'formatoptions'=>array('decimalSeparator'=>',', 'thousandsSeparator'=> '.', 'decimalPlaces'=> '2')))
+            ->addColumn(array('label'=>'UID','index'=>'uid', 'width'=>150))
             ->addColumn(array('label'=>'Tanggal<br/>Entry','index'=>'created_at', 'width'=>160,'align'=>'center'))
 //            ->addColumn(array('label'=>'Updated','index'=>'last_update', 'width'=>150, 'search'=>false))
 //            ->addColumn(array('label'=>'Action','index'=>'action', 'width'=>80, 'search'=>false, 'sortable'=>false, 'align'=>'center'))

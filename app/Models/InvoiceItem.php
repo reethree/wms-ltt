@@ -11,7 +11,8 @@ class InvoiceItem extends Model
      *
      * @var string
      */
-    protected $table = 'invoice_import_item';
+//    protected $table = 'invoice_import_item';
+    protected $table = 'billing_invoice_item';
     protected $primaryKey = 'id';
     public $timestamps = false;
 

@@ -8,7 +8,8 @@ Route::group(['prefix' => 'invoice', 'namespace' => 'Invoice'], function(){
     ]);
     Route::post('/grid-data', function()
     {
-        GridEncoder::encodeRequestedData(new \App\Models\InvoiceTablesRepository('invoice_import',Illuminate\Support\Facades\Request::all()) ,Illuminate\Support\Facades\Request::all());
+//        GridEncoder::encodeRequestedData(new \App\Models\InvoiceTablesRepository('invoice_import',Illuminate\Support\Facades\Request::all()) ,Illuminate\Support\Facades\Request::all());
+        GridEncoder::encodeRequestedData(new \App\Models\InvoiceTablesRepository('billing_invoice',Illuminate\Support\Facades\Request::all()) ,Illuminate\Support\Facades\Request::all());
     });   
     Route::get('/edit/{id}', [
         'as' => 'invoice-edit',
@@ -193,7 +194,7 @@ Route::group(['prefix' => 'billing', 'namespace' => 'Invoice'], function(){
         GridEncoder::encodeRequestedData(new \App\Models\InvoiceTablesRepository('billing_template_item',Illuminate\Support\Facades\Request::all()) ,Illuminate\Support\Facades\Request::all());
     });
     
-    Route::get('/template/delete', [
+    Route::get('/template/delete/{id}', [
         'as' => 'billing-template-delete',
         'uses' => 'BillingController@templateDelete'
     ]);

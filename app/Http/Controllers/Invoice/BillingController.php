@@ -160,6 +160,17 @@ class BillingController extends Controller
         return back()->with('error', 'Billing template cannot create, please try again.')->withInput();
     }
     
+    public function templateDelete($id)
+    {
+        $delete = \DB::table('billing_template')->where('id', $id)->delete();
+        if($delete){
+            // Delete Item
+            \DB::table('billing_template_item')->where('billing_template_id',$id)->delete();
+            return back()->with('success', 'Billing template has been deleted.');
+        }
+        return back()->with('error', 'Billing template cannot delete, please try again.')->withInput();
+    }
+    
     public function itemTemplate()
     {
         
@@ -173,9 +184,9 @@ class BillingController extends Controller
         if(empty($item_name)){
             return json_encode(array('success' => false, 'message' => 'Please insert item name.'));
         }
-        if(empty($data['price'])){
-            return json_encode(array('success' => false, 'message' => 'Please insert item price.'));
-        }
+//        if(empty($data['price'])){
+//            return json_encode(array('success' => false, 'message' => 'Please insert item price.'));
+//        }
         
         unset($data['id'], $data['item_name'], $data['_token']);
         

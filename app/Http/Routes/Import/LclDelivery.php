@@ -56,7 +56,8 @@ Route::group(['prefix' => 'lcl/delivery', 'namespace' => 'Import'], function(){
     // CREATE INVOICE
     Route::post('/release/invoice', [
         'as' => 'lcl-delivery-release-invoice',
-        'uses' => 'LclController@releaseCreateInvoice'
+//        'uses' => 'LclController@releaseCreateInvoice'
+        'uses' => 'LclController@releaseInvoice'
     ]);
     
     // TPS ONLINE UPLOAD

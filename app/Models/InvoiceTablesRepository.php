@@ -29,6 +29,8 @@ class InvoiceTablesRepository extends EloquentRepositoryAbstract {
             $Model = InvoiceNct::select('*');
         }elseif($ModelRef == 'billing_template_item'){
             $Model = \DB::table($ModelRef)->where('billing_template_id',$request['templateid']);
+        }elseif($ModelRef == 'billing_invoice'){
+            $Model = \DB::table($ModelRef)->join('tmanifest', 'billing_invoice.manifest_id', '=', 'tmanifest.TMANIFEST_PK');
         }else{
             $Model = \DB::table($ModelRef);
         }

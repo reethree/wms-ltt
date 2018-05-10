@@ -17,7 +17,7 @@
                     <div class="form-group">
                       <label for="name" class="col-sm-3 control-label">Template Name</label>
                       <div class="col-sm-8">
-                          <input type="text" name="name" class="form-control" id="name" required value="{{$template->name}}">
+                          <input type="text" name="name" class="form-control" required value="{{$template->name}}">
                       </div>
                     </div>
                     <div class="form-group">
@@ -107,8 +107,9 @@
             $('#itemTemplateGrid').jqGrid().trigger("reloadGrid");
             
             $('#item-template-form')[0].reset();
-            $("#formula").val('N').trigger("change");
+            $("#formula").val('X').trigger("change");
             $("#active").val('Y').trigger("change");
+            $("#type").val('Service').trigger("change");
             $('#id').val("");
             
             //Disables all buttons within the toolbar
@@ -127,7 +128,10 @@
         $('#id').val(rowid);
         populateFormFields(rowdata, '');
         
+        $("#type").val(rowdata.type).trigger("change");
         $("#item_name").val(rowdata.name);
+        $("#day_start").val(rowdata.day_start);
+        $("#day_end").val(rowdata.day_end);
         $("#formula").val(rowdata.formula).trigger("change");
         $("#active").val(rowdata.active).trigger("change");
         
@@ -249,10 +253,16 @@
                         ->setGridEvent('gridComplete', 'gridCompleteEvent')
                         ->setGridEvent('onSelectRow', 'onSelectRowEvent')
                         ->addColumn(array('key'=>true,'index'=>'id','hidden'=>true))
-                        ->addColumn(array('label'=>'Item Name','index'=>'name','width'=>250))
-                        ->addColumn(array('label'=>'Price','index'=>'price','width'=>160,'align'=>'right', 'formatter'=>'currency', 'formatoptions'=>array('decimalSeparator'=>',', 'thousandsSeparator'=> '.', 'decimalPlaces'=> '2')))
-                        ->addColumn(array('label'=>'Formula','index'=>'formula', 'width'=>100,'align'=>'center'))
+                        ->addColumn(array('label'=>'Item Type','index'=>'type','width'=>100, ))
+                        ->addColumn(array('label'=>'Item Name','index'=>'name','width'=>160))
+                        ->addColumn(array('label'=>'Price','index'=>'price','width'=>120,'align'=>'right', 'formatter'=>'currency', 'formatoptions'=>array('decimalSeparator'=>',', 'thousandsSeparator'=> '.', 'decimalPlaces'=> '2')))
+                        ->addColumn(array('label'=>'Price 20','index'=>'price_2','width'=>120,'align'=>'right', 'formatter'=>'currency', 'formatoptions'=>array('decimalSeparator'=>',', 'thousandsSeparator'=> '.', 'decimalPlaces'=> '2')))
+                        ->addColumn(array('label'=>'Price 40','index'=>'price_4','width'=>120,'align'=>'right', 'formatter'=>'currency', 'formatoptions'=>array('decimalSeparator'=>',', 'thousandsSeparator'=> '.', 'decimalPlaces'=> '2')))
+                        ->addColumn(array('label'=>'Formula','index'=>'formula', 'width'=>80,'align'=>'center'))
                         ->addColumn(array('label'=>'Taxes(%)','index'=>'tax', 'width'=>80,'align'=>'center'))
+                        ->addColumn(array('label'=>'Start Day','index'=>'day_start', 'width'=>80,'align'=>'center','hidden'=>false))
+                        ->addColumn(array('label'=>'End Day','index'=>'day_end', 'width'=>80,'align'=>'center','hidden'=>false))
+                        ->addColumn(array('label'=>'Free Day','index'=>'free', 'width'=>80,'align'=>'center','hidden'=>false))
                         ->addColumn(array('label'=>'Active','index'=>'active','width'=>80,'align'=>'center'))
                         ->addColumn(array('label'=>'Created','index'=>'created_at','width'=>140,'align'=>'center'))
                         ->addColumn(array('label'=>'UID','index'=>'uid','width'=>140,'align'=>'center'))
@@ -281,18 +291,54 @@
                         <input name="billing_template_id" id="billing_template_id" type="hidden" value="{{ $template->id }}">
                         <input name="id" id="id" type="hidden">
                         <div class="form-group">
+                            <label class="col-sm-3 control-label">Item Type</label>
+                            <div class="col-sm-8">
+                                <select class="form-control select2" id="type" name="type" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                    <option value="Service" selected>Service</option>
+                                    <option value="Storage Flat" selected>Storage Flat</option>
+                                    <option value="Storage Masa">Storage Masa</option>
+                                    <option value="Surcharge">Surcharge</option>
+                                    <option value="Behandle">Behandle</option>
+                                    <option value="By Size">By Size</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-3 control-label">Item Name</label>
                             <div class="col-sm-8">
                                 <input type="text" id="item_name" name="name" class="form-control" required>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group mainprice">
                             <label class="col-sm-3 control-label">Price</label>
                             <div class="col-sm-8">
                                 <div class="input-group">
                                     <div class="input-group-addon">
-                                        IDR                                    </div>
+                                        IDR                                    
+                                    </div>
                                     <input type="number" id="price" name="price" class="form-control pull-right" required> 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group bysize">
+                            <label class="col-sm-3 control-label">20'</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        IDR                                    
+                                    </div>
+                                    <input type="number" id="price_2" name="price_2" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group bysize">
+                            <label class="col-sm-3 control-label">40'</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        IDR                                    
+                                    </div>
+                                    <input type="number" id="price_4" name="price_4" class="form-control" required>
                                 </div>
                             </div>
                         </div>
@@ -300,14 +346,34 @@
                           <label class="col-sm-3 control-label">Formula</label>
                           <div class="col-sm-8">
                                 <select class="form-control select2" id="formula" name="formula" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
-                                    <option value="N">Normal</option>
                                     <option value="X">CBM x Durasi x Harga</option>
+                                    <option value="N">Normal</option>
                                 </select>
                           </div>
                         </div>
 
                     </div>
                     <div class="col-md-6"> 
+                        <div class="form-group masa">
+                            <label class="col-sm-3 control-label">Free</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input type="number" id="free" name="free" class="form-control pull-right" required value="0">
+                                    <div class="input-group-addon">
+                                        Day
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group masa">
+                            <label class="col-sm-3 control-label">Days</label>
+                            <div class="col-sm-2">
+                                <input type="number" id="day_start" name="day_start" class="form-control" required>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="number" id="day_end" name="day_end" class="form-control" required>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Tax(%)</label>
                             <div class="col-sm-8">
@@ -362,6 +428,32 @@
     $.fn.bootstrapSwitch.defaults.offText = 'Tidak';
     
     $("input[type='checkbox']").bootstrapSwitch();
+    
+    $(".masa").hide();
+    $(".bysize").hide();
+    
+    $("#type").on("change", function(){
+        $this = $(this);
+        if($this.val() == 'Storage Masa'){
+            $(".masa").show();
+        }else{
+            $(".masa").hide();
+        }
+        
+        if($this.val() == 'By Size'){
+            $(".bysize").show();
+            $(".mainprice").hide();
+        }else{
+            $(".bysize").hide();
+            $(".mainprice").show();
+        }
+        
+//        if($this.val() == 'Surcharge'){
+//            $("#item_name").val('Surcharge');
+//        }else if($this.val() == 'Behandle'){
+//            $("#item_name").val('Behandle');
+//        }
+    });
   
 </script>
 

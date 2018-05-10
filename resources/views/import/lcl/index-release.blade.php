@@ -279,9 +279,9 @@
                     ->addColumn(array('label'=>'Kode Dokumen','index'=>'KD_DOK_INOUT', 'width'=>100,'hidden'=>false))
                     ->addColumn(array('label'=>'Nama Dokumen','index'=>'KODE_DOKUMEN', 'width'=>100,'hidden'=>false, 'align'=>'center'))                   
                     ->addColumn(array('label'=>'Kode Kuitansi','index'=>'NO_KUITANSI', 'width'=>150,'hidden'=>true))
-                    ->addColumn(array('label'=>'Shipper','index'=>'SHIPPER','width'=>160))
-                    ->addColumn(array('label'=>'Consignee','index'=>'CONSIGNEE','width'=>160))
-                    ->addColumn(array('label'=>'Notify Party','index'=>'NOTIFYPARTY','width'=>160))
+                    ->addColumn(array('label'=>'Shipper','index'=>'SHIPPER','width'=>250))
+                    ->addColumn(array('label'=>'Consignee','index'=>'CONSIGNEE','width'=>250))
+                    ->addColumn(array('label'=>'Notify Party','index'=>'NOTIFYPARTY','width'=>250))
                     ->addColumn(array('label'=>'Consolidator','index'=>'NAMACONSOLIDATOR','width'=>250))
                     ->addColumn(array('label'=>'Weight','index'=>'WEIGHT', 'width'=>120))               
                     ->addColumn(array('label'=>'Meas','index'=>'MEAS', 'width'=>120))
@@ -486,12 +486,12 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+<!--                    <div class="form-group">
                         <label class="col-sm-3 control-label">No. Kuitansi</label>
                         <div class="col-sm-8">
                             <input type="text" id="NO_KUITANSI" name="NO_KUITANSI" class="form-control" required>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Ref. Number</label>
                         <div class="col-sm-8">

@@ -20,8 +20,8 @@
     
     $(document).ready(function()
     {
-        $('#release-form').disabledFormGroup();
-        $('#btn-toolbar').disabledButtonGroup();
+//        $('#release-form').disabledFormGroup();
+//        $('#btn-toolbar').disabledButtonGroup();
         
         
         $('#btn-invoice').on("click", function(){
@@ -35,10 +35,10 @@
             rowid = $('#lclReleaseGrid').jqGrid('getGridParam', 'selrow');
             rowdata = $('#lclReleaseGrid').getRowData(rowid);
             
-            if(rowdata.INVOICE == ''){
-                alert('Please Select Type of Invoice');
-                return false;
-            }
+//            if(rowdata.INVOICE == ''){
+//                alert('Please Select Type of Invoice');
+//                return false;
+//            }
         });
         
 //        $('#btn-invoice').click(function() {
@@ -121,14 +121,14 @@
                     ->setGridOption('rowList',array(20,50,100))
                     ->setGridOption('useColSpanStyle', true)
                     ->setNavigatorOptions('navigator', array('viewtext'=>'view','edittext'=>'edit'))
-                    ->setNavigatorOptions('navigator', array('add' => false, 'edit' => true, 'del' => false, 'view' => true, 'refresh' => true))
+                    ->setNavigatorOptions('navigator', array('add' => false, 'edit' => false, 'del' => false, 'view' => true, 'refresh' => true))
                     ->setNavigatorOptions('edit', array('closeAfterEdit' => true))
                     ->setNavigatorEvent('edit', 'afterSubmit', 'afterSubmitEvent')
                     ->setNavigatorOptions('view',array('closeOnEscape'=>false))
                     ->setFilterToolbarOptions(array('autosearch'=>true))
                     ->setGridEvent('onSelectRow', 'onSelectRowEvent')
                     ->addColumn(array('key'=>true,'index'=>'TMANIFEST_PK','hidden'=>true))
-                    ->addColumn(array('label'=>'Type INV','index'=>'INVOICE','width'=>80, 'align'=>'center','editable' => true, 'formatter' => 'select', 'edittype' => 'select', 'editoptions' => array('value' => 'BB:BB;DRY:DRY')))
+//                    ->addColumn(array('label'=>'Type INV','index'=>'INVOICE','width'=>80, 'align'=>'center','editable' => true, 'formatter' => 'select', 'edittype' => 'select', 'editoptions' => array('value' => 'BB:BB;DRY:DRY')))
                     ->addColumn(array('label'=>'No. HBL','index'=>'NOHBL','width'=>160))
                     ->addColumn(array('label'=>'Tgl. HBL','index'=>'TGL_HBL', 'width'=>150,'hidden'=>true))
                     ->addColumn(array('label'=>'No. Tally','index'=>'NOTALLY','width'=>160))
@@ -213,25 +213,41 @@
                     <div class="row">
                         <div class="col-md-12">
                             <input name="_token" type="hidden" value="{{ csrf_token() }}" />
-                            <input name="id" type="hidden" id="manifest_id" />
+                            <input name="manifest_id" type="hidden" id="manifest_id" />
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">No. Invoice</label>
-                                <div class="col-sm-5">
-                                    <input type="text" class="form-control" name="no_invoice" required />
+                                <label class="col-sm-3 control-label">Billing Template</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control select2" name="template_id" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                        <option value="">Choose Billing Template</option>
+                                        @foreach($templates as $template)
+                                            <option value="{{ $template->id }}">{{ $template->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Tgl. Cetak</label>
-                                <div class="col-sm-5">
+                                <label class="col-sm-3 control-label">No. Invoice</label>
+                                <div class="col-sm-6">
                                     <div class="input-group date">
                                         <div class="input-group-addon">
-                                            <i class="fa fa-calendar"></i>
-                                        </div>
-                                        <input type="text" name="tgl_cetak" class="form-control pull-right datepicker" required>
+                                            {{'SAJ/LTT-CFS'.date('Y').'/'}}
+                                        </div>                                   
+                                        <input type="number" class="form-control pull-right" name="no_invoice" required />
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="col-sm-3 control-label">Tgl. Cetak</label>
+                                <div class="col-sm-6">
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="tgl_cetak" class="form-control pull-right datepicker" required value="{{date('Y-m-d')}}">
+                                    </div>
+                                </div>
+                            </div>
+<!--                            <div class="form-group">
                                 <label class="col-sm-3 control-label">Free Surcharge</label>
                                 <div class="col-sm-5">
                                     <input type="checkbox" name="free_surcharge" value="1" />
@@ -242,7 +258,7 @@
                                 <div class="col-sm-5">
                                     <input type="checkbox" name="behandle" value="1" />
                                 </div>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -259,10 +275,9 @@
 
 @section('custom_css')
 
+<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
 <!-- Bootstrap Switch -->
 <link rel="stylesheet" href="{{ asset("/bower_components/AdminLTE/plugins/bootstrap-switch/bootstrap-switch.min.css") }}">
-
-<!--<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />-->
 <link rel="stylesheet" href="{{ asset("/bower_components/AdminLTE/plugins/datepicker/datepicker3.css") }}">
 <!--<link rel="stylesheet" href="{{ asset("/bower_components/AdminLTE/plugins/timepicker/bootstrap-timepicker.min.css") }}">-->
 
@@ -272,8 +287,9 @@
 
 <script src="{{ asset("/bower_components/AdminLTE/plugins/datepicker/bootstrap-datepicker.js") }}"></script>
 <script src="{{ asset("/bower_components/AdminLTE/plugins/bootstrap-switch/bootstrap-switch.min.js") }}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 <script type="text/javascript">
-    
+    $(".select2").select2();
     $('.datepicker').datepicker({
         autoclose: true,
         todayHighlight: true,

@@ -184,7 +184,8 @@ class FclController extends Controller
         
         $data['eseals'] = DBEseal::select('eseal_id as id','esealcode as code')->get();
         
-        return view('import.fcl.index-dispatche-ob')->with($data);
+//        return view('import.fcl.index-dispatche-ob')->with($data);
+        return view('import.fcl.index-dispatche')->with($data);
     }
 
     /**
