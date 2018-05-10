@@ -1325,8 +1325,8 @@ class LclController extends Controller
         $cbm = array($weight, $meas);
 
         if($template->min_meas > 0){            
-            $maxcbm = ceil(max($cbm) * $template->min_meas) / $template->min_meas;
-//            $maxcbm = ceil(max($cbm));               
+//            $maxcbm = ceil(max($cbm) * 2) / 2;
+            $maxcbm = ceil(max($cbm));               
         }else{
             $maxcbm = max($cbm);
         }
