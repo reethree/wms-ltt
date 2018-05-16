@@ -230,6 +230,7 @@ class TablesRepository extends EloquentRepositoryAbstract {
                                 ->select(\DB::raw('*, timestampdiff(DAY, now(), tglmasuk) as timeSinceUpdate'))
     //                            ->whereRaw('tmanifest.tglmasuk < DATE_SUB(now(), INTERVAL 1 MONTH)')
                                 ->whereNotNull('tglmasuk')
+                                ->whereNotNull('tglstripping')
                                 ->whereNull('tglrelease');
     //                            ->orWhere('tglrelease','0000-00-00')
                         }
@@ -240,7 +241,8 @@ class TablesRepository extends EloquentRepositoryAbstract {
 //                            ->join('tperusahaan', 'tperusahaan.TPERUSAHAAN_PK', '=', 'tmanifest.TCONSIGNEE_FK');
 //                        $Model = \DB::table('tmanifest')
                             ->whereNotNull('tglrelease')
-                            ->whereNotNull('jamrelease');
+                            ->whereNotNull('jamrelease')
+                            ->whereNotNull('tglstripping');
                     break;
                 }
                 
@@ -255,7 +257,9 @@ class TablesRepository extends EloquentRepositoryAbstract {
                 
             }elseif(isset($request['report'])){
                 $Model = \DB::table('tmanifest')
-                        ->select(\DB::raw('*, timestampdiff(DAY, now(), tglmasuk) as timeSinceUpdate'));   
+                        ->select(\DB::raw('*, timestampdiff(DAY, now(), tglmasuk) as timeSinceUpdate'))
+                        ->whereNotNull('tglmasuk')
+                        ->whereNotNull('tglstripping');   
             }else{
                 
             }
