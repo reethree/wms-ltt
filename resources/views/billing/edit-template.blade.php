@@ -46,6 +46,15 @@
                 </div>
                 <div class="col-md-6"> 
                     <div class="form-group">
+                      <label for="recap_tax" class="col-sm-3 control-label">Day By</label>
+                      <div class="col-sm-8">
+                            <select class="form-control select2 select2-hidden-accessible" name="day_by" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                <option value="OB" @if($template->day_by == 'OB') {{ 'selected' }} @endif>Tanggal Masuk / OB</option>
+                                <option value="ETA" @if($template->day_by == 'ETA') {{ 'selected' }} @endif>Tanggal ETA</option>
+                            </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
                       <label for="warehouse" class="col-sm-3 control-label">Warehouse</label>
                       <div class="col-sm-8">
                           <input type="checkbox" name="warehouse" id="warehouse" value="1" @if($template->warehouse == 'Y') {{'checked'}} @endif />

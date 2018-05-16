@@ -40,21 +40,30 @@
                     <div class="form-group">
                       <label for="min_meas" class="col-sm-3 control-label">Min. Meas</label>
                       <div class="col-sm-5">
-                          <input type="number" name="min_meas" class="form-control" id="min_meas" required>
+                          <input type="number" name="min_meas" class="form-control" id="min_meas" required value="2">
                       </div>
                     </div>
                 </div>
                 <div class="col-md-6"> 
                     <div class="form-group">
+                      <label for="recap_tax" class="col-sm-3 control-label">Day By</label>
+                      <div class="col-sm-8">
+                            <select class="form-control select2 select2-hidden-accessible" name="day_by" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                <option value="OB" selected>Tanggal Masuk / OB</option>
+                                <option value="ETA">Tanggal ETA</option>
+                            </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
                       <label for="warehouse" class="col-sm-3 control-label">Warehouse</label>
                       <div class="col-sm-8">
-                          <input type="checkbox" name="warehouse" id="warehouse" value="1" />
+                          <input type="checkbox" name="warehouse" id="warehouse" value="1" checked />
                       </div>
                     </div>
                     <div class="form-group">
                       <label for="rounding" class="col-sm-3 control-label">Rounding</label>
                       <div class="col-sm-8">
-                          <input type="checkbox" name="rounding" id="rounding" value="1" />
+                          <input type="checkbox" name="rounding" id="rounding" value="1" checked />
                       </div>
                     </div>
                     

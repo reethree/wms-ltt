@@ -1333,7 +1333,8 @@ class LclController extends Controller
         if($maxcbm < $template->min_meas){ $maxcbm = $template->min_meas; }
         
         // Perhitungan Hari
-        $date1 = date_create($manifest->tglmasuk);
+        $dayby = ($template->day_by == 'OB') ? $manifest->tglmasuk : $manifest->ETA;
+        $date1 = date_create($dayby);
         $date2 = date_create(date('Y-m-d',strtotime($manifest->tglrelease. '+1 days')));
         $diff = date_diff($date1, $date2);
         $days = $diff->format("%a");

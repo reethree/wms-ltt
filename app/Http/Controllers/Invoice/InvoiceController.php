@@ -94,12 +94,13 @@ class InvoiceController extends Controller
     
     public function invoicePrint($id)
     {
-        $data['invoice'] = \DB::table('invoice_import')->find($id);
+        $data['invoice'] = \App\Models\Invoice::find($id);
+        $data['items'] = \App\Models\InvoiceItem::where('billing_invoice_id', $id)->get();
         $data['manifest'] = \App\Models\Manifest::find($data['invoice']->manifest_id);
-        $data['tarif'] = \App\Models\InvoiceTarif::where(array('consolidator_id' => $data['manifest']->TCONSOLIDATOR_FK, 'type' => $data['manifest']->INVOICE))->first();
+//        $data['tarif'] = \App\Models\InvoiceTarif::where(array('consolidator_id' => $data['manifest']->TCONSOLIDATOR_FK, 'type' => $data['manifest']->INVOICE))->first();
 //        $data['tarif'] = \App\Models\ConsolidatorTarif::where('TCONSOLIDATOR_FK', $data['manifest']->TCONSOLIDATOR_FK)->first();
-        $total = $data['invoice']->sub_total + $data['invoice']->ppn;
-        $data['terbilang'] = ucwords($this->terbilang($total))." Rupiah";
+//        $total = $data['invoice']->sub_total + $data['invoice']->ppn;
+        $data['terbilang'] = ucwords($this->terbilang($data['invoice']->total_amount))." Rupiah";
 //        return view('print.bon-muat', $container);
         
 //        switch ($type){
@@ -110,7 +111,7 @@ class InvoiceController extends Controller
 //                $pdf = \PDF::loadView('print.surat-jalan', $data);
 //                break;
 //        }
-        return view('print.invoice')->with($data);
+        return view('print.invoice-ltt')->with($data);
         $pdf = \PDF::loadView('print.invoice', $data)->setPaper('a4');
         
         return $pdf->stream($data['invoice']->no_invoice.'-'.date('dmy').'.pdf');

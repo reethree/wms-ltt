@@ -74,6 +74,7 @@
             ->addColumn(array('label'=>'Consolidator ID','index'=>'consolidator_id','width'=>80,'align'=>'center','hidden'=>true))
             ->addColumn(array('label'=>'Consolidator','index'=>'consolidator_name','width'=>250))
             ->addColumn(array('label'=>'Min. Meas','index'=>'min_meas','width'=>100,'align'=>'center'))
+            ->addColumn(array('label'=>'Day By','index'=>'day_by','width'=>80,'align'=>'center'))
             ->addColumn(array('label'=>'Rounding','index'=>'rounding','width'=>80,'align'=>'center'))
             ->addColumn(array('label'=>'Warehouse','index'=>'warehouse','width'=>80,'align'=>'center'))
             ->addColumn(array('label'=>'Recap Tax','index'=>'recap_tax','width'=>80,'hidden'=>true))
