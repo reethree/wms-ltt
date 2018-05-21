@@ -44,12 +44,12 @@
               <tr>
                   <td><b>Gross Weight</b></td>
                   <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
-                  <td>{{ $manifest->WEIGHT }} KGS</td>
+                  <td>{{ number_format($manifest->WEIGHT, 4) }} KGS</td>
               </tr>
               <tr>
                   <td><b>Measurment</b></td>
                   <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
-                  <td>{{ $manifest->MEAS }} CBM</td>
+                  <td>{{ number_format($manifest->MEAS, 4) }} CBM</td>
               </tr>
               <tr>
                   <td><b>Container</b></td>
@@ -74,14 +74,14 @@
                     <td colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 </tr>
                 <tr>
-                    <td><b>Tgl. Masuk</b></td>
-                    <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
-                    <td>{{ date('d/m/Y', strtotime($manifest->tglmasuk)) }}</td>
-                </tr>
-                <tr>
                     <td><b>Tgl. ETA</b></td>
                     <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
                     <td>{{ date('d/m/Y', strtotime($manifest->ETA)) }}</td>
+                </tr>
+                <tr>
+                    <td><b>Tgl. Masuk</b></td>
+                    <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
+                    <td>{{ date('d/m/Y', strtotime($manifest->tglmasuk)) }}</td>
                 </tr>
                 <tr>
                     <td><b>Tgl. Keluar</b></td>

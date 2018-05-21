@@ -40,12 +40,12 @@
               <tr>
                   <td><b>Gross Weight</b></td>
                   <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
-                  <td>{{ $manifest->WEIGHT }} KGS</td>
+                  <td>{{ number_format($manifest->WEIGHT, 4) }} KGS</td>
               </tr>
               <tr>
                   <td><b>Measurment</b></td>
                   <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
-                  <td>{{ $manifest->MEAS }} CBM</td>
+                  <td>{{ number_format($manifest->MEAS, 4) }} CBM</td>
               </tr>
               <tr>
                   <td><b>Container</b></td>
