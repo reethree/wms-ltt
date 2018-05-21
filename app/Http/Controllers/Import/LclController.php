@@ -1356,6 +1356,16 @@ class LclController extends Controller
                 $item_qty = 1;
                 $item_price = $item->price;
                 
+                if(isset($request->free_behandle)){
+                    if($item->type == 'Behandle'){
+                        continue;
+                    }
+                }elseif(isset($request->free_surcharge)){
+                    if($item->type == 'Surcharge'){
+                        continue;
+                    }
+                }
+                
                 if($item->type == 'Storage Flat'){
                     $item_qty = $days;
                 }elseif($item->type == 'Storage Masa'){
@@ -1365,12 +1375,12 @@ class LclController extends Controller
                     }else{
                         if($item->day_end > 0){
                             if($days >= $item->day_end){
-                                $item_qty = ($item->day_end-$item->day_start)+1;
+                                $item_qty = ($item->day_end - $item->day_start)+1;
                             }else{
-                                $item_qty = ($days-$item->day_start)+1;
+                                $item_qty = ($days - $item->day_start)+1;
                             }
                         }else{
-                            $item_qty = $days-$item->day_start;
+                            $item_qty = ($days - $item->day_start)+1;
                         }
                     }
                     
@@ -1379,7 +1389,7 @@ class LclController extends Controller
                         continue;
                     }
                 }elseif($item->type == 'Surcharge'){
-                    if($maxcbm*1000 < 2500){
+                    if($maxcbm*1000 < 5000){
                         continue;
                     }
                 }elseif($item->type == 'By Size'){
