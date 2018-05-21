@@ -141,6 +141,8 @@
         $("#item_name").val(rowdata.name);
         $("#day_start").val(rowdata.day_start);
         $("#day_end").val(rowdata.day_end);
+        $("#price_2").val(rowdata.price_2);
+        $("#price_4").val(rowdata.price_4);
         $("#formula").val(rowdata.formula).trigger("change");
         $("#active").val(rowdata.active).trigger("change");
         
