@@ -1401,7 +1401,7 @@ class LclController extends Controller
                 }
                 
                 if($item->formula == 'X'){
-                    if($item->type == 'Storage Flat'){
+                    if($item->type == 'Storage Flat' || $item->type == 'Storage Masa'){
                         $item_subtotal = ($maxcbm*$item_qty)*$item_price;
                     }else{
                         $item_subtotal = $maxcbm*$item_price;
