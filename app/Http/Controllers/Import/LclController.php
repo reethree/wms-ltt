@@ -1408,7 +1408,7 @@ class LclController extends Controller
                     }
                     
                 }else{
-                    if($item->type == 'Storage Flat'){
+                    if($item->type == 'Storage Flat' || $item->type == 'Storage Masa'){
                         $item_subtotal = $item_price*$item_qty;
                     }else{
                         $item_subtotal = $item_price;
