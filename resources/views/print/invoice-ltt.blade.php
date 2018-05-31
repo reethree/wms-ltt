@@ -18,7 +18,7 @@
     }
 </style>
 <a href="#" class="print-btn" type="button" onclick="window.print();">PRINT</a>
-<div id="details" class="clearfix" style="margin-top: 20px">
+<div id="details" class="clearfix" style="margin-top: 80px">
     <div class="row invoice-info">
         <div class="col-sm-6 invoice-col" style="width: 50%; float: left;">
           <table border="0" cellspacing="0" cellpadding="0">
@@ -54,7 +54,7 @@
               <tr>
                   <td><b>Container</b></td>
                   <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
-                  <td>{{ $manifest->NOCONTAINER }} / {{ $manifest->SIZE }}</td>
+                  <td>{{ $manifest->NOCONTAINER }} / {{ $manifest->SIZE."'" }}</td>
               </tr>
           </table>
       </div>
@@ -68,7 +68,7 @@
                 <tr>
                     <td><b>Tgl. Invoice</b></td>
                     <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
-                    <td>{{ date('d/m/Y') }}</td>
+                    <td>{{ date('d F Y') }}</td>
                 </tr>
                 <tr>
                     <td colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -113,11 +113,11 @@
                       <td>{{$item->item_name}}</td>
                       <td style="text-align: center;">{{$item->item_cbm}}</td>
                       <td style="text-align: center;">{{$item->item_qty}}</td>
-                      <td align="right">Rp.</td>
-                      <td style="text-align: right;">{{ number_format($item->item_amount) }}</td>
+                      <td align="right" style="border-right: none !important;">Rp.</td>
+                      <td style="text-align: right;border-left: none !important;">{{ number_format($item->item_amount) }}</td>
                       <td align="right">{{ ($item->item_tax > 0) ? 'PPn '.$item->item_tax.'%' : '' }}</td>
-                      <td align="right">Rp.</td>
-                      <td style="text-align: right;">{{ number_format($item->item_subtotal) }}</td>
+                      <td align="right" style="border-right: none !important;">Rp.</td>
+                      <td style="text-align: right;border-left: none !important;">{{ number_format($item->item_subtotal) }}</td>
                   </tr>
                   @endforeach          
                 </tbody>
@@ -161,6 +161,9 @@
         <table border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <td>Jakarta Utara, {{date('d F Y')}}</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
