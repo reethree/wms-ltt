@@ -15,6 +15,15 @@
                 <div class="col-md-6">
                     <input name="_token" type="hidden" value="{{ csrf_token() }}">
                     <div class="form-group">
+                      <label for="type" class="col-sm-3 control-label">Type</label>
+                      <div class="col-sm-8">
+                            <select class="form-control select2 select2-hidden-accessible" name="type" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                <option value="Full" @if($template->type == 'Full') {{ 'selected' }} @endif>Full Billing</option>
+                                <option value="Half" @if($template->type == 'Half') {{ 'selected' }} @endif>50:50</option>
+                            </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
                       <label for="name" class="col-sm-3 control-label">Template Name</label>
                       <div class="col-sm-8">
                           <input type="text" name="name" class="form-control" required value="{{$template->name}}">

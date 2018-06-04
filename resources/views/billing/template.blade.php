@@ -70,6 +70,7 @@
             ->setGridEvent('gridComplete', 'gridCompleteEvent')
             ->addColumn(array('label'=>'Action','index'=>'action', 'width'=>80, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
             ->addColumn(array('key'=>true,'index'=>'id','hidden'=>true))
+            ->addColumn(array('label'=>'Type','index'=>'type','width'=>100,'align'=>'center'))
             ->addColumn(array('label'=>'Template Name','index'=>'name','width'=>220))
             ->addColumn(array('label'=>'Consolidator ID','index'=>'consolidator_id','width'=>80,'align'=>'center','hidden'=>true))
             ->addColumn(array('label'=>'Consolidator','index'=>'consolidator_name','width'=>250))

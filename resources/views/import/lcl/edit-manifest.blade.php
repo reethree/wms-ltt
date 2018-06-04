@@ -262,7 +262,7 @@
       //Bind onClick event to the "Delete" button.
       $('#btn-delete').click(function()
       {
-        if(!confirm('Apakah anda yakin?')){return false;}
+        if(!confirm('Apakah anda yakin ingin menghapus data ini?')){return false;}
           
         //Gets the selected row id
         rowid = $('#lclManifestGrid').jqGrid('getGridParam', 'selrow');

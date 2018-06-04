@@ -201,7 +201,7 @@
     </div>
 </div>
 
-<div id="create-invoice-modal" class="modal fade" tabindex="-1" role="dialog">
+<div id="create-invoice-modal" class="modal fade" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">

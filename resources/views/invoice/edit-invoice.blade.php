@@ -90,6 +90,7 @@
         <table class="table table-striped" border="0">
           <thead>
           <tr>
+            <th>&nbsp;</th>
             <th>Jasa</th>
             <th>M3/Ton</th>
             <th>Jumlah</th>     
@@ -101,6 +102,7 @@
           <tbody>
             @foreach($items as $item)
             <tr>
+                <td>@if($item->item_type == 'custom') <button onclick="if(!confirm('Apakah anda yakin ingin menghapus data ini?')){return false;}else{deleteItem({{$item->id}})}" class="btn btn-xs btn-danger delete-item-btn"><i class="fa fa-close"></i></button> @endif</td>
                 <td>{{$item->item_name}}</td>
                 <td>{{$item->item_cbm}}</td>
                 <td>{{$item->item_qty}}</td>
@@ -158,15 +160,70 @@
     <!-- this row will not appear when printing -->
     <div class="row no-print">
       <div class="col-xs-12">
-          <button id="print-invoice-btn" class="btn btn-primary"><i class="fa fa-print"></i> Print</button>
-<!--        <button type="button" class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Submit Payment
-        </button>
-        <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px;">
-          <i class="fa fa-download"></i> Generate PDF
-        </button>-->
+          <button id="print-invoice-btn" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp; Print</button>
+          <button id="add-billing-btn" type="button" class="btn btn-success pull-right"><i class="fa fa-credit-card"></i>&nbsp; Add Custom Billing</button>
       </div>
     </div>
   </section>
+
+<div id="add-billing-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Add Custom Billing</h4>
+            </div>
+            <form id="create-invoice-form" class="form-horizontal" action="{{ route('invoice-custom-item-add') }}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body"> 
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input name="_token" type="hidden" value="{{ csrf_token() }}" />
+                            <input name="invoice_id" type="hidden" id="invoice_id" value="{{$invoice->id}}" />
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Item Name</label>
+                                <div class="col-sm-6">
+                                    <input type="text" id="item_name" name="name" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group mainprice">
+                                <label class="col-sm-3 control-label">Price</label>
+                                <div class="col-sm-6">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            IDR                                    
+                                        </div>
+                                        <input type="number" id="price" name="price" class="form-control pull-right" required> 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group mainprice">
+                                <label class="col-sm-3 control-label">Qty</label>
+                                <div class="col-sm-4">
+                                    <input type="number" id="qty" name="qty" class="form-control pull-right" required value="1"> 
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Tax(%)</label>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <input type="number" id="tax" name="tax" class="form-control pull-right" required value="0">
+                                        <div class="input-group-addon">
+                                            %
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 @endsection
 
@@ -177,9 +234,20 @@
 @section('custom_js')
 
 <script type="text/javascript">
-    $('#print-invoice-btn').click(function() {
-        window.open("{{ route('invoice-print',$invoice->id) }}","preview invoice ","width=600,height=600,menubar=no,status=no,scrollbars=yes");
+    function deleteItem(item_id)
+    {
+        alert(item_id);
+    }
+    $(document).ready(function()
+    {
+        $('#print-invoice-btn').click(function() {
+            window.open("{{ route('invoice-print',$invoice->id) }}","preview invoice ","width=600,height=600,menubar=no,status=no,scrollbars=yes");
+        });
+        $('#add-billing-btn').on("click", function(){
+            $('#add-billing-modal').modal('show');
+        });
     });
+    
 </script>
 
 @endsection

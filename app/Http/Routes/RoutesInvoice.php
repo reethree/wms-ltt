@@ -85,6 +85,11 @@ Route::group(['prefix' => 'invoice', 'namespace' => 'Invoice'], function(){
         GridEncoder::encodeRequestedData(new \App\Models\InvoiceTablesRepository('invoice_tarif_item',Illuminate\Support\Facades\Request::all()) ,Illuminate\Support\Facades\Request::all());
     });
     
+    Route::post('/custom/item/add', [
+        'as' => 'invoice-custom-item-add',
+        'uses' => 'InvoiceController@addCustomItem'
+    ]);
+
     // FCL NCT1
     Route::group(['prefix' => 'fcl'], function(){
         

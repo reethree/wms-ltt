@@ -1353,6 +1353,7 @@ class LclController extends Controller
                 $invoice_item = new \App\Models\InvoiceItem;
                 $invoice_item->billing_invoice_id = $invoice->id;
                 $invoice_item->item_name = $item->name;
+                $invoice_item->item_type = 'tmp';
                 $item_qty = 1;
                 $item_price = $item->price;
                 

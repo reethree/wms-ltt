@@ -467,5 +467,43 @@ class InvoiceController extends Controller
         
         return view('invoice.index-release-fcl')->with($data);
     }
+    
+    public function addCustomItem(Request $request)
+    {
 
+        $invoice = \App\Models\Invoice::find($request->invoice_id);
+        
+        if($invoice){
+            $invoice_item = new \App\Models\InvoiceItem;
+            $invoice_item->billing_invoice_id = $invoice->id;
+            $invoice_item->item_name = $request->name;
+            $invoice_item->item_qty = $request->qty;
+            $invoice_item->item_amount = $request->price;
+            $invoice_item->item_subtotal = $invoice_item->item_amount*$invoice_item->item_qty;
+            $invoice_item->item_tax = $request->tax;
+            $invoice_item->item_ppn = ($invoice_item->item_subtotal*$request->tax)/100;
+            $invoice_item->item_cbm = 0;
+            $invoice_item->item_type = 'custom';
+            
+            if($invoice_item->save()){
+                // Update Invoice
+                $invoice->subtotal_amount = $invoice->subtotal_amount+$invoice_item->item_subtotal;
+                $invoice->total_tax = $invoice->total_tax+$invoice_item->item_ppn;
+                $invoice->total_amount = $invoice->subtotal_amount+$invoice->total_tax;
+
+                if($invoice->save()){
+                    return back()->with('success', 'No. Invoice '.$invoice->number.', item berhasih ditambah.');
+                }
+                
+                return back()->with('error', 'Item berhasil di tambah, tetapi invoice tidak berubah.');
+            }
+            
+            return back()->with('error', 'Tidak dapat menambah item invoice.');
+            
+        }
+        
+        return back()->with('error', 'Something went wrong, please try again later.');
+        
+    }
+    
 }
