@@ -220,7 +220,7 @@
                                     <select class="form-control select2" name="template_id" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
                                         <option value="">Choose Billing Template</option>
                                         @foreach($templates as $template)
-                                            <option value="{{ $template->id }}">{{ $template->name }}</option>
+                                            <option value="{{ $template->id }}">{{ $template->name.' ('.$template->type.')' }}</option>
                                         @endforeach
                                     </select>
                                 </div>

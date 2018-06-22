@@ -116,6 +116,7 @@
 //            ->addColumn(array('label'=>'Tgl. PLP','index'=>'TTGL_PLP','width'=>150,'align'=>'center'))
 //            ->addColumn(array('label'=>'ETA','index'=>'ETA', 'width'=>150,'align'=>'center'))
 //            ->addColumn(array('label'=>'ETD','index'=>'ETD', 'width'=>150,'align'=>'center'))
+            ->addColumn(array('label'=>'Type','index'=>'template_type','width'=>100,'align'=>'center'))
             ->addColumn(array('label'=>'No. Invoice','index'=>'number','width'=>150,'align'=>'center'))
             ->addColumn(array('label'=>'Consolidator','index'=>'NAMACONSOLIDATOR','width'=>250))
             ->addColumn(array('label'=>'Vessel','index'=>'VESSEL', 'width'=>150))

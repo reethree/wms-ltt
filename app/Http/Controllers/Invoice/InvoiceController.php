@@ -88,7 +88,8 @@ class InvoiceController extends Controller
     
     public function invoiceDestroy($id)
     {
-        \DB::table('invoice_import')->where('id', $id)->delete();
+        \App\Models\Invoice::where('id', $id)->delete();
+        \App\Models\InvoiceItem::where('billing_invoice_id', $id)->delete();
         return back()->with('success', 'Invoice has been deleted.'); 
     }
     

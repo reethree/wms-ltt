@@ -96,13 +96,23 @@
             apv = ''; 
     
         $('#btn-group-5').enableButtonGroup();   
-            
+        
         for(var i=0;i < ids.length;i++){ 
             var cl = ids[i];
             
             rowdata = $('#itemTemplateGrid').getRowData(cl);
-            
-            jQuery("#itemTemplateGrid").jqGrid('setRowData',ids[i],{action:''}); 
+//            if(rowdata.rounding == 'Y') {
+//                apv = 'Rounding';
+//                $("#" + cl).find("td").css("color", "#FF0000");
+//            } else if(rowdata.warehouse == 'Y') {
+//                apv = 'Warehouse';
+//                $("#" + cl).find("td").css("color", "#999");
+//            } else {
+//                apv = 'Unknown';
+//                $("#" + cl).find("td").css("color", "#CCC");
+//            }
+
+            jQuery("#itemTemplateGrid").jqGrid('setRowData',ids[i],{for:apv}); 
         } 
     }
     
@@ -146,6 +156,7 @@
         $('#id').val(rowid);
         populateFormFields(rowdata, '');
         
+        $("#template_type").val(rowdata.template_type).trigger("change");
         $("#type").val(rowdata.type).trigger("change");
         $("#item_name").val(rowdata.name);
         $("#day_start").val(rowdata.day_start);
@@ -273,7 +284,8 @@
                         ->setGridEvent('gridComplete', 'gridCompleteEvent')
                         ->setGridEvent('onSelectRow', 'onSelectRowEvent')
                         ->addColumn(array('key'=>true,'index'=>'id','hidden'=>true))
-                        ->addColumn(array('label'=>'Item Type','index'=>'type','width'=>100, ))
+                        ->addColumn(array('label'=>'Type','index'=>'template_type','width'=>100))
+                        ->addColumn(array('label'=>'Item Type','index'=>'type','width'=>100))
                         ->addColumn(array('label'=>'Item Name','index'=>'name','width'=>160))
                         ->addColumn(array('label'=>'Price','index'=>'price','width'=>120,'align'=>'right', 'formatter'=>'currency', 'formatoptions'=>array('decimalSeparator'=>',', 'thousandsSeparator'=> '.', 'decimalPlaces'=> '2')))
                         ->addColumn(array('label'=>'Price 20','index'=>'price_2','width'=>120,'align'=>'right', 'formatter'=>'currency', 'formatoptions'=>array('decimalSeparator'=>',', 'thousandsSeparator'=> '.', 'decimalPlaces'=> '2')))
@@ -310,6 +322,21 @@
                         <input name="_token" type="hidden" value="{{ csrf_token() }}">
                         <input name="billing_template_id" id="billing_template_id" type="hidden" value="{{ $template->id }}">
                         <input name="id" id="id" type="hidden">
+                        
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">Type</label>
+                          <div class="col-sm-8">
+                                <select class="form-control select2" id="template_type" name="template_type" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                    @if($template->rounding == 'Y')
+                                        <option value="Rounding">Rounding</option>
+                                    @endif
+                                    @if($template->warehouse == 'Y')
+                                        <option value="Warehouse">Warehouse</option>
+                                    @endif
+                                </select>
+                          </div>
+                        </div>
+                        
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Item Type</label>
                             <div class="col-sm-8">
@@ -362,6 +389,8 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-6"> 
                         <div class="form-group">
                           <label class="col-sm-3 control-label">Formula</label>
                           <div class="col-sm-8">
@@ -371,9 +400,6 @@
                                 </select>
                           </div>
                         </div>
-
-                    </div>
-                    <div class="col-md-6"> 
                         <div class="form-group masa">
                             <label class="col-sm-3 control-label">Free</label>
                             <div class="col-sm-8">

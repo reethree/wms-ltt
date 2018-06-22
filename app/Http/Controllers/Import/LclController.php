@@ -1312,135 +1312,266 @@ class LclController extends Controller
     {
         $manifest = DBManifest::find($request->manifest_id);  
         $template = \DB::table('billing_template')->find($request->template_id);
-        $items = \DB::table('billing_template_item')->where(array('billing_template_id' => $template->id, 'active' => 'Y'))->get();
+        $items_w = \DB::table('billing_template_item')->where(array('billing_template_id' => $template->id, 'template_type' => 'Warehouse', 'active' => 'Y'))->get();
+        $items_r = \DB::table('billing_template_item')->where(array('billing_template_id' => $template->id, 'template_type' => 'Rounding', 'active' => 'Y'))->get();
         
-        $invoice = new \App\Models\Invoice;
-        $invoice->manifest_id = $manifest->TMANIFEST_PK;
-        $invoice->template_id = $template->id;
-        $invoice->number = $request->no_invoice;
-        
-        // Perhitungan CBM
-        $weight = $manifest->WEIGHT / 1000;
-        $meas = $manifest->MEAS;
-        $cbm = array($weight, $meas);
+        if(count($items_w) > 0):
+            $invoice = new \App\Models\Invoice;
+            $invoice->manifest_id = $manifest->TMANIFEST_PK;
+            $invoice->template_id = $template->id;
+            $invoice->template_type = 'Warehouse';
+            $invoice->number = $request->no_invoice;
 
-        if($template->min_meas > 0){            
-//            $maxcbm = ceil(max($cbm) * 2) / 2;
-            $maxcbm = ceil(max($cbm));               
-        }else{
-            $maxcbm = max($cbm);
-        }
-        if($maxcbm < $template->min_meas){ $maxcbm = $template->min_meas; }
-        
-        // Perhitungan Hari
-        $dayby = ($template->day_by == 'OB') ? $manifest->tglmasuk : $manifest->ETA;
-        $date1 = date_create($dayby);
-        $date2 = date_create(date('Y-m-d',strtotime($manifest->tglrelease. '+1 days')));
-        $diff = date_diff($date1, $date2);
-        $days = $diff->format("%a");
-        
-        $invoice->weight = $manifest->WEIGHT;
-        $invoice->meas = $manifest->MEAS;
-        $invoice->cbm = $maxcbm;
-        $invoice->days = $days;
-        $invoice->uid = \Auth::getUser()->name;
-        
-        if($invoice->save()){
-            $subtotal_amount = array();
-            $total_tax = array();
-            
-            foreach ($items as $item):
-                $invoice_item = new \App\Models\InvoiceItem;
-                $invoice_item->billing_invoice_id = $invoice->id;
-                $invoice_item->item_name = $item->name;
-                $invoice_item->item_type = 'tmp';
-                $item_qty = 1;
-                $item_price = $item->price;
-                
-                if(isset($request->free_behandle)){
-                    if($item->type == 'Behandle'){
-                        continue;
+            // Perhitungan CBM
+            $weight = $manifest->WEIGHT / 1000;
+            $meas = $manifest->MEAS;
+            $cbm = array($weight, $meas);
+
+            if($template->min_meas > 0){            
+    //            $maxcbm = ceil(max($cbm) * 2) / 2;
+                $maxcbm = ceil(max($cbm));               
+            }else{
+                $maxcbm = max($cbm);
+            }
+            if($maxcbm < $template->min_meas){ $maxcbm = $template->min_meas; }
+
+            // Perhitungan Hari
+            $dayby = ($template->day_by == 'OB') ? $manifest->tglmasuk : $manifest->ETA;
+            $date1 = date_create($dayby);
+            $date2 = date_create(date('Y-m-d',strtotime($manifest->tglrelease. '+1 days')));
+            $diff = date_diff($date1, $date2);
+            $days = $diff->format("%a");
+
+            $invoice->weight = $manifest->WEIGHT;
+            $invoice->meas = $manifest->MEAS;
+            $invoice->cbm = $maxcbm;
+            $invoice->days = $days;
+            $invoice->uid = \Auth::getUser()->name;
+
+            if($invoice->save()){
+                $subtotal_amount = array();
+                $total_tax = array();
+
+                foreach ($items_w as $item):
+                    $invoice_item = new \App\Models\InvoiceItem;
+                    $invoice_item->billing_invoice_id = $invoice->id;
+                    $invoice_item->item_name = $item->name;
+                    $invoice_item->item_type = 'tmp';
+                    $item_qty = 1;
+                    $item_price = $item->price;
+
+                    if(isset($request->free_behandle)){
+                        if($item->type == 'Behandle'){
+                            continue;
+                        }
+                    }elseif(isset($request->free_surcharge)){
+                        if($item->type == 'Surcharge'){
+                            continue;
+                        }
                     }
-                }elseif(isset($request->free_surcharge)){
-                    if($item->type == 'Surcharge'){
-                        continue;
-                    }
-                }
-                
-                if($item->type == 'Storage Flat'){
-                    $item_qty = $days;
-                }elseif($item->type == 'Storage Masa'){
-                    // Perhitungan Masa
-                    if($days < $item->day_start){
-                        continue;
-                    }else{
-                        if($item->day_end > 0){
-                            if($days >= $item->day_end){
-                                $item_qty = ($item->day_end - $item->day_start)+1;
+
+                    if($item->type == 'Storage Flat'){
+                        $item_qty = $days;
+                    }elseif($item->type == 'Storage Masa'){
+                        // Perhitungan Masa
+                        if($days < $item->day_start){
+                            continue;
+                        }else{
+                            if($item->day_end > 0){
+                                if($days >= $item->day_end){
+                                    $item_qty = ($item->day_end - $item->day_start)+1;
+                                }else{
+                                    $item_qty = ($days - $item->day_start)+1;
+                                }
                             }else{
                                 $item_qty = ($days - $item->day_start)+1;
                             }
-                        }else{
-                            $item_qty = ($days - $item->day_start)+1;
+                        }
+
+                    }elseif($item->type == 'Behandle'){
+                        if($manifest->BEHANDLE != 'Y'){
+                            continue;
+                        }
+                    }elseif($item->type == 'Surcharge'){
+                        if($maxcbm*1000 < 5000){
+                            continue;
+                        }
+                    }elseif($item->type == 'By Size'){
+                        if($manifest->SIZE == 20){
+                            $item_price = $item->price_2;
+                        }elseif($manifest->SIZE == 40){
+                            $item_price = $item->price_4;
                         }
                     }
-                    
-                }elseif($item->type == 'Behandle'){
-                    if($manifest->BEHANDLE != 'Y'){
-                        continue;
-                    }
-                }elseif($item->type == 'Surcharge'){
-                    if($maxcbm*1000 < 5000){
-                        continue;
-                    }
-                }elseif($item->type == 'By Size'){
-                    if($manifest->SIZE == 20){
-                        $item_price = $item->price_2;
-                    }elseif($manifest->SIZE == 40){
-                        $item_price = $item->price_4;
-                    }
-                }
-                
-                if($item->formula == 'X'){
-                    if($item->type == 'Storage Flat' || $item->type == 'Storage Masa'){
-                        $item_subtotal = ($maxcbm*$item_qty)*$item_price;
+
+                    if($item->formula == 'X'){
+                        if($item->type == 'Storage Flat' || $item->type == 'Storage Masa'){
+                            $item_subtotal = ($maxcbm*$item_qty)*$item_price;
+                        }else{
+                            $item_subtotal = $maxcbm*$item_price;
+                        }
+
                     }else{
-                        $item_subtotal = $maxcbm*$item_price;
+                        if($item->type == 'Storage Flat' || $item->type == 'Storage Masa'){
+                            $item_subtotal = $item_price*$item_qty;
+                        }else{
+                            $item_subtotal = $item_price;
+                        }   
+                    }  
+
+                    $invoice_item->item_cbm = $maxcbm;
+                    $invoice_item->item_qty = $item_qty;
+                    $invoice_item->item_amount = $item_price;
+                    $invoice_item->item_subtotal = $item_subtotal;
+                    $invoice_item->item_ppn = ($invoice_item->item_subtotal*$item->tax)/100; 
+                    $invoice_item->item_tax = $item->tax;
+
+                    $subtotal_amount[] = $invoice_item->item_subtotal;
+                    $total_tax[] = $invoice_item->item_ppn;
+
+                    $invoice_item->save();
+
+                endforeach;
+            }
+
+            // Update Invoice
+            $invoice->subtotal_amount = array_sum($subtotal_amount);
+            $invoice->total_tax = array_sum($total_tax);
+            $invoice->total_amount = $invoice->subtotal_amount+$invoice->total_tax;
+            $invoice->save();
+        endif;
+        
+        if(count($items_r) > 0):
+            $invoice = new \App\Models\Invoice;
+            $invoice->manifest_id = $manifest->TMANIFEST_PK;
+            $invoice->template_id = $template->id;
+            $invoice->template_type = 'Rounding';
+            $invoice->number = $request->no_invoice;
+
+            // Perhitungan CBM
+            $weight = $manifest->WEIGHT / 1000;
+            $meas = $manifest->MEAS;
+            $cbm = array($weight, $meas);
+
+            if($template->min_meas > 0){            
+    //            $maxcbm = ceil(max($cbm) * 2) / 2;
+                $maxcbm = ceil(max($cbm));               
+            }else{
+                $maxcbm = max($cbm);
+            }
+            if($maxcbm < $template->min_meas){ $maxcbm = $template->min_meas; }
+
+            // Perhitungan Hari
+            $dayby = ($template->day_by == 'OB') ? $manifest->tglmasuk : $manifest->ETA;
+            $date1 = date_create($dayby);
+            $date2 = date_create(date('Y-m-d',strtotime($manifest->tglrelease. '+1 days')));
+            $diff = date_diff($date1, $date2);
+            $days = $diff->format("%a");
+
+            $invoice->weight = $manifest->WEIGHT;
+            $invoice->meas = $manifest->MEAS;
+            $invoice->cbm = $maxcbm;
+            $invoice->days = $days;
+            $invoice->uid = \Auth::getUser()->name;
+
+            if($invoice->save()){
+                $subtotal_amount = array();
+                $total_tax = array();
+
+                foreach ($items_r as $item):
+                    $invoice_item = new \App\Models\InvoiceItem;
+                    $invoice_item->billing_invoice_id = $invoice->id;
+                    $invoice_item->item_name = $item->name;
+                    $invoice_item->item_type = 'tmp';
+                    $item_qty = 1;
+                    $item_price = $item->price;
+
+                    if(isset($request->free_behandle)){
+                        if($item->type == 'Behandle'){
+                            continue;
+                        }
+                    }elseif(isset($request->free_surcharge)){
+                        if($item->type == 'Surcharge'){
+                            continue;
+                        }
                     }
-                    
-                }else{
-                    if($item->type == 'Storage Flat' || $item->type == 'Storage Masa'){
-                        $item_subtotal = $item_price*$item_qty;
+
+                    if($item->type == 'Storage Flat'){
+                        $item_qty = $days;
+                    }elseif($item->type == 'Storage Masa'){
+                        // Perhitungan Masa
+                        if($days < $item->day_start){
+                            continue;
+                        }else{
+                            if($item->day_end > 0){
+                                if($days >= $item->day_end){
+                                    $item_qty = ($item->day_end - $item->day_start)+1;
+                                }else{
+                                    $item_qty = ($days - $item->day_start)+1;
+                                }
+                            }else{
+                                $item_qty = ($days - $item->day_start)+1;
+                            }
+                        }
+
+                    }elseif($item->type == 'Behandle'){
+                        if($manifest->BEHANDLE != 'Y'){
+                            continue;
+                        }
+                    }elseif($item->type == 'Surcharge'){
+                        if($maxcbm*1000 < 5000){
+                            continue;
+                        }
+                    }elseif($item->type == 'By Size'){
+                        if($manifest->SIZE == 20){
+                            $item_price = $item->price_2;
+                        }elseif($manifest->SIZE == 40){
+                            $item_price = $item->price_4;
+                        }
+                    }
+
+                    if($item->formula == 'X'){
+                        if($item->type == 'Storage Flat' || $item->type == 'Storage Masa'){
+                            $item_subtotal = ($maxcbm*$item_qty)*$item_price;
+                        }else{
+                            $item_subtotal = $maxcbm*$item_price;
+                        }
+
                     }else{
-                        $item_subtotal = $item_price;
-                    }   
-                }  
-                
-                $invoice_item->item_cbm = $maxcbm;
-                $invoice_item->item_qty = $item_qty;
-                $invoice_item->item_amount = $item_price;
-                $invoice_item->item_subtotal = $item_subtotal;
-                $invoice_item->item_ppn = ($invoice_item->item_subtotal*$item->tax)/100; 
-                $invoice_item->item_tax = $item->tax;
-                
-                $subtotal_amount[] = $invoice_item->item_subtotal;
-                $total_tax[] = $invoice_item->item_ppn;
-                
-                $invoice_item->save();
-              
-            endforeach;
-        }
-        
-        // Update Invoice
-        $invoice->subtotal_amount = array_sum($subtotal_amount);
-        $invoice->total_tax = array_sum($total_tax);
-        $invoice->total_amount = $invoice->subtotal_amount+$invoice->total_tax;
-        
-        if($invoice->save()){
+                        if($item->type == 'Storage Flat' || $item->type == 'Storage Masa'){
+                            $item_subtotal = $item_price*$item_qty;
+                        }else{
+                            $item_subtotal = $item_price;
+                        }   
+                    }  
+
+                    $invoice_item->item_cbm = $maxcbm;
+                    $invoice_item->item_qty = $item_qty;
+                    $invoice_item->item_amount = $item_price;
+                    $invoice_item->item_subtotal = $item_subtotal;
+                    $invoice_item->item_ppn = ($invoice_item->item_subtotal*$item->tax)/100; 
+                    $invoice_item->item_tax = $item->tax;
+
+                    $subtotal_amount[] = $invoice_item->item_subtotal;
+                    $total_tax[] = $invoice_item->item_ppn;
+
+                    $invoice_item->save();
+
+                endforeach;
+            }
+
+            // Update Invoice
+            $invoice->subtotal_amount = array_sum($subtotal_amount);
+            $invoice->total_tax = array_sum($total_tax);
+            $invoice->total_amount = $invoice->subtotal_amount+$invoice->total_tax;
+            $invoice->save();
+        endif;
+
+//        if($invoice->save()){
             return back()->with('success', 'No. HBL '.$manifest->NOHBL.', invoice berhasih dibuat.');
-        }
+//        }
         
-        return back()->with('error', 'Something went wrong, please try again later.');
+//        return back()->with('error', 'Something went wrong, please try again later.');
         
 //        return json_encode($invoice);
     }

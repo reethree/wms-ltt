@@ -18,7 +18,7 @@
     }
 </style>
 <a href="#" class="print-btn" type="button" onclick="window.print();">PRINT</a>
-<div id="details" class="clearfix" style="margin-top: 80px">
+<div id="details" class="clearfix" style="margin: 114px 75px 90px 38px;display: block;">
     <div class="row invoice-info">
         <div class="col-sm-6 invoice-col" style="width: 50%; float: left;">
           <table border="0" cellspacing="0" cellpadding="0">
