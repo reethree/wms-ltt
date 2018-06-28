@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9d7231c6af9ed6631ffd16d60538e0d9",
-    "content-hash": "aab95271ab8c8c1c75178744df180476",
+    "hash": "42e10ebbbced75d5673af47a96583271",
+    "content-hash": "7e887bada97f9caa1f9ff5997bcc3ad0",
     "packages": [
         {
             "name": "artesaos/seotools",
@@ -1084,16 +1084,16 @@
         },
         {
             "name": "maatwebsite/excel",
-            "version": "2.1.25",
+            "version": "2.1.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maatwebsite/Laravel-Excel.git",
-                "reference": "5a8ac41af85cca4ca88971b2ab1a6ef674b1d82a"
+                "reference": "06e397a30595d1082963d6aa5ec0c3a9961d70c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maatwebsite/Laravel-Excel/zipball/5a8ac41af85cca4ca88971b2ab1a6ef674b1d82a",
-                "reference": "5a8ac41af85cca4ca88971b2ab1a6ef674b1d82a",
+                "url": "https://api.github.com/repos/Maatwebsite/Laravel-Excel/zipball/06e397a30595d1082963d6aa5ec0c3a9961d70c8",
+                "reference": "06e397a30595d1082963d6aa5ec0c3a9961d70c8",
                 "shasum": ""
             },
             "require": {
@@ -1158,7 +1158,7 @@
                 "import",
                 "laravel"
             ],
-            "time": "2018-02-08 16:52:17"
+            "time": "2018-05-09 14:34:18"
         },
         {
             "name": "mgallegos/laravel-jqgrid",

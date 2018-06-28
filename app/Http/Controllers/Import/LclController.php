@@ -1321,6 +1321,7 @@ class LclController extends Controller
             $invoice->template_id = $template->id;
             $invoice->template_type = 'Warehouse';
             $invoice->number = $request->no_invoice;
+            $invoice->officer = $request->officer;
 
             // Perhitungan CBM
             $weight = $manifest->WEIGHT / 1000;
@@ -1447,6 +1448,7 @@ class LclController extends Controller
             $invoice->template_id = $template->id;
             $invoice->template_type = 'Rounding';
             $invoice->number = $request->no_invoice;
+            $invoice->officer = $request->officer;
 
             // Perhitungan CBM
             $weight = $manifest->WEIGHT / 1000;
@@ -2103,6 +2105,24 @@ class LclController extends Controller
         }
         
         return back()->with('error', 'Cannot upload TXT file, please try again.')->withInput();   
+    }
+    
+    public function uploadXlsFile(Request $request)
+    { 
+        
+        if ($request->hasFile('filexls')) {
+            \Excel::selectSheetsByIndex(0, 1, 2, 3, 5)->load($request->file('filexls'), function($reader) {
+                
+                $reader->each(function($sheet) {
+                    echo $sheet->getTitle().'<br />';
+                    // Loop through all rows
+                    $sheet->each(function($row) {
+                        echo $row->first().'<br />';
+                    });
+
+                });
+            });
+        }
     }
     
 }
