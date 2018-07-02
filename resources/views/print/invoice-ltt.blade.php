@@ -9,8 +9,10 @@
     @media print {
         @page {
             size: auto;   /* auto is the initial value */
-            margin-top: 0;
-            margin-bottom: 0;/* this affects the margin in the printer settings */
+            margin-top: 114px;
+            margin-bottom: 90px;
+            margin-left: 38px;
+            margin-right: 75px;
         }
         .print-btn {
             display: none;
@@ -18,7 +20,7 @@
     }
 </style>
 <a href="#" class="print-btn" type="button" onclick="window.print();">PRINT</a>
-<div id="details" class="clearfix" style="margin: 114px 75px 90px 38px;display: block;">
+<div id="details" class="clearfix">
     <div class="row invoice-info">
         <div class="col-sm-6 invoice-col" style="width: 50%; float: left;">
           <table border="0" cellspacing="0" cellpadding="0">
