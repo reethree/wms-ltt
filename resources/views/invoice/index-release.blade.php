@@ -260,6 +260,12 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="col-sm-3 control-label">Free Materai</label>
+                                <div class="col-sm-5">
+                                    <input type="checkbox" name="free_materai" value="1" />
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-sm-3 control-label">Petugas Keuangan</label>
                                 <div class="col-sm-8">
                                     <select class="form-control select2" name="officer" style="width: 100%;" tabindex="-1" aria-hidden="true" required>

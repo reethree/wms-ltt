@@ -1369,6 +1369,10 @@ class LclController extends Controller
                         if($item->type == 'Surcharge'){
                             continue;
                         }
+                    }elseif(isset($request->free_materai)){
+                        if($item->name == 'Materai'){
+                            continue;
+                        }
                     }
 
                     if($item->type == 'Storage Flat'){
