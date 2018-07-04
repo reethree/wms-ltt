@@ -315,14 +315,14 @@
 
 <!--<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />-->
 <link rel="stylesheet" href="{{ asset("/bower_components/AdminLTE/plugins/datepicker/datepicker3.css") }}">
-<!--<link rel="stylesheet" href="{{ asset("/bower_components/AdminLTE/plugins/timepicker/bootstrap-timepicker.min.css") }}">-->
+<link rel="stylesheet" href="{{ asset("/bower_components/AdminLTE/plugins/timepicker/bootstrap-timepicker.min.css") }}">
 
 @endsection
 
 @section('custom_js')
 
 <script src="{{ asset("/bower_components/AdminLTE/plugins/datepicker/bootstrap-datepicker.js") }}"></script>
-<!--<script src="{{ asset("/bower_components/AdminLTE/plugins/timepicker/bootstrap-timepicker.min.js") }}"></script>-->
+<script src="{{ asset("/bower_components/AdminLTE/plugins/timepicker/bootstrap-timepicker.min.js") }}"></script>
 <!--<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>-->
 <script type="text/javascript">
 //    $('.select2').select2();
@@ -331,13 +331,13 @@
         todayHighlight: true,
         format: 'yyyy-mm-dd' 
     });
-//    $('.timepicker').timepicker({ 
-//        showMeridian: false,
-//        showInputs: false,
-//        showSeconds: true,
-//        minuteStep: 1,
-//        secondStep: 1
-//    });
+    $('.timepicker').timepicker({ 
+        showMeridian: false,
+        showInputs: false,
+        showSeconds: true,
+        minuteStep: 1,
+        secondStep: 1
+    });
     $("#jambehandle").mask("99:99:99");
 </script>
 
