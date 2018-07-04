@@ -249,8 +249,12 @@
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Free Surcharge</label>
-                                <div class="col-sm-5">
+                                <div class="col-sm-2">
                                     <input type="checkbox" name="free_surcharge" value="1" />
+                                </div>
+                                <label class="col-sm-3 control-label">Force Surcharge</label>
+                                <div class="col-sm-2">
+                                    <input type="checkbox" name="force_surcharge" value="1" />
                                 </div>
                             </div>
                             <div class="form-group">

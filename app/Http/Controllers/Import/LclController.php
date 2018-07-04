@@ -1322,6 +1322,7 @@ class LclController extends Controller
             $invoice->template_type = 'Warehouse';
             $invoice->number = $request->no_invoice;
             $invoice->officer = $request->officer;
+            $invoice->tgl_cetak = $request->tgl_cetak;
 
             // Perhitungan CBM
             $weight = $manifest->WEIGHT / 1000;
@@ -1398,8 +1399,10 @@ class LclController extends Controller
                             continue;
                         }
                     }elseif($item->type == 'Surcharge'){
-                        if($maxcbm*1000 < 5000){
-                            continue;
+                        if(!isset($request->force_surcharge)){
+                            if($maxcbm*1000 < 5000){
+                                continue;
+                            }
                         }
                     }elseif($item->type == 'By Size'){
                         if($manifest->SIZE == 20){
@@ -1453,6 +1456,7 @@ class LclController extends Controller
             $invoice->template_type = 'Rounding';
             $invoice->number = $request->no_invoice;
             $invoice->officer = $request->officer;
+            $invoice->tgl_cetak = $request->tgl_cetak;
 
             // Perhitungan CBM
             $weight = $manifest->WEIGHT / 1000;

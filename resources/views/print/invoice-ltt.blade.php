@@ -70,7 +70,7 @@
                 <tr>
                     <td><b>Tgl. Invoice</b></td>
                     <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
-                    <td>{{ date('d F Y') }}</td>
+                    <td>{{ ($invoice->tgl_cetak == NULL) ? date('d F Y') : date('d F Y', strtotime($invoice->tgl_cetak)) }}</td>
                 </tr>
                 <tr>
                     <td colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -162,7 +162,7 @@
     <div class="table-responsive">
         <table border="0" cellspacing="0" cellpadding="0">
             <tr>
-                <td>Jakarta Utara, {{date('d F Y')}}</td>
+                <td>Jakarta Utara, {{ ($invoice->tgl_cetak == NULL) ? date('d F Y') : date('d F Y', strtotime($invoice->tgl_cetak)) }}</td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
