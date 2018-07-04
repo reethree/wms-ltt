@@ -1370,7 +1370,7 @@ class LclController extends Controller
                             continue;
                         }
                     }elseif(isset($request->free_materai)){
-                        if($item->name == 'Materai'){
+                        if($item->name == 'Materai' || $item->name == 'MATERAI'){
                             continue;
                         }
                     }
@@ -1498,6 +1498,10 @@ class LclController extends Controller
                         }
                     }elseif(isset($request->free_surcharge)){
                         if($item->type == 'Surcharge'){
+                            continue;
+                        }
+                    }elseif(isset($request->free_materai)){
+                        if($item->name == 'Materai' || $item->name == 'MATERAI'){
                             continue;
                         }
                     }
