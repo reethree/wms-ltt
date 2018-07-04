@@ -49,13 +49,13 @@
             $('#NO_SPJM').val(rowdata.NO_SPJM);
             $('#TGL_SPJM').val(rowdata.TGL_SPJM);
 
-            if(!rowdata.NO_SPJM && !rowdata.TGL_SPJM) {
+//            if(!rowdata.NO_SPJM && !rowdata.TGL_SPJM) {
                 $('#btn-group-2').enableButtonGroup();
                 $('#behandle-form').enableFormGroup();
-            }else{
-                $('#btn-group-2').disabledButtonGroup();
-                $('#behandle-form').disabledFormGroup();
-            }
+//            }else{
+//                $('#btn-group-2').disabledButtonGroup();
+//                $('#behandle-form').disabledFormGroup();
+//            }
 
         });
         
@@ -284,7 +284,7 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input type="text" id="tglbehandle" name="tglbehandle" class="form-control pull-right datepicker" required value="{{ date('Y-m-d') }}" readonly>
+                                <input type="text" id="tglbehandle" name="tglbehandle" class="form-control pull-right datepicker" required value="{{ date('Y-m-d') }}">
                             </div>
                         </div>
                     </div>
