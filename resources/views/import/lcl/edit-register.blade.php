@@ -435,7 +435,7 @@
                                     <input type="file" id="file-txt-input" name="filetxt" />
                                 </div>
                             </div>
-                            <input id="container_id" name="jobid" type="hidden" value="{{$joborder->TJOBORDER_PK}}" />
+                            <input id="jobid" name="jobid" type="hidden" value="{{$joborder->TJOBORDER_PK}}" />
                         </div>
                     </div>
                 </div>
@@ -466,7 +466,7 @@
                                     <input type="file" id="file-txt-input" name="filexls" />
                                 </div>
                             </div>
-                            <input id="container_id" name="jobid" type="hidden" value="{{$joborder->TJOBORDER_PK}}" />
+                            <input id="jobid" name="jobid" type="hidden" value="{{$joborder->TJOBORDER_PK}}" />
                         </div>
                     </div>
                 </div>
