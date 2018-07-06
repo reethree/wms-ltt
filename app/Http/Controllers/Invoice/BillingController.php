@@ -94,6 +94,7 @@ class BillingController extends Controller
         $data['consolidator_name'] = $consolidator->NAMACONSOLIDATOR;
         $data['rounding'] = isset($request->rounding) ? 'Y' : 'N';
         $data['warehouse'] = isset($request->warehouse) ? 'Y' : 'N';
+        $data['forwarder'] = isset($request->forwarder) ? 'Y' : 'N';
         
         $insert_id = \DB::table('billing_template')->insertGetId($data);
         
@@ -150,6 +151,7 @@ class BillingController extends Controller
         $data['consolidator_name'] = $consolidator->NAMACONSOLIDATOR;
         $data['rounding'] = isset($request->rounding) ? 'Y' : 'N';
         $data['warehouse'] = isset($request->warehouse) ? 'Y' : 'N';
+        $data['forwarder'] = isset($request->forwarder) ? 'Y' : 'N';
         
         $update = \DB::table('billing_template')->where('id', $id)->update($data);
         

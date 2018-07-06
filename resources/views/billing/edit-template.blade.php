@@ -52,6 +52,12 @@
                           <input type="number" name="min_meas" class="form-control" id="min_meas" required value="{{$template->min_meas}}">
                       </div>
                     </div>
+                    <div class="form-group">
+                      <label for="rounding" class="col-sm-3 control-label">Rounding</label>
+                      <div class="col-sm-8">
+                          <input type="checkbox" name="rounding" id="rounding" value="1" @if($template->rounding == 'Y') {{'checked'}} @endif/>
+                      </div>
+                    </div>
                 </div>
                 <div class="col-md-6"> 
                     <div class="form-group">
@@ -69,13 +75,13 @@
                           <input type="checkbox" name="warehouse" id="warehouse" value="1" @if($template->warehouse == 'Y') {{'checked'}} @endif />
                       </div>
                     </div>
+                    
                     <div class="form-group">
-                      <label for="rounding" class="col-sm-3 control-label">Rounding</label>
+                      <label for="forwarder" class="col-sm-3 control-label">Forwarder</label>
                       <div class="col-sm-8">
-                          <input type="checkbox" name="rounding" id="rounding" value="1" @if($template->rounding == 'Y') {{'checked'}} @endif/>
+                          <input type="checkbox" name="forwarder" id="forwarder" value="1" @if($template->forwarder == 'Y') {{'checked'}} @endif />
                       </div>
                     </div>
-                    
                 </div>
             </div>
         </div>
@@ -327,8 +333,8 @@
                           <label class="col-sm-3 control-label">Type</label>
                           <div class="col-sm-8">
                                 <select class="form-control select2" id="template_type" name="template_type" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
-                                    @if($template->rounding == 'Y')
-                                        <option value="Rounding">Rounding</option>
+                                    @if($template->forwarder == 'Y')
+                                        <option value="Forwarder">Forwarder</option>
                                     @endif
                                     @if($template->warehouse == 'Y')
                                         <option value="Warehouse">Warehouse</option>

@@ -52,6 +52,12 @@
                           <input type="number" name="min_meas" class="form-control" id="min_meas" required value="2">
                       </div>
                     </div>
+                    <div class="form-group">
+                      <label for="rounding" class="col-sm-3 control-label">Rounding</label>
+                      <div class="col-sm-8">
+                          <input type="checkbox" name="rounding" id="rounding" value="1" />
+                      </div>
+                    </div>
                 </div>
                 <div class="col-md-6"> 
                     <div class="form-group">
@@ -70,12 +76,11 @@
                       </div>
                     </div>
                     <div class="form-group">
-                      <label for="rounding" class="col-sm-3 control-label">Rounding</label>
+                      <label for="forwarder" class="col-sm-3 control-label">Forwarder</label>
                       <div class="col-sm-8">
-                          <input type="checkbox" name="rounding" id="rounding" value="1" checked />
+                          <input type="checkbox" name="forwarder" id="forwarder" value="1" checked />
                       </div>
-                    </div>
-                    
+                    </div> 
                 </div>
             </div>
         </div>

@@ -25,7 +25,12 @@
         
         
         $('#btn-invoice').on("click", function(){
-            $('#create-invoice-modal').modal('show');
+            rowid = $('#lclReleaseGrid').jqGrid('getGridParam', 'selrow');
+            if(rowid){
+                $('#create-invoice-modal').modal('show');
+            }else{
+                alert('Please select data first.');
+            }
         });
         
         $('#create-invoice-form').on("submit", function(){

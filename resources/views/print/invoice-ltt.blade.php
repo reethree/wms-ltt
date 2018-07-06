@@ -7,12 +7,17 @@
 @section('content')
 <style>
     @media print {
+        body {
+            color: #000;
+            background: #fff;
+        }
         @page {
             size: auto;   /* auto is the initial value */
             margin-top: 114px;
             margin-bottom: 90px;
             margin-left: 38px;
             margin-right: 75px;
+            font-weight: bold;
         }
         .print-btn {
             display: none;
@@ -91,6 +96,19 @@
                     <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
                     <td>{{ date('d/m/Y ', strtotime($manifest->tglrelease)) }}</td>
                 </tr>
+                @if($invoice->renew == 'Y')
+                <tr>
+                    <td colspan="3">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="3"><b>(Perpanjang)</b></td>
+                </tr>
+                <tr>
+                    <td><b>Tgl. Perpanjang</b></td>
+                    <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
+                    <td>{{ date('d/m/Y ', strtotime($invoice->renew_date)) }}</td>
+                </tr>
+                @endif
             </table>
         </div>
     </div>
@@ -112,14 +130,14 @@
                 <tbody>
                   @foreach($items as $item)
                   <tr>
-                      <td>{{$item->item_name}}</td>
-                      <td style="text-align: center;">{{$item->item_cbm}}</td>
-                      <td style="text-align: center;">{{$item->item_qty}}</td>
-                      <td align="right" style="border-right: none !important;">Rp.</td>
-                      <td style="text-align: right;border-left: none !important;">{{ number_format($item->item_amount) }}</td>
-                      <td align="right">{{ ($item->item_tax > 0) ? 'PPn '.$item->item_tax.'%' : '' }}</td>
-                      <td align="right" style="border-right: none !important;">Rp.</td>
-                      <td style="text-align: right;border-left: none !important;">{{ number_format($item->item_subtotal) }}</td>
+                      <td style="border-top: none;border-bottom: none;">{{$item->item_name}}</td>
+                      <td style="text-align: center;border-top: none;border-bottom: none;">{{$item->item_cbm}}</td>
+                      <td style="text-align: center;border-top: none;border-bottom: none;">{{$item->item_qty}}</td>
+                      <td align="right" style="border-right: none !important;border-top: none;border-bottom: none;">Rp.</td>
+                      <td style="text-align: right;border-left: none !important;border-top: none;border-bottom: none;">{{ number_format($item->item_amount) }}</td>
+                      <td align="right" style="border-top: none;border-bottom: none;">{{ ($item->item_tax > 0) ? 'PPn '.$item->item_tax.'%' : '' }}</td>
+                      <td align="right" style="border-right: none !important;border-top: none;border-bottom: none;">Rp.</td>
+                      <td style="text-align: right;border-left: none !important;border-top: none;border-bottom: none;">{{ number_format($item->item_subtotal) }}</td>
                   </tr>
                   @endforeach          
                 </tbody>

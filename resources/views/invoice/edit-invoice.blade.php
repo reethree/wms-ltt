@@ -77,6 +77,19 @@
                   <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
                   <td>{{ date('d/m/Y ', strtotime($manifest->tglrelease)) }}</td>
               </tr>
+              @if($invoice->renew == 'Y')
+              <tr>
+                  <td colspan="3">&nbsp;</td>
+              </tr>
+              <tr>
+                  <td colspan="3"><b>(Perpanjang)</b></td>
+              </tr>
+              <tr>
+                  <td><b>Tgl. Perpanjang</b></td>
+                  <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
+                  <td>{{ date('d/m/Y ', strtotime($invoice->renew_date)) }}</td>
+              </tr>
+              @endif
           </table>
       </div>
       <!-- /.col -->

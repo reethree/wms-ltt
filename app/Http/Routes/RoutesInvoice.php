@@ -27,6 +27,10 @@ Route::group(['prefix' => 'invoice', 'namespace' => 'Invoice'], function(){
        'as' => 'invoice-print-rekap',
         'uses' => 'InvoiceController@invoicePrintRekap'
     ]);
+    Route::post('/renew', [
+        'as' => 'invoice-renew',
+        'uses'=> 'InvoiceController@invoiceRenew'
+    ]);
     
     // RELEASE INVOICE
     Route::get('/release', [

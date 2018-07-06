@@ -1313,7 +1313,7 @@ class LclController extends Controller
         $manifest = DBManifest::find($request->manifest_id);  
         $template = \DB::table('billing_template')->find($request->template_id);
         $items_w = \DB::table('billing_template_item')->where(array('billing_template_id' => $template->id, 'template_type' => 'Warehouse', 'active' => 'Y'))->get();
-        $items_r = \DB::table('billing_template_item')->where(array('billing_template_id' => $template->id, 'template_type' => 'Rounding', 'active' => 'Y'))->get();
+        $items_r = \DB::table('billing_template_item')->where(array('billing_template_id' => $template->id, 'template_type' => 'Forwarder', 'active' => 'Y'))->get();
         
         if(count($items_w) > 0):
             $invoice = new \App\Models\Invoice;
@@ -1453,7 +1453,7 @@ class LclController extends Controller
             $invoice = new \App\Models\Invoice;
             $invoice->manifest_id = $manifest->TMANIFEST_PK;
             $invoice->template_id = $template->id;
-            $invoice->template_type = 'Rounding';
+            $invoice->template_type = 'Forwarder';
             $invoice->number = $request->no_invoice;
             $invoice->officer = $request->officer;
             $invoice->tgl_cetak = $request->tgl_cetak;
