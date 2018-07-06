@@ -59,6 +59,7 @@
                   <td>{{ $manifest->NOCONTAINER }} / {{ $manifest->SIZE."'" }}</td>
               </tr>
           </table>
+            <p>Lama Penumpukan : {{$invoice->days.' Hari'}}</p>
       </div>
         <div class="col-sm-6 invoice-col" style="width: 50%; float: left;">
             <table border="0" cellspacing="0" cellpadding="0">
@@ -93,7 +94,6 @@
             </table>
         </div>
     </div>
-    
     
     <div class="row">
       <div class="col-xs-12 table-responsive">
