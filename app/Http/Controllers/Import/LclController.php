@@ -1395,9 +1395,9 @@ class LclController extends Controller
                         }
 
                     }elseif($item->type == 'Behandle'){
-                        if($manifest->BEHANDLE != 'Y'){
-                            continue;
-                        }
+//                        if($manifest->BEHANDLE != 'Y'){
+//                            continue;
+//                        }
                     }elseif($item->type == 'Surcharge'){
                         if(!isset($request->force_surcharge)){
                             if($maxcbm*1000 < 5000){
@@ -1529,9 +1529,9 @@ class LclController extends Controller
                         }
 
                     }elseif($item->type == 'Behandle'){
-                        if($manifest->BEHANDLE != 'Y'){
-                            continue;
-                        }
+//                        if($manifest->BEHANDLE != 'Y'){
+//                            continue;
+//                        }
                     }elseif($item->type == 'Surcharge'){
                         if($maxcbm*1000 < 5000){
                             continue;
