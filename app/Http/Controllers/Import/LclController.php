@@ -2121,7 +2121,11 @@ class LclController extends Controller
     
     public function uploadXlsFile(Request $request)
     { 
-        
+        // CLEAR DATABASE
+        \DB::table('temporary_manifest')->truncate();
+        \DB::table('temporary_container')->truncate();
+        \DB::table('temporary_barang')->truncate();
+
         if ($request->hasFile('filexls')) {
             
             $jobid = $request->jobid;
@@ -2230,9 +2234,11 @@ class LclController extends Controller
                     // Get Packing
                     if($detail->jenis_kemasan) {
                         $packing = \App\Models\Packing::where('KODEPACKING', $detail->jenis_kemasan)->first();
-                        $data['TPACKING_FK'] = $packing->TPACKING_PK;
-                        $data['NAMAPACKING'] = $packing->NAMAPACKING;
-                        $data['KODE_KEMAS'] = $packing->KODEPACKING;
+                        if($packing){
+                            $data['TPACKING_FK'] = $packing->TPACKING_PK;
+                            $data['NAMAPACKING'] = $packing->NAMAPACKING;
+                            $data['KODE_KEMAS'] = $packing->KODEPACKING;
+                        }
                     }
 
                     $data['tglmasuk'] = $container->TGL_PLP;
@@ -2267,12 +2273,7 @@ class LclController extends Controller
                     }
                 }
                 
-            endforeach;
-            
-            // CLEAR DATABASE
-            \DB::table('temporary_manifest')->truncate();
-            \DB::table('temporary_container')->truncate();
-            \DB::table('temporary_barang')->truncate();
+            endforeach;          
             
             return back()->with('success', 'LCL Register has been update.')->withInput();
         }
