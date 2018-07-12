@@ -31,7 +31,12 @@ class InvoiceTablesRepository extends EloquentRepositoryAbstract {
             $Model = \DB::table($ModelRef)->where('billing_template_id',$request['templateid']);
         }elseif($ModelRef == 'billing_invoice'){
             $Model = \DB::table($ModelRef)->join('tmanifest', 'billing_invoice.manifest_id', '=', 'tmanifest.TMANIFEST_PK');
-        }else{
+        
+        }elseif($ModelRef == 'mechanic_rekap'){
+            $Model = \DB::table($ModelRef)
+                    ->join('tconsolidator', 'mechanic_rekap.consolidator_id', '=', 'tconsolidator.TCONSOLIDATOR_PK')
+                    ->join('tcontainer', 'mechanic_rekap.container_id', '=', 'tcontainer.TCONTAINER_PK');
+        }else{      
             $Model = \DB::table($ModelRef);
         }
         

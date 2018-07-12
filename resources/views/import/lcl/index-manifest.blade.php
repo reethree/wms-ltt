@@ -36,7 +36,7 @@
             ->setGridOption('shrinkToFit', true)
             ->setGridOption('sortname','TCONTAINER_PK')
             ->setGridOption('rownumbers', true)
-            ->setGridOption('height', '295')
+            ->setGridOption('height', '390')
             ->setGridOption('rowList',array(20,50,100))
             ->setGridOption('useColSpanStyle', true)
             ->setNavigatorOptions('navigator', array('viewtext'=>'view'))

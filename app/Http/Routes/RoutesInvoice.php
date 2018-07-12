@@ -144,6 +144,80 @@ Route::group(['prefix' => 'invoice', 'namespace' => 'Invoice'], function(){
     
 });
 
+Route::group(['prefix' => 'mechanic', 'namespace' => 'Invoice'], function(){
+    Route::get('/print/{id}', [
+        'as' => 'mechanic-print',
+        'uses' => 'MechanicController@printRekap'
+    ]);
+    
+    Route::get('/tarif', [
+        'as' => 'mechanic-tarif',
+        'uses' => 'MechanicController@tarifIndex'
+    ]);
+    Route::post('/tarif/grid-data', function()
+    {
+        GridEncoder::encodeRequestedData(new \App\Models\InvoiceTablesRepository('mechanic_tarif',Illuminate\Support\Facades\Request::all()) ,Illuminate\Support\Facades\Request::all());
+    });
+    Route::get('/tarif/create', [
+        'as' => 'mechanic-tarif-create',
+        'uses' => 'MechanicController@tarifCreate'
+    ]);    
+    Route::post('/tarif/create', [
+        'as' => 'mechanic-tarif-store',
+        'uses' => 'MechanicController@tarifStore'
+    ]);
+    Route::get('/tarif/edit/{id}', [
+        'as' => 'mechanic-tarif-edit',
+        'uses' => 'MechanicController@tarifEdit'
+    ]);    
+    Route::post('/tarif/update/{id}', [
+        'as' => 'mechanic-tarif-update',
+        'uses' => 'MechanicController@tarifUpdate'
+    ]);
+    Route::get('/tarif/delete/{id}', [
+        'as' => 'mechanic-tarif-delete',
+        'uses' => 'MechanicController@tarifDelete'
+    ]); 
+    
+    Route::get('/container', [
+        'as' => 'mechanic-container',
+        'uses' => 'MechanicController@indexContainer'
+    ]);
+    
+    Route::get('/rekap', [
+        'as' => 'mechanic-rekap',
+        'uses' => 'MechanicController@indexRekap'
+    ]);
+    Route::post('/rekap/grid-data', function()
+    {
+        GridEncoder::encodeRequestedData(new \App\Models\InvoiceTablesRepository('mechanic_rekap',Illuminate\Support\Facades\Request::all()) ,Illuminate\Support\Facades\Request::all());
+    });
+    Route::post('/rekap/create', [
+        'as' => 'mechanic-rekap-create',
+        'uses' => 'MechanicController@createRekap'
+    ]);
+    Route::post('/rekap/update', [
+        'as' => 'mechanic-rekap-update',
+        'uses' => 'MechanicController@updateRekap'
+    ]);
+    Route::get('/rekap/detail/{id}', [
+        'as' => 'mechanic-rekap-detail',
+        'uses' => 'MechanicController@detailRekap'
+    ]);
+    Route::get('/rekap/delete/{id}', [
+        'as' => 'mechanic-rekap-delete',
+        'uses' => 'MechanicController@deleteRekap'
+    ]);
+    Route::post('/rekap/custom/item/add', [
+        'as' => 'mechanic-custom-item-add',
+        'uses' => 'MechanicController@addCustomItemRekap'
+    ]);
+    Route::get('/rekap/custom/item/remove/{id}', [
+        'as' => 'mechanic-custom-item-remove',
+        'uses' => 'MechanicController@removeCustomItemRekap'
+    ]);
+});
+
 Route::group(['prefix' => 'billing', 'namespace' => 'Invoice'], function(){
     
     // Template
