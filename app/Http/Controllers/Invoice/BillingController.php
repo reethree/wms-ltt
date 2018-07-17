@@ -87,14 +87,20 @@ class BillingController extends Controller
             return back()->withErrors($validator)->withInput();
         }
         
-        $data = $request->except(['_token']);
+        $data = $request->except(['_token','rounding_value']);
         $data['uid'] = \Auth::getUser()->name;
         
         $consolidator = \App\Models\Consolidator::find($request->consolidator_id);
         $data['consolidator_name'] = $consolidator->NAMACONSOLIDATOR;
-        $data['rounding'] = isset($request->rounding) ? 'Y' : 'N';
+//        $data['rounding'] = isset($request->rounding) ? 'Y' : 'N';
         $data['warehouse'] = isset($request->warehouse) ? 'Y' : 'N';
         $data['forwarder'] = isset($request->forwarder) ? 'Y' : 'N';
+        
+        if(isset($request->rounding)){
+            $data['rounding'] = $request->rounding_value;
+        }else{
+            $data['rounding'] = 'N';
+        }
         
         $insert_id = \DB::table('billing_template')->insertGetId($data);
         
@@ -143,15 +149,21 @@ class BillingController extends Controller
             return back()->withErrors($validator)->withInput();
         }
         
-        $data = $request->except(['_token']);
+        $data = $request->except(['_token', 'rounding_value']);
         $data['updated_at'] = date('Y-m-d');
         $data['uid'] = \Auth::getUser()->name;
         
         $consolidator = \App\Models\Consolidator::find($request->consolidator_id);
         $data['consolidator_name'] = $consolidator->NAMACONSOLIDATOR;
-        $data['rounding'] = isset($request->rounding) ? 'Y' : 'N';
+//        $data['rounding'] = isset($request->rounding) ? 'Y' : 'N';
         $data['warehouse'] = isset($request->warehouse) ? 'Y' : 'N';
         $data['forwarder'] = isset($request->forwarder) ? 'Y' : 'N';
+        
+        if(isset($request->rounding)){
+            $data['rounding'] = $request->rounding_value;
+        }else{
+            $data['rounding'] = 'N';
+        }
         
         $update = \DB::table('billing_template')->where('id', $id)->update($data);
         

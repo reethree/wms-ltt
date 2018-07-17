@@ -195,50 +195,60 @@ class MechanicController extends Controller
         $manifest = \App\Models\Manifest::where('TCONTAINER_FK', $request->container_id)->get();
         $tarif = \DB::table('mechanic_tarif')->where('consolidator_id', $request->consolidator_id)->first();
         
-        //Insert Rekap Mechanic
-        $dataRekap = $request->except(['_token']);
-        $dataRekap['uid'] = \Auth::getUser()->name;
-        
-        $insert_id = \DB::table('mechanic_rekap')->insertGetId($dataRekap);
-        
-        if($insert_id){
-            $subtotal_amount = array();
-            //Insert Rekap Item
-            foreach ($manifest as $item):
-                
-                // Perhitungan CBM
-                $weight = $item->WEIGHT / 1000;
-                $meas = $item->MEAS;
-                $cbm = array($weight, $meas);
-                
-                $maxcbm = max($cbm);
-                
-                $data['rekap_id'] = $insert_id;
-                $data['hbl'] = $item->NOHBL; 
-                $data['consignee'] = $item->CONSIGNEE;
-                $data['kgs'] = $item->WEIGHT;
-                $data['cbm'] = $item->MEAS;
-                $data['tarif'] = $tarif->tarif1;
-                $data['amount'] = $maxcbm*$tarif->tarif1;
-                $data['type'] = 'main';
-                $data['uid'] = \Auth::getUser()->name;
-                
-                $subtotal_amount[] = $data['amount'];
-                
-                \DB::table('mechanic_rekap_item')->insert($data);
-                
-            endforeach;
-            
-            //Update Rekap Mechanic
-            $dataUpdate['subtotal'] = array_sum($subtotal_amount);
-            $dataUpdate['ppn'] = ($dataUpdate['subtotal']*$dataRekap['tax'])/100;
-            $dataUpdate['total'] = $dataUpdate['subtotal']+$dataUpdate['ppn'];
-            
-            \DB::table('mechanic_rekap')->where('id', $insert_id)->update($dataUpdate);
-            
-            return back()->with('success', 'Rekap Mechanic has been created.');
+        if($tarif){
+            //Insert Rekap Mechanic
+            $dataRekap = $request->except(['_token','rounding']);
+            $dataRekap['uid'] = \Auth::getUser()->name;
+
+            $insert_id = \DB::table('mechanic_rekap')->insertGetId($dataRekap);
+
+            if($insert_id){
+                $subtotal_amount = array();
+                //Insert Rekap Item
+                foreach ($manifest as $item):
+
+                    // Perhitungan CBM
+                    $weight = $item->WEIGHT / 1000;
+                    $meas = $item->MEAS;
+                    $cbm = array($weight, $meas);
+
+                    if(isset($request->rounding)){
+                        $maxcbm = ceil($meas);
+                    }else{
+                        $maxcbm = $meas;
+                    }
+
+    //                $maxcbm = max($cbm);
+
+                    $data['rekap_id'] = $insert_id;
+                    $data['hbl'] = $item->NOHBL; 
+                    $data['consignee'] = $item->CONSIGNEE;
+                    $data['kgs'] = $item->WEIGHT;
+                    $data['cbm'] = $item->MEAS;
+                    $data['tarif'] = $tarif->tarif1;
+                    $data['amount'] = $maxcbm*$tarif->tarif1;
+                    $data['type'] = 'main';
+                    $data['uid'] = \Auth::getUser()->name;
+
+                    $subtotal_amount[] = $data['amount'];
+
+                    \DB::table('mechanic_rekap_item')->insert($data);
+
+                endforeach;
+
+                //Update Rekap Mechanic
+                $dataUpdate['subtotal'] = array_sum($subtotal_amount);
+                $dataUpdate['ppn'] = ($dataUpdate['subtotal']*$dataRekap['tax'])/100;
+                $dataUpdate['total'] = $dataUpdate['subtotal']+$dataUpdate['ppn'];
+
+                \DB::table('mechanic_rekap')->where('id', $insert_id)->update($dataUpdate);
+
+                return back()->with('success', 'Rekap Mechanic has been created.');
+            }
+        }else{
+            return back()->with('error', 'Tarif for consolidator not found, please try again.');
         }
-        
+
         return back()->with('error', 'Rekap Mechanic cannot create, please try again.')->withInput();
         
     }

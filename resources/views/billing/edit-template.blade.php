@@ -55,7 +55,16 @@
                     <div class="form-group">
                       <label for="rounding" class="col-sm-3 control-label">Rounding</label>
                       <div class="col-sm-8">
-                          <input type="checkbox" name="rounding" id="rounding" value="1" @if($template->rounding == 'Y') {{'checked'}} @endif/>
+                          <input type="checkbox" name="rounding" id="rounding" value="1" @if(in_array($template->rounding, array('Y', 'H'))) {{'checked'}} @endif/>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="rounding_value" class="col-sm-3 control-label">Rounding Value</label>
+                      <div class="col-sm-3">
+                            <select class="form-control select2 select2-hidden-accessible" name="rounding_value" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                                <option value="Y" @if($template->rounding == 'Y') {{ 'selected' }} @endif>1</option>
+                                <option value="H" @if($template->rounding == 'H') {{ 'selected' }} @endif>0.5</option>
+                            </select>
                       </div>
                     </div>
                 </div>

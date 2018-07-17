@@ -1329,12 +1329,21 @@ class LclController extends Controller
             $meas = $manifest->MEAS;
             $cbm = array($weight, $meas);
 
-            if($template->min_meas > 0){            
-    //            $maxcbm = ceil(max($cbm) * 2) / 2;
-                $maxcbm = ceil(max($cbm));               
+//            if($template->min_meas > 0){            
+//    //            $maxcbm = ceil(max($cbm) * 2) / 2;
+//                $maxcbm = ceil(max($cbm));               
+//            }else{
+//                $maxcbm = max($cbm);
+//            }
+            
+            if($template->rounding == 'Y'){
+                $maxcbm = ceil(max($cbm));
+            }elseif($template->rounding == 'H'){
+                $maxcbm = ceil(max($cbm) * 2) / 2;
             }else{
                 $maxcbm = max($cbm);
             }
+            
             if($maxcbm < $template->min_meas){ $maxcbm = $template->min_meas; }
 
             // Perhitungan Hari
@@ -1463,12 +1472,21 @@ class LclController extends Controller
             $meas = $manifest->MEAS;
             $cbm = array($weight, $meas);
 
-            if($template->min_meas > 0){            
-    //            $maxcbm = ceil(max($cbm) * 2) / 2;
-                $maxcbm = ceil(max($cbm));               
+//            if($template->min_meas > 0){            
+//    //            $maxcbm = ceil(max($cbm) * 2) / 2;
+//                $maxcbm = ceil(max($cbm));               
+//            }else{
+//                $maxcbm = max($cbm);
+//            }
+            
+            if($template->rounding == 'Y'){
+                $maxcbm = ceil(max($cbm));
+            }elseif($template->rounding == 'H'){
+                $maxcbm = ceil(max($cbm) * 2) / 2;
             }else{
                 $maxcbm = max($cbm);
             }
+            
             if($maxcbm < $template->min_meas){ $maxcbm = $template->min_meas; }
 
             // Perhitungan Hari

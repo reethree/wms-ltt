@@ -58,6 +58,15 @@
                           <input type="checkbox" name="rounding" id="rounding" value="1" />
                       </div>
                     </div>
+                    <div class="form-group">
+                      <label for="rounding_value" class="col-sm-3 control-label">Rounding Value</label>
+                      <div class="col-sm-3">
+                            <select class="form-control select2 select2-hidden-accessible" name="rounding_value" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                                <option value="Y" selected>1</option>
+                                <option value="H">0.5</option>
+                            </select>
+                      </div>
+                    </div>
                 </div>
                 <div class="col-md-6"> 
                     <div class="form-group">

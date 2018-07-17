@@ -154,6 +154,12 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="col-sm-3 control-label">Pembulatan</label>
+                                <div class="col-sm-5">
+                                    <input type="checkbox" name="rounding" value="1" />
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-sm-3 control-label">Tgl. Cetak</label>
                                 <div class="col-sm-6">
                                     <div class="input-group date">
@@ -201,7 +207,7 @@
 @section('custom_js')
 
 <script src="{{ asset("/bower_components/AdminLTE/plugins/datepicker/bootstrap-datepicker.js") }}"></script>
-<!--<script src="{{ asset("/bower_components/AdminLTE/plugins/bootstrap-switch/bootstrap-switch.min.js") }}"></script>-->
+<script src="{{ asset("/bower_components/AdminLTE/plugins/bootstrap-switch/bootstrap-switch.min.js") }}"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 <script type="text/javascript">
     $(".select2").select2();
@@ -213,10 +219,10 @@
     });
     
 //    $.fn.bootstrapSwitch.defaults.size = 'mini';
-//    $.fn.bootstrapSwitch.defaults.onColor = 'danger';
-//    $.fn.bootstrapSwitch.defaults.onText = 'Yes';
-//    $.fn.bootstrapSwitch.defaults.offText = 'No';
-//    $("input[type='checkbox']").bootstrapSwitch();
+    $.fn.bootstrapSwitch.defaults.onColor = 'danger';
+    $.fn.bootstrapSwitch.defaults.onText = 'Yes';
+    $.fn.bootstrapSwitch.defaults.offText = 'No';
+    $("input[type='checkbox']").bootstrapSwitch();
 </script>
 
 @endsection
