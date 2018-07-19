@@ -148,13 +148,13 @@ class TablesRepository extends EloquentRepositoryAbstract {
             if(isset($request['startdate']) || isset($request['enddate'])){
                 
                 $Model = \DB::table('tjoborder')->join('tcontainer', 'tjoborder.TJOBORDER_PK', '=', 'tcontainer.TJOBORDER_FK')
-                        ->select('tjoborder.*','tcontainer.NOMBL as tcontainer.NOMBL','tcontainer.TGL_MASTER_BL as tcontainer.TGL_MASTER_BL','tjoborder.NAMACONSOLIDATOR as tjoborder.NAMACONSOLIDATOR','tcontainer.*')
+                        ->select('tjoborder.*','tcontainer.NOMBL as tcontainer.NOMBL','tcontainer.TGL_MASTER_BL as tcontainer.TGL_MASTER_BL','tjoborder.NAMACONSOLIDATOR as tjoborder.NAMACONSOLIDATOR','tjoborder.VESSEL as tjoborder.VESSEL','tjoborder.VOY as tjoborder.VOY','tcontainer.*')
                         ->where('tcontainer.TGLENTRY', '>=',date('Y-m-d 00:00:00',strtotime($request['startdate'])))
                         ->where('tcontainer.TGLENTRY', '<=',date('Y-m-d 23:59:59',strtotime($request['enddate'])));
                 
             }else{
                 $Model = \DB::table('tjoborder')
-                        ->select('tjoborder.*','tcontainer.NOMBL as tcontainer.NOMBL','tcontainer.TGL_MASTER_BL as tcontainer.TGL_MASTER_BL','tjoborder.NAMACONSOLIDATOR as tjoborder.NAMACONSOLIDATOR','tcontainer.*')
+                        ->select('tjoborder.*','tcontainer.NOMBL as tcontainer.NOMBL','tcontainer.TGL_MASTER_BL as tcontainer.TGL_MASTER_BL','tjoborder.NAMACONSOLIDATOR as tjoborder.NAMACONSOLIDATOR','tjoborder.VESSEL as tjoborder.VESSEL','tjoborder.VOY as tjoborder.VOY','tcontainer.*')
                         ->join('tcontainer', 'tjoborder.TJOBORDER_PK', '=', 'tcontainer.TJOBORDER_FK');
             }
             
