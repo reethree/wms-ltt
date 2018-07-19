@@ -218,7 +218,7 @@ class MechanicController extends Controller
                         $maxcbm = $meas;
                     }
 
-    //                $maxcbm = max($cbm);
+                    $maxcbm = max($cbm);
 
                     $data['rekap_id'] = $insert_id;
                     $data['hbl'] = $item->NOHBL; 
