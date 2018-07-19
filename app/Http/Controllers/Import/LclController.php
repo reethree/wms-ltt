@@ -1548,10 +1548,6 @@ class LclController extends Controller
 //                        if($manifest->BEHANDLE != 'Y'){
 //                            continue;
 //                        }
-                    }elseif($item->type == 'Surcharge'){
-                        if($maxcbm*1000 < 5000){
-                            continue;
-                        }
                     }elseif($item->type == 'By Size'){
                         if($manifest->SIZE == 20){
                             $item_price = $item->price_2;
