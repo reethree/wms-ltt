@@ -1375,11 +1375,13 @@ class LclController extends Controller
                         if($item->type == 'Behandle'){
                             continue;
                         }
-                    }elseif(isset($request->free_surcharge)){
+                    }
+                    if(isset($request->free_surcharge)){
                         if($item->type == 'Surcharge'){
                             continue;
                         }
-                    }elseif(isset($request->free_materai)){
+                    }
+                    if(isset($request->free_materai)){
                         if($item->name == 'Materai' || $item->name == 'MATERAI'){
                             continue;
                         }
