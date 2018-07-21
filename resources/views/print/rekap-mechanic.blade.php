@@ -33,7 +33,7 @@
 <div id="details" class="clearfix">
     <div class="row invoice-info">
         <div class="col-sm-6 invoice-col">
-            <table border="0" cellspacing="0" cellpadding="0">
+            <table border="0" cellspacing="0" cellpadding="0" style="width:50%;">
                 <tr>
                     <td colspan="3">Kepada Yth, </td>
                 </tr>
