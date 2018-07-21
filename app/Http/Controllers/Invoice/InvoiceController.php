@@ -149,6 +149,15 @@ class InvoiceController extends Controller
         if($maxcbm < $template->min_meas){ $maxcbm = $template->min_meas; }
 
         // Perhitungan Hari
+        
+        //Lama
+        $daybyold = ($template->day_by == 'OB') ? $manifest->tglmasuk : $manifest->ETA;
+        $date1old = date_create($daybyold);
+        $date2old = date_create(date('Y-m-d',strtotime($manifest->tglrelease. '+1 days')));
+        $diffold = date_diff($date1old, $date2old);
+        $daysold = $diffold->format("%a");
+        
+        //Baru
         $dayby = $manifest->tglrelease;
         $date1 = date_create($dayby);
         $date2 = date_create(date('Y-m-d',strtotime($request->renew_date. '+1 days')));
@@ -177,20 +186,22 @@ class InvoiceController extends Controller
                     $item_qty = $days;
                 }elseif($item->type == 'Storage Masa'){
                     // Perhitungan Masa
-                    if($days < $item->day_start){
+                    if(($daysold) > $item->day_end && $item->day_end != 0){
                         continue;
                     }else{
                         if($item->day_end > 0){
-                            if($days >= $item->day_end){
-                                $item_qty = ($item->day_end - $item->day_start)+1;
+                            if(($daysold+$days) >= $item->day_end){
+                                $item_qty = (($item->day_end-$item->day_start)+1)-(($daysold-$item->day_start)+1);
                             }else{
-                                $item_qty = ($days - $item->day_start)+1;
+                                $item_qty = (($item->day_end-$item->day_start)+1)-(($daysold-$item->day_start)+($days+1));
                             }
                         }else{
-                            $item_qty = ($days - $item->day_start)+1;
+                            $item_qty = (($daysold+$days) - $item->day_start)+1;
+                            if($item_qty <= 0){
+                                continue;
+                            }
                         }
                     }
-                }elseif(strripos($item->name, 'adm') !== false){
                     
                 }else{
                     continue;
