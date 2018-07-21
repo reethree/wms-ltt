@@ -45,15 +45,25 @@
         rowid = $('#lclMechanicGrid').jqGrid('getGridParam', 'selrow');
         rowdata = $('#lclMechanicGrid').getRowData(rowid);
 
-        $("#container_id").val(rowdata.TCONTAINER_PK);
+        $("#container_id").val(rowdata.TCONTAINER_FK);
         $("#consolidator_id").val(rowdata.TCONSOLIDATOR_FK);
     }
     
     $(document).ready(function()
     {      
         $('#btn-rekap').on("click", function(){
-            rowid = $('#lclMechanicGrid').jqGrid('getGridParam', 'selrow');
-            if(rowid){
+//            rowid = $('#lclMechanicGrid').jqGrid('getGridParam', 'selrow');
+
+            var $grid = $("#lclMechanicGrid"), selIds = $grid.jqGrid("getGridParam", "selarrrow"), i, n,
+                cellValues = [];
+            for (i = 0, n = selIds.length; i < n; i++) {
+                cellValues.push($grid.jqGrid("getCell", selIds[i], "TMANIFEST_PK"));
+            }
+            
+            var manifestId = cellValues.join(",");
+
+            if(manifestId){
+                $("#manifest_id").val(manifestId);
                 $('#create-rekap-modal').modal('show');
             }else{
                 alert('Please select data first.');
@@ -78,7 +88,7 @@
 
 <div class="box">
     <div class="box-header with-border">
-        <h3 class="box-title">Lists Container</h3>
+        <h3 class="box-title">Lists Manifest</h3>
         <div class="box-tools">
             <button class="btn btn-info btn-sm" id="btn-rekap"><i class="fa fa-print"></i> Create Rekap</button>
         </div>
@@ -88,37 +98,59 @@
             GridRender::setGridId("lclMechanicGrid")
             ->enableFilterToolbar()
             ->setGridOption('mtype', 'POST')
-            ->setGridOption('url', URL::to('/lcl/register/grid-data?ref=mechanic&_token='.csrf_token()))
-            ->setGridOption('rowNum', 20)
+            ->setGridOption('url', URL::to('/lcl/manifest/grid-data?_token='.csrf_token()))
+            ->setGridOption('rowNum', 25)
             ->setGridOption('shrinkToFit', true)
-            ->setGridOption('sortname','TCONTAINER_PK')
+            ->setGridOption('sortname','TMANIFEST_PK')
             ->setGridOption('rownumbers', true)
-            ->setGridOption('height', '390')
-            ->setGridOption('rowList',array(20,50,100))
+            ->setGridOption('height', '400')
+            ->setGridOption('rowList',array(25,50,100))
             ->setGridOption('useColSpanStyle', true)
+            ->setGridOption('multiselect', true)
             ->setNavigatorOptions('navigator', array('viewtext'=>'view'))
             ->setNavigatorOptions('view',array('closeOnEscape'=>false))
             ->setFilterToolbarOptions(array('autosearch'=>true))
             ->setGridEvent('gridComplete', 'gridCompleteEvent')
             ->setGridEvent('onSelectRow', 'onSelectRowEvent')
-//            ->addColumn(array('label'=>'Action','index'=>'action', 'width'=>80, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
-            ->addColumn(array('key'=>true,'index'=>'TCONTAINER_PK','hidden'=>true))
-            ->addColumn(array('label'=>'No. Container','index'=>'NOCONTAINER','width'=>160))
-            ->addColumn(array('label'=>'No. Joborder','index'=>'NoJob','width'=>160))
-            ->addColumn(array('label'=>'No. MBL','index'=>'NOMBL','width'=>160))
-            ->addColumn(array('label'=>'Tgl. MBL','index'=>'TGL_MASTER_BL','width'=>150,'align'=>'center'))
-            ->addColumn(array('index'=>'TCONSOLIDATOR_FK','hidden'=>true))
+            ->addColumn(array('key'=>true,'index'=>'TMANIFEST_PK','hidden'=>true))
+//            ->addColumn(array('label'=>'Action','index'=>'action', 'width'=>120, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
+//            ->addColumn(array('label'=>'Validasi','index'=>'VALIDASI','width'=>80, 'align'=>'center'))
+            ->addColumn(array('label'=>'No.MBL','index'=>'NOMBL', 'width'=>150, 'align'=>'center'))
+            ->addColumn(array('label'=>'No.Container','index'=>'NOCONTAINER', 'width'=>180, 'align'=>'center'))
+            ->addColumn(array('label'=>'No.HBL','index'=>'NOHBL', 'width'=>160, 'align'=>'center'))
+            ->addColumn(array('label'=>'Tgl.HBL','index'=>'TGL_HBL', 'width'=>160, 'align'=>'center'))
+            ->addColumn(array('label'=>'No. Tally','index'=>'NOTALLY','width'=>160))
             ->addColumn(array('label'=>'Consolidator','index'=>'NAMACONSOLIDATOR','width'=>250))
-            ->addColumn(array('label'=>'Size','index'=>'SIZE', 'width'=>80,'align'=>'center'))
-            ->addColumn(array('label'=>'Teus','index'=>'TEUS', 'width'=>80,'align'=>'center'))
-            ->addColumn(array('label'=>'No. Seal','index'=>'NO_SEAL', 'width'=>120,'align'=>'right'))
-//            ->addColumn(array('label'=>'Layout','index'=>'layout','width'=>80,'align'=>'center','hidden'=>true))
-//            ->addColumn(array('label'=>'UID','index'=>'UID', 'width'=>150))
-            ->addColumn(array('label'=>'Tgl. Entry','index'=>'TGLENTRY', 'width'=>150,'align'=>'center'))
-//            ->addColumn(array('label'=>'Updated','index'=>'last_update', 'width'=>150, 'search'=>false))
-//            ->addColumn(array('label'=>'Action','index'=>'action', 'width'=>80, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
+            ->addColumn(array('label'=>'Consignee','index'=>'CONSIGNEE','width'=>250))
+            ->addColumn(array('label'=>'Notify Party','index'=>'NOTIFYPARTY','width'=>160))
+            ->addColumn(array('label'=>'Qty','index'=>'QUANTITY', 'width'=>80,'align'=>'center'))
+            ->addColumn(array('label'=>'Packing','index'=>'NAMAPACKING', 'width'=>120))
+            ->addColumn(array('label'=>'Kode Kemas','index'=>'KODE_KEMAS', 'width'=>100,'align'=>'center'))
+            ->addColumn(array('label'=>'UID','index'=>'UID', 'width'=>150,'hidden'=>true))
+            ->addColumn(array('index'=>'TCONSOLIDATOR_FK', 'width'=>150,'hidden'=>true))
+            ->addColumn(array('index'=>'TCONTAINER_FK', 'width'=>150,'hidden'=>true))
+            ->addColumn(array('index'=>'TSHIPPER_FK', 'width'=>150,'hidden'=>true))
+            ->addColumn(array('index'=>'TCONSIGNEE_FK', 'width'=>150,'hidden'=>true))
+            ->addColumn(array('index'=>'TNOTIFYPARTY_FK', 'width'=>150,'hidden'=>true))
+            ->addColumn(array('index'=>'TPACKING_FK', 'width'=>150,'hidden'=>true))
+            ->addColumn(array('label'=>'Marking','index'=>'MARKING', 'width'=>150,'hidden'=>true)) 
+            ->addColumn(array('label'=>'Desc of Goods','index'=>'DESCOFGOODS', 'width'=>150,'hidden'=>true))              
+            ->addColumn(array('label'=>'Weight','index'=>'WEIGHT', 'width'=>120,'hidden'=>false, 'align'=>'right'))               
+            ->addColumn(array('label'=>'Meas','index'=>'MEAS', 'width'=>120,'hidden'=>false, 'align'=>'right'))
+            ->addColumn(array('label'=>'No.BC11','index'=>'NO_BC11', 'width'=>150,'hidden'=>true))
+            ->addColumn(array('label'=>'Tgl.BC11','index'=>'TGL_BC11', 'width'=>150,'hidden'=>true))
+            ->addColumn(array('label'=>'No.POS BC11','index'=>'NO_POS_BC11', 'width'=>150, 'align'=>'center'))
+            ->addColumn(array('label'=>'No.PLP','index'=>'NO_PLP', 'width'=>150,'hidden'=>true))                
+            ->addColumn(array('label'=>'Tgl.PLP','index'=>'TGL_PLP', 'width'=>150,'hidden'=>true))                
+            ->addColumn(array('label'=>'Surcharge (DG)','index'=>'DG_SURCHARGE', 'width'=>150,'hidden'=>true))
+            ->addColumn(array('label'=>'Surcharge (Weight)','index'=>'WEIGHT_SURCHARGE', 'width'=>150,'hidden'=>true))      
+            ->addColumn(array('label'=>'Flag','index'=>'flag_bc','width'=>80, 'align'=>'center'))
+            ->addColumn(array('label'=>'Tgl. Entry','index'=>'tglentry', 'width'=>120, 'align'=>'center'))
+            ->addColumn(array('label'=>'Jam. Entry','index'=>'jamentry', 'width'=>70,'hidden'=>true))
+            ->addColumn(array('label'=>'Updated','index'=>'last_update', 'width'=>150, 'search'=>false,'hidden'=>true))
             ->renderGrid()
         }}
+
     </div>
 </div>
 
@@ -134,8 +166,9 @@
                     <div class="row">
                         <div class="col-md-12">
                             <input name="_token" type="hidden" value="{{ csrf_token() }}" />
-                            <input name="container_id" type="hidden" id="container_id" />
+                            <input name="manifest_id" type="hidden" id="manifest_id" />
                             <input name="consolidator_id" type="hidden" id="consolidator_id" />
+                            <input name="container_id" type="hidden" id="container_id" />
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">No. Rekap</label>
                                 <div class="col-sm-6">
@@ -222,7 +255,7 @@
     $.fn.bootstrapSwitch.defaults.onColor = 'danger';
     $.fn.bootstrapSwitch.defaults.onText = 'Yes';
     $.fn.bootstrapSwitch.defaults.offText = 'No';
-    $("input[type='checkbox']").bootstrapSwitch();
+    $("input[name='rounding']").bootstrapSwitch();
 </script>
 
 @endsection

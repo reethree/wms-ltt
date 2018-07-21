@@ -72,6 +72,8 @@
             ->addColumn(array('key'=>true,'index'=>'id','hidden'=>true))
             ->addColumn(array('label'=>'Consolidator ID','index'=>'consolidator_id','width'=>80,'align'=>'center','hidden'=>true))
             ->addColumn(array('label'=>'Consolidator','index'=>'consolidator_name','width'=>300))
+            ->addColumn(array('label'=>'By Invoice','index'=>'by_invoice','width'=>80,'align'=>'center'))
+            ->addColumn(array('label'=>'Min. CBM','index'=>'min_cbm','width'=>80,'align'=>'center'))
             ->addColumn(array('label'=>'Tarif 1','index'=>'tarif1','width'=>120,'align'=>'center'))
             ->addColumn(array('label'=>'Tarif 2','index'=>'tarif2','width'=>120,'align'=>'center'))
             ->addColumn(array('label'=>'Tarif 3','index'=>'tarif3','width'=>120,'align'=>'center')) 

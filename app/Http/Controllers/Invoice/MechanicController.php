@@ -64,6 +64,7 @@ class MechanicController extends Controller
         
         $data = $request->except(['_token']);
         $data['uid'] = \Auth::getUser()->name;
+        $data['by_invoice'] = (isset($data['by_invoice'])) ? 'Y' : 'N';
         
         $consolidator = \App\Models\Consolidator::find($request->consolidator_id);
         $data['consolidator_name'] = $consolidator->NAMACONSOLIDATOR;
@@ -116,6 +117,7 @@ class MechanicController extends Controller
         $data = $request->except(['_token']);
         $data['uid'] = \Auth::getUser()->name;
         $data['updated_at'] = date('Y-m-d H:i:s');
+        $data['by_invoice'] = (isset($data['by_invoice'])) ? 'Y' : 'N';
         
         $consolidator = \App\Models\Consolidator::find($request->consolidator_id);
         $data['consolidator_name'] = $consolidator->NAMACONSOLIDATOR;
@@ -192,7 +194,10 @@ class MechanicController extends Controller
     
     public function createRekap(Request $request)
     {
-        $manifest = \App\Models\Manifest::where('TCONTAINER_FK', $request->container_id)->get();
+//        return $request->all();
+        
+        $manifest_ids = explode(',',$request->manifest_id);
+        $manifest = \App\Models\Manifest::whereIn('TMANIFEST_PK', $manifest_ids)->get();
         $tarif = \DB::table('mechanic_tarif')->where('consolidator_id', $request->consolidator_id)->first();
         
         if($tarif){
@@ -207,32 +212,58 @@ class MechanicController extends Controller
                 //Insert Rekap Item
                 foreach ($manifest as $item):
 
-                    // Perhitungan CBM
-                    $weight = $item->WEIGHT / 1000;
-                    $meas = $item->MEAS;
-                    $cbm = array($weight, $meas);
+                    if($tarif->by_invoice == 'Y'){
+                        
+                        $amount = \App\Models\Invoice::select('total_amount as total')->where(array('manifest_id' => $item->TMANIFEST_PK, 'template_type' => 'Forwarder', 'renew' => 'N'))->first();
+                        
+                        if($amount){
+                            $data['rekap_id'] = $insert_id;
+                            $data['hbl'] = $item->NOHBL; 
+                            $data['consignee'] = $item->CONSIGNEE;
+                            $data['kgs'] = $item->WEIGHT;
+                            $data['cbm'] = $item->MEAS;
+                            $data['tarif'] = $tarif->tarif1;
+                            $data['maxcbm'] = 0;
+                            $data['amount'] = $amount->total;
+                            $data['type'] = 'main';
+                            $data['uid'] = \Auth::getUser()->name;
 
-                    if(isset($request->rounding)){
-                        $maxcbm = ceil($meas);
+                            $subtotal_amount[] = $data['amount'];
+
+                            \DB::table('mechanic_rekap_item')->insert($data);
+                        }else{
+                            continue;
+                        }
+                        
                     }else{
-                        $maxcbm = $meas;
+                        // Perhitungan CBM
+                        $weight = $item->WEIGHT / 1000;
+                        $meas = $item->MEAS;
+                        $cbm = array($weight, $meas);
+
+                        if(isset($request->rounding)){
+                            $maxcbm = ceil(max($cbm));
+                        }else{
+                            $maxcbm = max($cbm);
+                        }
+
+                        if($maxcbm < $tarif->min_cbm){ $maxcbm = $tarif->min_cbm; }
+
+                        $data['rekap_id'] = $insert_id;
+                        $data['hbl'] = $item->NOHBL; 
+                        $data['consignee'] = $item->CONSIGNEE;
+                        $data['kgs'] = $item->WEIGHT;
+                        $data['cbm'] = $item->MEAS;
+                        $data['tarif'] = $tarif->tarif1;
+                        $data['maxcbm'] = $maxcbm;
+                        $data['amount'] = $maxcbm*$tarif->tarif1;
+                        $data['type'] = 'main';
+                        $data['uid'] = \Auth::getUser()->name;
+
+                        $subtotal_amount[] = $data['amount'];
+
+                        \DB::table('mechanic_rekap_item')->insert($data);
                     }
-
-                    $maxcbm = max($cbm);
-
-                    $data['rekap_id'] = $insert_id;
-                    $data['hbl'] = $item->NOHBL; 
-                    $data['consignee'] = $item->CONSIGNEE;
-                    $data['kgs'] = $item->WEIGHT;
-                    $data['cbm'] = $item->MEAS;
-                    $data['tarif'] = $tarif->tarif1;
-                    $data['amount'] = $maxcbm*$tarif->tarif1;
-                    $data['type'] = 'main';
-                    $data['uid'] = \Auth::getUser()->name;
-
-                    $subtotal_amount[] = $data['amount'];
-
-                    \DB::table('mechanic_rekap_item')->insert($data);
 
                 endforeach;
 
@@ -266,16 +297,9 @@ class MechanicController extends Controller
             $item_id = $explode[1];
 
             $item = \DB::table('mechanic_rekap_item')->find($item_id);
-
-            // Perhitungan CBM
-            $weight = $item->kgs / 1000;
-            $meas = $item->cbm;
-            $cbm = array($weight, $meas);
-
-            $maxcbm = max($cbm);
             
             $dataItem['tarif'] = $value;
-            $dataItem['amount'] = $maxcbm*$value;
+            $dataItem['amount'] = $item->maxcbm*$value;
             $subtotal_amount[] = $dataItem['amount'];
             
             //Update Item
