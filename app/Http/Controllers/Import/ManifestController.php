@@ -202,6 +202,7 @@ class ManifestController extends Controller
 //        $data['tally_number'] = $container->NoJob.'.'.$regID;
         $data['perusahaans'] = DBPerusahaan::select('TPERUSAHAAN_PK as id', 'NAMAPERUSAHAAN as name')->get();
         $data['packings'] = DBPacking::select('TPACKING_PK as id', 'KODEPACKING as code', 'NAMAPACKING as name')->get();
+        $data['locations'] = \DB::table('location')->get();
         
         return view('import.lcl.edit-manifest')->with($data);
     }
@@ -241,6 +242,12 @@ class ManifestController extends Controller
         
         $data['tglmasuk'] = $container->TGLMASUK;
         $data['jammasuk'] = $container->JAMMASUK;
+        
+        $location = \DB::table('location')->find($data['location_id']);
+        if($location){
+            $data['location_id'] = $location->id;
+            $data['location_name'] = $location->name;
+        }
         
         $update = DBManifest::where('TMANIFEST_PK', $id)
             ->update($data);
