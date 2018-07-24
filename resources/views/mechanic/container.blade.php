@@ -49,6 +49,15 @@
         $("#consolidator_id").val(rowdata.TCONSOLIDATOR_FK);
     }
     
+    function onSelectAllEvent()
+    {
+        rowid = $('#lclMechanicGrid').jqGrid('getGridParam', 'selrow');
+        rowdata = $('#lclMechanicGrid').getRowData(rowid);
+
+        $("#container_id").val(rowdata.TCONTAINER_FK);
+        $("#consolidator_id").val(rowdata.TCONSOLIDATOR_FK);
+    }
+    
     $(document).ready(function()
     {      
         $('#btn-rekap').on("click", function(){
@@ -112,6 +121,7 @@
             ->setFilterToolbarOptions(array('autosearch'=>true))
             ->setGridEvent('gridComplete', 'gridCompleteEvent')
             ->setGridEvent('onSelectRow', 'onSelectRowEvent')
+            ->setGridEvent('onSelectAll', 'onSelectAllEvent')
             ->addColumn(array('key'=>true,'index'=>'TMANIFEST_PK','hidden'=>true))
 //            ->addColumn(array('label'=>'Action','index'=>'action', 'width'=>120, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
 //            ->addColumn(array('label'=>'Validasi','index'=>'VALIDASI','width'=>80, 'align'=>'center'))
