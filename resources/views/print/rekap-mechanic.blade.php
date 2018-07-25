@@ -75,6 +75,7 @@
               </tr>
               </thead>
               <tbody>
+                <?php $subtotal_main = 0;?>
                 @foreach($itemsMain as $item)
                 <tr>
                     <td style="text-align: center;border-top: none;border-bottom: none;">{{$i}}</td>
@@ -84,8 +85,13 @@
                     <td style="text-align: center;border-top: none;border-bottom: none;">{{$item->cbm}}</td>
                     <td style="text-align: right;border-top: none;border-bottom: none;">{{number_format($item->amount)}}</td>
                 </tr>
-                <?php $i++;?>
-                @endforeach          
+                <?php $i++;$subtotal_main+=$item->amount;?>
+                @endforeach       
+                <tr>
+                    <td colspan="2" style="border-right: none;">&nbsp;</td>
+                    <td style="border-left: none;border-right: none;text-align: right;">SUB TOTAL</td>
+                    <td colspan="3" style="text-align: right;border-left: none;">{{number_format($subtotal_main)}}</td>
+                </tr>
               </tbody>
           </table>
       </div>
@@ -96,14 +102,22 @@
       <div class="col-xs-12 table-responsive">
           <table border="1" cellspacing="0" cellpadding="0">
               <tbody>
+                <?php $subtotal_Add = 0;?>
                 @foreach($itemsAdd as $itemAdd)
                 <tr>
                     <td style="text-align: center;border-top: none;border-bottom: none;">{{$j}}</td>
                     <td style="border-top: none;border-bottom: none;">{{$itemAdd->name}}</td>
                     <td style="text-align: right;border-top: none;border-bottom: none;">{{number_format($itemAdd->amount)}}</td>
                 </tr>
-                <?php $j++;?>
-                @endforeach        
+                <?php $j++;$subtotal_Add+=$itemAdd->amount;?>
+                @endforeach 
+                @if($subtotal_Add>0)
+                <tr>
+                    <td style="border-right: none;border-left: none;border-bottom: none;">&nbsp;</td>
+                    <td style="border-left: none;border-right: none;border-bottom: none;">SUB TOTAL</td>
+                    <td style="text-align: right;border-left: none;border-bottom: none;">{{number_format($subtotal_Add)}}</td>
+                </tr>
+                @endif
               </tbody>
           </table>
       </div>
