@@ -246,8 +246,13 @@ class MechanicController extends Controller
                         }else{
                             $maxcbm = max($cbm);
                         }
-
-                        if($maxcbm < $tarif->min_cbm){ $maxcbm = $tarif->min_cbm; }
+                        
+                        if($tarif->min_cbm > 0){
+                            $harga = $tarif->tarif1;
+                        }else{
+                            if($maxcbm < $tarif->min_cbm){ $maxcbm = $tarif->min_cbm; }
+                            $harga = $maxcbm*$tarif->tarif1;
+                        }
 
                         $data['rekap_id'] = $insert_id;
                         $data['hbl'] = $item->NOHBL; 
@@ -256,7 +261,7 @@ class MechanicController extends Controller
                         $data['cbm'] = $item->MEAS;
                         $data['tarif'] = $tarif->tarif1;
                         $data['maxcbm'] = $maxcbm;
-                        $data['amount'] = $maxcbm*$tarif->tarif1;
+                        $data['amount'] = $harga;
                         $data['type'] = 'main';
                         $data['uid'] = \Auth::getUser()->name;
 
