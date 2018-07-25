@@ -247,7 +247,7 @@ class MechanicController extends Controller
                             $maxcbm = max($cbm);
                         }
                         
-                        if($tarif->min_cbm > 0){
+                        if($tarif->min_cbm == 0){
                             $harga = $tarif->tarif1;
                         }else{
                             if($maxcbm < $tarif->min_cbm){ $maxcbm = $tarif->min_cbm; }
