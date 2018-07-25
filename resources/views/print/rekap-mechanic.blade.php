@@ -114,7 +114,7 @@
                 @if($subtotal_Add>0)
                 <tr>
                     <td style="border-right: none;border-left: none;border-bottom: none;">&nbsp;</td>
-                    <td style="border-left: none;border-right: none;border-bottom: none;">SUB TOTAL</td>
+                    <td style="text-align: center;border-left: none;border-right: none;border-bottom: none;">SUB TOTAL</td>
                     <td style="text-align: right;border-left: none;border-bottom: none;">{{number_format($subtotal_Add)}}</td>
                 </tr>
                 @endif
@@ -138,7 +138,7 @@
                 <tr>
                   <td style="width:100%" align="right">Total Tanpa Pajak</td>
                   <td align="right" style="width:10px;text-align: right;">Rp.</td>
-                  <td align="right" style="text-align: right;">{{ number_format($rekap->subtotal) }}</td>
+                  <td align="right" style="text-align: right;">{{ number_format($rekap->subtotal+$subtotal_Add) }}</td>
                 </tr>
                 <tr>
                   <td align="right">PPn {{$rekap->tax.'%'}}</td>
