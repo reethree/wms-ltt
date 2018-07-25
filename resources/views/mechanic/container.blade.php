@@ -218,8 +218,7 @@
                                 <div class="col-sm-8">
                                     <select class="form-control select2" name="officer" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
                                         <option value="DJAENUDIN">DJAENUDIN</option>
-                                        <option value="..">..</option>
-                                        <option value="...">...</option>
+                                        <option value="SUHARTINI">SUHARTINI</option>
                                     </select>
                                 </div>
                             </div>
