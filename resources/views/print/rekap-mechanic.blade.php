@@ -47,7 +47,8 @@
         </div>
         <div style="text-align: center;">
             <h2 style="margin-bottom: 0;">REKAP MECHANIC</h2>
-            <p style="margin-top: 0;font-size: 14px;">{{$rekap->number.'/LTT/GDYS/'.$bulan.'/'.date('Y')}}</p>
+            <!--<p style="margin-top: 0;font-size: 14px;">{{$rekap->number.'/LTT/GDYS/'.$bulan.'/'.date('Y')}}</p>-->
+            <p style="margin-top: 0;font-size: 14px;">{{$rekap->number}}</p>
         </div>
         <div class="col-sm-6 invoice-col">
             <table border="0" cellspacing="0" cellpadding="0">

@@ -181,13 +181,13 @@
                             <input name="container_id" type="hidden" id="container_id" />
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">No. Rekap</label>
-                                <div class="col-sm-6">
-                                    <div class="input-group date">                                  
-                                        <input type="number" class="form-control pull-left" name="number" required />
-                                        <div class="input-group-addon">
+                                <div class="col-sm-8">
+                                    <!--<div class="input-group date">-->                                  
+                                        <input type="text" class="form-control pull-left" name="number" required />
+<!--                                        <div class="input-group-addon">
                                             {{'/LTT/GDYS/'.$bulan.'/'.date('Y')}}
-                                        </div>
-                                    </div>
+                                        </div>-->
+                                    <!--</div>-->
                                 </div>
                             </div>
                             <div class="form-group">
