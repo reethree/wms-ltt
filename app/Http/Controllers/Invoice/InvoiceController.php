@@ -78,6 +78,7 @@ class InvoiceController extends Controller
         $data['invoice'] = \App\Models\Invoice::find($id);
         $data['items'] = \App\Models\InvoiceItem::where('billing_invoice_id', $id)->get();
         $data['manifest'] = \App\Models\Manifest::find($data['invoice']->manifest_id);
+        $data['consolidator'] = \App\Models\Consolidator::find($data['manifest']->TCONSOLIDATOR_FK);
 //        $data['tarif'] = \App\Models\InvoiceTarif::where(array('consolidator_id' => $data['manifest']->TCONSOLIDATOR_FK, 'type' => $data['manifest']->INVOICE))->first();
 //        $data['tarif'] = \App\Models\ConsolidatorTarif::where('TCONSOLIDATOR_FK', $data['manifest']->TCONSOLIDATOR_FK)->first();
 //        $total = $data['invoice']->sub_total + $data['invoice']->ppn;
@@ -98,6 +99,7 @@ class InvoiceController extends Controller
         $data['invoice'] = \App\Models\Invoice::find($id);
         $data['items'] = \App\Models\InvoiceItem::where('billing_invoice_id', $id)->get();
         $data['manifest'] = \App\Models\Manifest::find($data['invoice']->manifest_id);
+        $data['consolidator'] = \App\Models\Consolidator::find($data['manifest']->TCONSOLIDATOR_FK);
 //        $data['tarif'] = \App\Models\InvoiceTarif::where(array('consolidator_id' => $data['manifest']->TCONSOLIDATOR_FK, 'type' => $data['manifest']->INVOICE))->first();
 //        $data['tarif'] = \App\Models\ConsolidatorTarif::where('TCONSOLIDATOR_FK', $data['manifest']->TCONSOLIDATOR_FK)->first();
 //        $total = $data['invoice']->sub_total + $data['invoice']->ppn;

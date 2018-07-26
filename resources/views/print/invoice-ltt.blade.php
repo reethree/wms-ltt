@@ -29,15 +29,35 @@
     <div class="row invoice-info">
         <div class="col-sm-6 invoice-col" style="width: 50%; float: left;">
           <table border="0" cellspacing="0" cellpadding="0">
-              <tr>
-                  <td colspan="3">Kepada Yth, </td>
-              </tr>
-              <tr>
-                  <td colspan="3"><b>{{ $manifest->CONSIGNEE }}</b></td>
-              </tr>
+              @if($invoice->bill_to == 'consignee')
                 <tr>
-                  <td colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-              </tr>
+                    <td colspan="3">Kepada Yth, </td>
+                </tr>
+                <tr>
+                    <td colspan="3"><b>{{ $manifest->CONSIGNEE }}</b></td>
+                </tr>
+                <tr>
+                    <td colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+              @else
+                <tr>
+                    <td colspan="3">Kepada Yth, </td>
+                </tr>
+                <tr>
+                    <td colspan="3"><b>{{ $manifest->NAMACONSOLIDATOR }}</b></td>
+                </tr>
+                <tr>
+                    <td colspan="3"><p style="width: 60%;">{{ $consolidator->ALAMAT }}</p></td>
+                </tr>
+                <tr>
+                    <td colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="width: 100px;"><b>Consignee</b></td>
+                    <td style="width: 10px;">&nbsp;&nbsp;:&nbsp;&nbsp;</td>
+                    <td>{{ $manifest->CONSIGNEE }}</td>
+                </tr>
+              @endif
               <tr>
                   <td style="width: 100px;"><b>Ex. Kapal</b></td>
                   <td style="width: 10px;">&nbsp;&nbsp;:&nbsp;&nbsp;</td>
@@ -68,6 +88,30 @@
       </div>
         <div class="col-sm-6 invoice-col" style="width: 50%; float: left;">
             <table border="0" cellspacing="0" cellpadding="0">
+                @if($invoice->bill_to == 'consignee')
+                <tr>
+                    <td colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+              @else
+                <tr>
+                    <td colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+<!--                <tr>
+                    <td colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>-->
+              @endif
+                <tr>
+                    <td colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
                 <tr>
                     <td style="width: 100px;"><b>No. Invoice</b></td>
                     <td style="width: 10px;">&nbsp;&nbsp;:&nbsp;&nbsp;</td>

@@ -242,6 +242,15 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="col-sm-3 control-label">Bill To</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control select2" name="bill_to" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                        <option value="consignee" selected>Consignee</option>
+                                        <option value="consolidator">Consolidator</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-sm-3 control-label">Tgl. Cetak</label>
                                 <div class="col-sm-6">
                                     <div class="input-group date">
@@ -273,7 +282,7 @@
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Petugas Keuangan</label>
-                                <div class="col-sm-8">
+                                <div class="col-sm-6">
                                     <select class="form-control select2" name="officer" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
                                         <option value="SUHARTINI">SUHARTINI</option>
                                         <option value="DJAENUDIN">DJAENUDIN</option>

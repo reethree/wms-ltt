@@ -598,6 +598,11 @@ class LclController extends Controller
         $data = $request->json()->all(); 
         unset($data['TCONTAINER_PK'], $data['_token']);
         
+        if(empty($data['TGLMASUK']) || $data['TGLMASUK'] == '0000-00-00'){
+            $data['TGLMASUK'] = NULL;
+            $data['JAMMASUK'] = NULL;
+        }
+        
         $update = DBContainer::where('TCONTAINER_PK', $id)
             ->update($data);
         
@@ -791,6 +796,12 @@ class LclController extends Controller
         if($kode_dok){
             $data['KODE_DOKUMEN'] = $kode_dok->name;
         }
+        
+        if(empty($data['tglrelease']) || $data['tglrelease'] == '0000-00-00'){
+            $data['tglrelease'] = NULL;
+            $data['jamrelease'] = NULL;
+        }
+        
         $data['TGLSURATJALAN'] = $data['tglrelease'];
         $data['JAMSURATJALAN'] = $data['jamrelease'];
         $data['tglfiat'] = $data['tglrelease'];
@@ -1183,7 +1194,7 @@ class LclController extends Controller
                 $coaricontdetail->FLAG_REVISI = '';
                 $coaricontdetail->TGL_REVISI = '';
                 $coaricontdetail->TGL_REVISI_UPDATE = '';
-                $coaricontdetail->KD_TPS_ASAL = '';
+                $coaricontdetail->KD_TPS_ASAL = $container->KD_TPS_ASAL;
                 $coaricontdetail->FLAG_UPD = '';
                 $coaricontdetail->RESPONSE_MAL0 = '';
                 $coaricontdetail->STATUS_TPS_MAL0 = '';
@@ -1288,7 +1299,7 @@ class LclController extends Controller
                 $codecocontdetail->FLAG_REVISI = '';
                 $codecocontdetail->TGL_REVISI = '';
                 $codecocontdetail->TGL_REVISI_UPDATE = '';
-                $codecocontdetail->KD_TPS_ASAL = '';
+                $codecocontdetail->KD_TPS_ASAL = $container->KD_TPS_ASAL;
                 $codecocontdetail->RESPONSE_MAL0 = '';
                 $codecocontdetail->STATUS_TPS_MAL0 = '';
                 $codecocontdetail->TGL_ENTRY = date('Y-m-d');
@@ -1323,6 +1334,7 @@ class LclController extends Controller
             $invoice->number = $request->no_invoice;
             $invoice->officer = $request->officer;
             $invoice->tgl_cetak = $request->tgl_cetak;
+            $invoice->bill_to = $request->bill_to;
 
             // Perhitungan CBM
             $weight = $manifest->WEIGHT / 1000;
@@ -1462,6 +1474,7 @@ class LclController extends Controller
             $invoice->number = $request->no_invoice;
             $invoice->officer = $request->officer;
             $invoice->tgl_cetak = $request->tgl_cetak;
+            $invoice->bill_to = $request->bill_to;
 
             // Perhitungan CBM
             $weight = $manifest->WEIGHT / 1000;
@@ -1846,7 +1859,7 @@ class LclController extends Controller
                 $codecokmsdetail->TGL_IJIN_TPS = '';
                 $codecokmsdetail->RESPONSE_IPC = '';
                 $codecokmsdetail->STATUS_TPS_IPC = '';
-                $codecokmsdetail->KD_TPS_ASAL = '';
+                $codecokmsdetail->KD_TPS_ASAL = $manifest->KD_TPS_ASAL;
                 $codecokmsdetail->TGL_ENTRY = date('Y-m-d');
                 $codecokmsdetail->JAM_ENTRY = date('H:i:s');
                 

@@ -546,8 +546,13 @@ class FclController extends Controller
         $data = $request->json()->all(); 
         unset($data['TCONTAINER_PK'], $data['_token']);
         
+        if(empty($data['TGLMASUK']) || $data['TGLMASUK'] == '0000-00-00'){
+            $data['TGLMASUK'] = NULL;
+            $data['JAMMASUK'] = NULL;
+        }
+        
         $teus = DBContainer::select('TEUS')->where('TCONTAINER_PK', $id)->first();
-
+        
         $update = DBContainer::where('TCONTAINER_PK', $id)
             ->update($data);
         
@@ -714,6 +719,12 @@ class FclController extends Controller
         if($kd_dok):
             $data['KODE_DOKUMEN'] = $kd_dok->name;
         endif;
+        
+        if(empty($data['TGLRELEASE']) || $data['TGLRELEASE'] == '0000-00-00'){
+            $data['TGLRELEASE'] = NULL;
+            $data['JAMRELEASE'] = NULL;
+        }
+        
         $data['TGLFIAT'] = $data['TGLRELEASE'];
         $data['JAMFIAT'] = $data['JAMRELEASE'];
         $data['TGLSURATJALAN'] = $data['TGLRELEASE'];
@@ -1057,8 +1068,8 @@ class FclController extends Controller
                 $coaricontdetail->TGL_BL_AWB = (!empty($container->TGL_BL_AWB) ? date('Ymd', strtotime($container->TGL_BL_AWB)) : '');
                 $coaricontdetail->NO_MASTER_BL_AWB = $container->NOMBL;
                 $coaricontdetail->TGL_MASTER_BL_AWB = (!empty($container->TGL_MASTER_BL) ? date('Ymd', strtotime($container->TGL_MASTER_BL)) : '');
-                $coaricontdetail->ID_CONSIGNEE = $container->ID_CONSOLIDATOR;
-                $coaricontdetail->CONSIGNEE = $container->NAMACONSOLIDATOR;
+                $coaricontdetail->ID_CONSIGNEE = $container->ID_CONSIGNEE;
+                $coaricontdetail->CONSIGNEE = $container->CONSIGNEE;
                 $coaricontdetail->BRUTO = (!empty($container->WEIGHT) ? $container->WEIGHT : 0);
                 $coaricontdetail->NO_BC11 = $container->NO_BC11;
                 $coaricontdetail->TGL_BC11 = (!empty($container->TGL_BC11) ? date('Ymd', strtotime($container->TGL_BC11)) : '');
@@ -1094,7 +1105,7 @@ class FclController extends Controller
                 $coaricontdetail->FLAG_REVISI = '';
                 $coaricontdetail->TGL_REVISI = '';
                 $coaricontdetail->TGL_REVISI_UPDATE = '';
-                $coaricontdetail->KD_TPS_ASAL = '';
+                $coaricontdetail->KD_TPS_ASAL = $container->KD_TPS_ASAL;;
                 $coaricontdetail->FLAG_UPD = '';
                 $coaricontdetail->RESPONSE_MAL0 = '';
                 $coaricontdetail->STATUS_TPS_MAL0 = '';
@@ -1196,12 +1207,12 @@ class FclController extends Controller
                 $codecocontdetail->TGL_IJIN_TPS = '';
                 $codecocontdetail->RESPONSE_IPC = '';
                 $codecocontdetail->STATUS_TPS_IPC = '';
-                $codecocontdetail->NOSPPB = '';
-                $codecocontdetail->TGLSPPB = '';
+                $codecocontdetail->NOSPPB = (!empty($container->NO_SPPB) ? $container->NO_SPPB : '');;
+                $codecocontdetail->TGLSPPB = (!empty($container->TGL_SPPB) ? date('Ymd', strtotime($container->TGL_SPPB)) : '');;
                 $codecocontdetail->FLAG_REVISI = '';
                 $codecocontdetail->TGL_REVISI = '';
                 $codecocontdetail->TGL_REVISI_UPDATE = '';
-                $codecocontdetail->KD_TPS_ASAL = '';
+                $codecocontdetail->KD_TPS_ASAL = $container->KD_TPS_ASAL;
                 $codecocontdetail->RESPONSE_MAL0 = '';
                 $codecocontdetail->STATUS_TPS_MAL0 = '';
                 $codecocontdetail->TGL_ENTRY = date('Y-m-d');

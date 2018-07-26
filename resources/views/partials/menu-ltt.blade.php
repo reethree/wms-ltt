@@ -266,21 +266,21 @@
                         <li><a href="{{route('billing-template')}}">Billing Template</a></li>
 <!--                        <li><a href="{{route('invoice-tarif-index')}}">Data Tarif</a></li>--> 
                         <li><a href="{{route('invoice-release-index')}}">Data Release/Gate Out</a></li>
-                        <li><a href="{{route('invoice-index')}}">Data Invoice</a></li>
-                        <li class="treeview">
-                            <a href="#">
-                              <i class="fa fa-archive"></i>
-                              <span>Mechanic</span>
-                              <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                              </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li><a href="{{route('mechanic-tarif')}}">Tarif Mechanic</a></li>
-                                <li><a href="{{route('mechanic-container')}}">Data Container</a></li>
-                                <li><a href="{{route('mechanic-rekap')}}">Rekap Mechanic</a></li>
-                            </ul>
-                        </li>
+                        <li><a href="{{route('invoice-index')}}">Data Invoice</a></li>                       
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="#">
+                      <i class="fa fa-circle-o"></i>
+                      <span>Mechanic</span>
+                      <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                      </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{{route('mechanic-tarif')}}">Tarif Mechanic</a></li>
+                        <li><a href="{{route('mechanic-container')}}">Data Container</a></li>
+                        <li><a href="{{route('mechanic-rekap')}}">Rekap Mechanic</a></li>
                     </ul>
                 </li>
 <!--                <li class="treeview">

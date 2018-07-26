@@ -19,14 +19,33 @@
         </div>
       <div class="col-sm-6 invoice-col">
           <table>
-              <tr>
+              @if($invoice->bill_to == 'consignee')
+                <tr>
                   <td><b>Kepada Yth,</b></td>
                   <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                   <td><b>{{ $manifest->CONSIGNEE }}</b></td>
-              </tr>
-              <tr>
+                </tr>
+                <tr>
                   <td colspan="3">&nbsp;</td>
-              </tr>
+                </tr>
+              @else
+                <tr>
+                  <td><b>Kepada Yth,</b></td>
+                  <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                  <td><b>{{ $manifest->NAMACONSOLIDATOR }}</b></td>
+                </tr>
+<!--                <tr>
+                    <td colspan="3">{{$consolidator->ALAMAT}}</td>
+                </tr>-->
+                <tr>
+                  <td colspan="3">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td><b>Consignee</b></td>
+                  <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
+                  <td>{{ $manifest->CONSIGNEE }}</td>
+                </tr>
+              @endif
               <tr>
                   <td><b>Ex. Kapal</b></td>
                   <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
