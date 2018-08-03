@@ -180,6 +180,17 @@
                             <input name="consolidator_id" type="hidden" id="consolidator_id" />
                             <input name="container_id" type="hidden" id="container_id" />
                             <div class="form-group">
+                                <label class="col-sm-3 control-label">Billing Template</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control select2" name="tarif_id" id="tarif_id" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                        <option value="">Choose Tarif</option>
+                                        @foreach($tarifs as $tarif)
+                                            <option value="{{ $tarif->id }}">{{ $tarif->name.' ('.$tarif->consolidator_name.')' }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-sm-3 control-label">No. Rekap</label>
                                 <div class="col-sm-8">
                                     <!--<div class="input-group date">-->                                  

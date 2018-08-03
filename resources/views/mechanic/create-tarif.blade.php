@@ -14,7 +14,12 @@
             <div class="row">
                 <div class="col-md-6">
                     <input name="_token" type="hidden" value="{{ csrf_token() }}">
-                    
+                    <div class="form-group">
+                      <label for="name" class="col-sm-3 control-label">Nama Tarif</label>
+                      <div class="col-sm-8">
+                          <input type="text" name="name" class="form-control" id="name" required>
+                      </div>
+                    </div>
                     <div class="form-group">
                       <label for="roles" class="col-sm-3 control-label">Consolidator</label>
                       <div class="col-sm-8">

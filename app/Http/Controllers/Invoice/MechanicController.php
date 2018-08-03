@@ -156,6 +156,8 @@ class MechanicController extends Controller
             ]
         ];        
 
+        $data['tarifs'] = \DB::table('mechanic_tarif')->get();
+        
         return view('mechanic.container')->with($data);
     }
     
@@ -198,11 +200,11 @@ class MechanicController extends Controller
         
         $manifest_ids = explode(',',$request->manifest_id);
         $manifest = \App\Models\Manifest::whereIn('TMANIFEST_PK', $manifest_ids)->get();
-        $tarif = \DB::table('mechanic_tarif')->where('consolidator_id', $request->consolidator_id)->first();
+        $tarif = \DB::table('mechanic_tarif')->find($request->tarif_id);
         
         if($tarif){
             //Insert Rekap Mechanic
-            $dataRekap = $request->except(['_token','rounding']);
+            $dataRekap = $request->except(['_token','rounding','tarif_id']);
             $dataRekap['uid'] = \Auth::getUser()->name;
 
             $insert_id = \DB::table('mechanic_rekap')->insertGetId($dataRekap);
