@@ -861,7 +861,12 @@ class LclController extends Controller
      */
     public function destroy($id)
     {
-        DBJoborder::destroy($id);
+        DBJoborder::where('TCONTAINER_FK', $id)->delete();
+        // Delete Container
+        DBContainer::where('TCONTAINER_PK', $id)->delete();
+        // Delete Manifest
+        DBManifest::where('TCONTAINER_FK', $id)->delete();
+        
         return back()->with('success', 'LCL Register has been deleted.'); 
     }
     

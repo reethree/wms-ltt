@@ -132,6 +132,8 @@ class EloquentContainer {
       try
       {
         $this->Container->destroy($id);
+        //Delete Manifest
+        $this->Manifest->where('TCONTAINER_FK',$id)->delete();
       }
       catch (Exception $e)
       {
