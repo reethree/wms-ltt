@@ -5,14 +5,11 @@
 @stop
 
 @section('content')
-        
-    <div id="details" class="clearfix">
-        <div id="title">TALLY SHEET STRIPPING</div>
+                font-weight: bold;
         <table border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <td>
-                    <table border="0" cellspacing="0" cellpadding="0" style="font-size: 12px;">
-                        <tr>
+                    <table border="0" cellspacing="0" cellpadding="0" style="font-size: 12px;font-weight: bold;">
                             <td>Consolidator</td>
                             <td class="padding-10 text-center">:</td>
                             <td>{{ $container->NAMACONSOLIDATOR }}</td>

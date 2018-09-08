@@ -364,13 +364,7 @@ class ManifestController extends Controller
         $data['manifests'] = $manifests;
 //        return view('print.tally-sheet', $container);
         
-        switch ($type){
-            case 'tally':
-                $pdf = \PDF::loadView('print.tally-sheet', $data);        
-                break;
-            case 'log':
-                $pdf = \PDF::loadView('print.log-stripping', $data);
-                break;
+        //         break;
         }
         
         return $pdf->stream(ucfirst($type).'-'.$container->NOCONTAINER.'-'.date('dmy').'.pdf');
