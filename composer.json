@@ -15,7 +15,8 @@
         "orchestra/parser": "~3.0",
         "artisaninweb/laravel-soap": "0.2.*",
         "artesaos/seotools": "^0.10.0",
-        "maatwebsite/excel": "~2.1.0"
+        "maatwebsite/excel": "~2.1.0",
+        "simplesoftwareio/simple-qrcode": "~1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

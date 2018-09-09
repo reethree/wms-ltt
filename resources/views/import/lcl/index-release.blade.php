@@ -20,14 +20,18 @@
                 $("#" + cl).find("td").css("color", "#666");
             }
             if(rowdata.flag_bc == 'Y') {
-                $("#" + cl).find("td").css("color", "#FF0000");
+                $("#" + cl).find("td").css("background-color", "#FF0000");
             } 
+            if(rowdata.status_bc == 'HOLD') {
+                $("#" + cl).find("td").css("background-color", "#ffe500");
+            }
+            
         } 
     }
     
     function onSelectRowEvent()
     {
-        $('#btn-group-1').enableButtonGroup();
+        $('#btn-group-1,#btn-group-6').enableButtonGroup();
     }
     
     $(document).ready(function()
@@ -45,10 +49,68 @@
             }
         });
         
+        $('#get-sppb-btn').click(function(){
+            
+            if(!confirm('Apakah anda yakin?')){return false;}
+            
+            var kd_dok = $("#KD_DOK_INOUT").val();
+            if(kd_dok == ''){
+                alert('Kode Dokumen masih kosong!!!');
+                return false;
+            }
+            
+            $this = $(this);
+            $this.html('<i class="fa fa-spin fa-spinner"></i> Please wait...');
+            $this.attr('disabled','disabled');
+
+            var url = '{{ route("lcl-delivery-release-getdatasppb") }}';
+
+            $.ajax({
+                type: 'POST',
+                data: 
+                {
+                    'id' : $('#TMANIFEST_PK').val(),
+                    'kd_dok' : kd_dok,
+                    '_token' : '{{ csrf_token() }}'
+                },
+                dataType : 'json',
+                url: url,
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert('Something went wrong, please try again later.');
+                },
+                beforeSend:function()
+                {
+
+                },
+                success:function(json)
+                {
+                    console.log(json);
+
+                    if(json.success) {
+                        $('#btn-toolbar').showAlertAfterElement('alert-success alert-custom', json.message, 5000);
+                        
+                        var datasppb = json.data; 
+                        $('#NO_SPPB').val(datasppb.NO_SPPB);
+                        $('#TGL_SPPB').val(datasppb.TGL_SPPB);
+                        $('#ID_CONSIGNEE').val(datasppb.NPWP);
+                    } else {
+                      $('#btn-toolbar').showAlertAfterElement('alert-danger alert-custom', json.message, 5000);
+                    }
+                    
+                    $this.html('<i class="fa fa-download"></i> Get Data');
+                    $this.removeAttr('disabled');
+
+                }
+            });
+        });
+        
         $('#btn-edit').click(function() {
             //Gets the selected row id.
             rowid = $('#lclReleaseGrid').jqGrid('getGridParam', 'selrow');
             rowdata = $('#lclReleaseGrid').getRowData(rowid);
+
+            if(!rowid) {alert('Please Select Row');return false;} 
 
             populateFormFields(rowdata, '');
             $('#TMANIFEST_PK').val(rowid);
@@ -71,7 +133,7 @@
 //            if(!rowdata.tglrelease && !rowdata.jamrelease) {
 //                $('#btn-group-4').disabledButtonGroup();
 //                $('#btn-group-5').disabledButtonGroup();
-                $('#btn-group-2').enableButtonGroup();
+                $('#btn-group-2,#btn-sppb').enableButtonGroup();
                 $('#release-form').enableFormGroup();
 //            }else{
                 $('#btn-group-4').enableButtonGroup();
@@ -189,6 +251,23 @@
             window.open("{{ route('lcl-delivery-fiatmuat-cetak', '') }}/"+id,"preview wo fiat muat","width=600,height=600,menubar=no,status=no,scrollbars=yes");   
         });
         
+        $('#btn-print-barcode').click(function() {
+
+            var $grid = $("#lclReleaseGrid"), selIds = $grid.jqGrid("getGridParam", "selarrrow"), i, n,
+                cellValues = [];
+            for (i = 0, n = selIds.length; i < n; i++) {
+                cellValues.push($grid.jqGrid("getCell", selIds[i], "TMANIFEST_PK"));
+            }
+            
+            var manifestId = cellValues.join(",");
+            
+            if(!manifestId) {alert('Please Select Row');return false;}               
+            if(!confirm('Apakah anda yakin?')){return false;}    
+            
+//            console.log(manifestId);
+            window.open("{{ route('cetak-barcode', array('','','')) }}/"+manifestId+"/manifest/release","preview barcode","width=305,height=600,menubar=no,status=no,scrollbars=yes");
+        });
+        
         $('#btn-upload').click(function() {
             
             if(!confirm('Apakah anda yakin?')){return false;}
@@ -257,6 +336,8 @@
                     ->setGridOption('shrinkToFit', true)
                     ->setGridOption('sortname','TMANIFEST_PK')
                     ->setGridOption('rownumbers', true)
+                    ->setGridOption('rownumWidth', 50)
+                    ->setGridOption('multiselect', true)
                     ->setGridOption('height', '250')
                     ->setGridOption('rowList',array(20,50,100))
                     ->setGridOption('useColSpanStyle', true)
@@ -272,11 +353,11 @@
                     ->addColumn(array('label'=>'No. Tally','index'=>'NOTALLY','width'=>160))
                     ->addColumn(array('label'=>'No. SPK','index'=>'NOJOBORDER', 'width'=>150,'hidden'=>true))
                     ->addColumn(array('label'=>'No. Container','index'=>'NOCONTAINER', 'width'=>150,'hidden'=>true))
-                    ->addColumn(array('label'=>'No. SPJM','index'=>'NO_SPJM', 'width'=>150))
-                    ->addColumn(array('label'=>'Tgl. SPJM','index'=>'TGL_SPJM', 'width'=>150))
-                    ->addColumn(array('label'=>'No. SPPB','index'=>'NO_SPPB', 'width'=>150))
-                    ->addColumn(array('label'=>'Tgl. SPPB','index'=>'TGL_SPPB', 'width'=>150))
-                    ->addColumn(array('label'=>'Kode Dokumen','index'=>'KD_DOK_INOUT', 'width'=>100,'hidden'=>false))
+                    ->addColumn(array('label'=>'No. SPJM','index'=>'NO_SPJM', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'Tgl. SPJM','index'=>'TGL_SPJM', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'No. SPPB','index'=>'NO_SPPB', 'width'=>150,'align'=>'center'))
+                    ->addColumn(array('label'=>'Tgl. SPPB','index'=>'TGL_SPPB', 'width'=>150,'align'=>'center'))
+                    ->addColumn(array('label'=>'Kode Dokumen','index'=>'KD_DOK_INOUT', 'width'=>100,'align'=>'center'))
                     ->addColumn(array('label'=>'Nama Dokumen','index'=>'KODE_DOKUMEN', 'width'=>100,'hidden'=>false, 'align'=>'center'))                   
                     ->addColumn(array('label'=>'Kode Kuitansi','index'=>'NO_KUITANSI', 'width'=>150,'hidden'=>true))
                     ->addColumn(array('label'=>'Shipper','index'=>'SHIPPER','width'=>250))
@@ -345,6 +426,9 @@
                         <button class="btn btn-default" id="btn-print-wo"><i class="fa fa-print"></i> Cetak WO</button>
                         <button class="btn btn-default" id="btn-print-sj"><i class="fa fa-print"></i> Cetak Surat Jalan</button>
                     </div>
+                    <div id="btn-group-6" class="btn-group">
+                        <button class="btn btn-danger" id="btn-print-barcode"><i class="fa fa-print"></i> Print Barcode</button>
+                    </div>
                     <div id="btn-group-5" class="btn-group pull-right">
                         <button class="btn btn-default" id="btn-upload"><i class="fa fa-upload"></i> Upload TPS Online</button>
                     </div>
@@ -412,7 +496,7 @@
                             <input type="text" id="NO_POS_BC11" name="NO_POS_BC11" class="form-control">
                         </div>
                     </div>
-                    <div class="form-group">
+<!--                    <div class="form-group">
                         <label class="col-sm-3 control-label">No.SPJM</label>
                         <div class="col-sm-3">
                             <input type="text" id="NO_SPJM" name="NO_SPJM" class="form-control" readonly>
@@ -421,7 +505,7 @@
                         <div class="col-sm-3">
                             <input type="text" id="TGL_SPJM" name="TGL_SPJM" class="form-control" readonly>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Consolidator</label>
                         <div class="col-sm-8">
@@ -472,6 +556,11 @@
                                     <option value="{{ $kode->kode }}">({{$kode->kode}}) {{ $kode->name }}</option>
                                 @endforeach
                             </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-11" id="btn-sppb">
+                            <button type="button" class="btn btn-info pull-right" id="get-sppb-btn"><i class="fa fa-download"></i> Get Data</button>
                         </div>
                     </div>
                     <div class="form-group select-bcf-consignee" style="display:none;">
@@ -595,6 +684,7 @@
     });
     $("#JAMSURATJALAN").mask("99:99:99");
     $("#jamrelease").mask("99:99:99");
+    $(".datepicker").mask("9999-99-99");
     $("#ID_CONSIGNEE").mask("99.999.999.9-999.999");
 </script>
 

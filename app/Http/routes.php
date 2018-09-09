@@ -78,6 +78,9 @@ if (version_compare(PHP_VERSION, '7.2.0', '>=')) {
         // Payment Routes
         require_once 'Routes/RoutesPayment.php';
         
+        // Barcode Routes
+        require_once 'Routes/RoutesBarcode.php';
+        
         // GLOBAL Routes
         Route::get('/getDataPelabuhan', [
             'as' => 'getDataPelabuhan',

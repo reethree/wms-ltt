@@ -66,4 +66,10 @@ Route::group(['prefix' => 'lcl/delivery', 'namespace' => 'Import'], function(){
         'uses' => 'LclController@releaseUpload'
     ]);
     
+    // GET DATA SPPB
+    Route::post('/release/getdatasppb', [
+        'as' => 'lcl-delivery-release-getdatasppb',
+        'uses' => 'LclController@releaseGetDataSppb'
+    ]);
+  
 });

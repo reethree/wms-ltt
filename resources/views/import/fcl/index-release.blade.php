@@ -22,18 +22,21 @@
             if(rowdata.flag_bc == 'Y') {
                 $("#" + cl).find("td").css("color", "#FF0000");
             } 
+            if(rowdata.status_bc == 'HOLD') {
+                $("#" + cl).find("td").css("background-color", "#ffe500");
+            }  
         } 
     }
     
     function onSelectRowEvent()
     {
-        $('#btn-group-1').enableButtonGroup();
+        $('#btn-group-1,#btn-group-6').enableButtonGroup();
     }
     
     $(document).ready(function()
     {
         $('#release-form').disabledFormGroup();
-        $('#btn-toolbar').disabledButtonGroup();
+        $('#btn-toolbar,#btn-sppb').disabledButtonGroup();
         $('#btn-group-3').enableButtonGroup();
         
         $("#KD_DOK_INOUT").on("change", function(){
@@ -45,10 +48,70 @@
             }
         });
         
+        $('#get-sppb-btn').click(function(){
+     
+            if(!confirm('Apakah anda yakin?')){return false;}
+            
+            var kd_dok = $("#KD_DOK_INOUT").val();
+            if(kd_dok == ''){
+                alert('Kode Dokumen masih kosong!!!');
+                return false;
+            }
+            
+            $this = $(this);
+            $this.html('<i class="fa fa-spin fa-spinner"></i> Please wait...');
+            $this.attr('disabled','disabled');
+            
+            var url = '{{ route("fcl-delivery-release-getdatasppb") }}';
+
+            $.ajax({
+                type: 'POST',
+                data: 
+                {
+                    'id' : $('#TCONTAINER_PK').val(),
+                    'kd_dok' : kd_dok,
+                    '_token' : '{{ csrf_token() }}'
+                },
+                dataType : 'json',
+                url: url,
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert('Something went wrong, please try again later.');
+                    $this.html('<i class="fa fa-download"></i> Get Data');
+                    $this.removeAttr('disabled');
+                },
+                beforeSend:function()
+                {
+
+                },
+                success:function(json)
+                {
+                    console.log(json);
+
+                    if(json.success) {
+                        $('#btn-toolbar').showAlertAfterElement('alert-success alert-custom', json.message, 5000);
+                        
+                        var datasppb = json.data; 
+                        $('#NO_SPPB').val(datasppb.NO_SPPB);
+                        $('#TGL_SPPB').val(datasppb.TGL_SPPB);
+                        $('#ID_CONSIGNEE').val(datasppb.NPWP);
+                    } else {
+                      $('#btn-toolbar').showAlertAfterElement('alert-danger alert-custom', json.message, 5000);
+                    }
+                    
+                    $this.html('<i class="fa fa-download"></i> Get Data');
+                    $this.removeAttr('disabled');
+
+                }
+            });
+        });
+        
         $('#btn-edit').click(function() {
             //Gets the selected row id.
             rowid = $('#fclReleaseGrid').jqGrid('getGridParam', 'selrow');
             rowdata = $('#fclReleaseGrid').getRowData(rowid);
+            
+            if(!rowid) {alert('Please Select Row');return false;} 
 
             populateFormFields(rowdata, '');
             $('#TCONTAINER_PK').val(rowid);
@@ -77,7 +140,7 @@
             $('#KD_TPS_ASAL').val(rowdata.KD_TPS_ASAL);
             
 //            if(!rowdata.TGLRELEASE && !rowdata.JAMRELEASE) {
-                $('#btn-group-2').enableButtonGroup();
+                $('#btn-group-2,#btn-sppb').enableButtonGroup();
                 $('#release-form').enableFormGroup();
 //                $('#btn-group-5').disabledButtonGroup();
 //            }else{
@@ -149,6 +212,23 @@
             $('#TCONTAINER_PK').val("");
         });
         
+        $('#btn-print-barcode').click(function() {
+
+            var $grid = $("#fclReleaseGrid"), selIds = $grid.jqGrid("getGridParam", "selarrrow"), i, n,
+                cellValues = [];
+            for (i = 0, n = selIds.length; i < n; i++) {
+                cellValues.push($grid.jqGrid("getCell", selIds[i], "TCONTAINER_PK"));
+            }
+            
+            var manifestId = cellValues.join(",");
+            
+            if(!manifestId) {alert('Please Select Row');return false;}               
+//            if(!confirm('Apakah anda yakin?')){return false;}    
+            
+//            console.log(manifestId);
+            window.open("{{ route('cetak-barcode', array('','','')) }}/"+manifestId+"/fcl/release","preview barcode","width=305,height=600,menubar=no,status=no,scrollbars=yes");
+        });
+        
         $('#btn-upload').click(function() {
             
             if(!confirm('Apakah anda yakin?')){return false;}
@@ -217,8 +297,10 @@
                     ->setGridOption('url', URL::to('/container/grid-data-cy?module=release&_token='.csrf_token()))
                     ->setGridOption('rowNum', 20)
                     ->setGridOption('shrinkToFit', true)
+                    ->setGridOption('multiselect', true)
                     ->setGridOption('sortname','TCONTAINER_PK')
                     ->setGridOption('rownumbers', true)
+                    ->setGridOption('rownumWidth', 50)
                     ->setGridOption('height', '295')
                     ->setGridOption('rowList',array(20,50,100))
                     ->setGridOption('useColSpanStyle', true)
@@ -226,6 +308,7 @@
                     ->setNavigatorOptions('view',array('closeOnEscape'=>false))
                     ->setFilterToolbarOptions(array('autosearch'=>true))
                     ->setGridEvent('onSelectRow', 'onSelectRowEvent')
+                    ->setGridEvent('gridComplete', 'gridCompleteEvent')
                     ->addColumn(array('key'=>true,'index'=>'TCONTAINER_PK','hidden'=>true))
                     ->addColumn(array('label'=>'No. Container','index'=>'NOCONTAINER','width'=>160,'editable' => true, 'editrules' => array('required' => true)))
                     ->addColumn(array('label'=>'No. SPK','index'=>'NoJob','width'=>160))
@@ -297,6 +380,9 @@
                         <button class="btn btn-default" id="btn-print-wo"><i class="fa fa-print"></i> Cetak WO</button>
                         <button class="btn btn-default" id="btn-print-sj"><i class="fa fa-print"></i> Cetak Surat Jalan</button>
                     </div>
+                    <div id="btn-group-6" class="btn-group">
+                        <button class="btn btn-danger" id="btn-print-barcode"><i class="fa fa-print"></i> Print Barcode</button>
+                    </div>
                     <div id="btn-group-5" class="btn-group pull-right">
                         <button class="btn btn-default" id="btn-upload"><i class="fa fa-upload"></i> Upload TPS Online</button>
                     </div>
@@ -360,7 +446,7 @@
                             <input type="text" id="TGL_SPPB" name="TGL_SPPB" class="form-control" readonly>
                         </div>
                     </div>-->
-                    <div class="form-group">
+<!--                    <div class="form-group">
                         <label class="col-sm-3 control-label">No.SPJM</label>
                         <div class="col-sm-3">
                             <input type="text" id="NO_SPJM" name="NO_SPJM" class="form-control" readonly>
@@ -369,7 +455,7 @@
                         <div class="col-sm-3">
                             <input type="text" id="TGL_SPJM" name="TGL_SPJM" class="form-control" readonly>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Consignee</label>
                         <div class="col-sm-8">
@@ -425,6 +511,11 @@
                                     <option value="{{ $kode->kode }}">({{$kode->kode}}) {{ $kode->name }}</option>
                                 @endforeach
                             </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-11" id="btn-sppb">
+                            <button type="button" class="btn btn-info pull-right" id="get-sppb-btn"><i class="fa fa-download"></i> Get Data</button>
                         </div>
                     </div>
                     <div class="form-group select-bcf-consignee" style="display:none;">
@@ -555,6 +646,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 <script type="text/javascript">
     $('.select2').select2();
+    $('#ID_CONSIGNEE').mask("99.999.999.9-999.999");
     $('.datepicker').datepicker({
         autoclose: true,
         todayHighlight: true,
@@ -567,7 +659,8 @@
         minuteStep: 1,
         secondStep: 1
     });
-    $("#NPWP_IMP").mask("99.999.999.9-999.999");
+    $(".timepicker").mask("99:99:99");
+    $(".datepicker").mask("9999-99-99");
 </script>
 
 @endsection

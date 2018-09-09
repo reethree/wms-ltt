@@ -1107,7 +1107,7 @@ class FclController extends Controller
                 $coaricontdetail->FLAG_REVISI = '';
                 $coaricontdetail->TGL_REVISI = '';
                 $coaricontdetail->TGL_REVISI_UPDATE = '';
-                $coaricontdetail->KD_TPS_ASAL = $container->KD_TPS_ASAL;;
+                $coaricontdetail->KD_TPS_ASAL = $container->KD_TPS_ASAL;
                 $coaricontdetail->FLAG_UPD = '';
                 $coaricontdetail->RESPONSE_MAL0 = '';
                 $coaricontdetail->STATUS_TPS_MAL0 = '';
@@ -1514,5 +1514,34 @@ class FclController extends Controller
 //        return $container;
         return back()->with('error', 'Something went wrong, please try again later.');
 //        return json_encode(array('success' => false, 'message' => 'Something went wrong, please try again later.'));
+    }
+    
+    public function releaseGetDataSppb(Request $request)
+    {
+        $container_id = $request->id;  
+        $kd_dok = $request->kd_dok;
+        $container = DBContainer::find($container_id);
+        
+        $sppb = '';
+        
+        if($kd_dok == 1){
+            $sppb = \App\Models\TpsSppbPib::where(array('NO_BL_AWB' => $container->NO_BL_AWB))->first();
+        }else{
+            $sppb = \App\Models\TpsSppbBc::where(array('NO_BL_AWB' => $container->NO_BL_AWB))->first();
+        }
+        
+        if($sppb){
+            $arraysppb = explode('/', $sppb->NO_SPPB);
+            $datasppb = array(
+                'NO_SPPB' => $arraysppb[0],
+                'TGL_SPPB' => date('Y-m-d', strtotime($sppb->TGL_SPPB)),
+                'NPWP' => $sppb->NPWP_IMP
+            );
+            return json_encode(array('success' => true, 'message' => 'Get Data SPPB has been success.', 'data' => $datasppb));
+        }else{
+            return json_encode(array('success' => false, 'message' => 'Data SPPB Tidak ditemukan.'));
+        }
+        
+        return json_encode(array('success' => false, 'message' => 'Something went wrong, please try again later.'));
     }
 }

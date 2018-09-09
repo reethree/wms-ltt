@@ -248,6 +248,12 @@
           </ul>
         </li>
         <li class="treeview">
+            <a href="{{route('barcode-index')}}">
+              <i class="fa fa-barcode"></i>
+              <span>Barcode (Autogate)</span>
+            </a>
+        </li>
+        <li class="treeview">
             <a href="#">
               <i class="fa fa-money"></i>
               <span>Invoice</span>
