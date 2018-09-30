@@ -102,11 +102,11 @@
             @foreach($manifests as $manifest)
             <tr>
                 <td class="text-center" style="border: 1px solid;">{{ $i }}</td>
-                <td style="border: 1px solid;">{{ $manifest->CONSIGNEE }}</td>
-                <td style="border: 1px solid;">{{ $manifest->DESCOFGOODS }}</td>
+                <td style="border: 1px solid;width: 150px;">{{ $manifest->CONSIGNEE }}</td>
+                <td style="border: 1px solid;">{{ $manifest->MARKING }}</td>
                 <!-- <td class="text-center">{{ $manifest->QUANTITY.' '.$manifest->NAMAPACKING }}</td> -->
                 <td style="width: 150px;border: 1px solid;">&nbsp;</td>
-                <td class="text-center" style="border: 1px solid;">{{ $manifest->QUANTITY.' '.$manifest->NAMAPACKING }}</td>
+                <td class="text-center" style="border: 1px solid;">&nbsp;</td>
                 <!-- <td>{{ $manifest->WEIGHT }}<br/>{{ $manifest->MEAS }}</td> -->
                 <!-- <td>{{ $manifest->NOTALLY }}<br/>{{ $manifest->NOHBL }}</td> -->
                 <td style="width: 100px;border: 1px solid;">&nbsp;</td>
