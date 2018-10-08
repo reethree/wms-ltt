@@ -15,12 +15,12 @@ class BarcodeController extends Controller
     
     public function index()
     {
-        $data['page_title'] = "Barcode (Auto Gate)";
+        $data['page_title'] = "QR Code (Auto Gate)";
         $data['page_description'] = "";
         $data['breadcrumbs'] = [
             [
                 'action' => '',
-                'title' => 'Barcode (Auto Gate)'
+                'title' => 'QR Code (Auto Gate)'
             ]
         ];        
         
@@ -34,7 +34,7 @@ class BarcodeController extends Controller
         $data['breadcrumbs'] = [
             [
                 'action' => route('barcode-index'),
-                'title' => 'Barcode (Auto Gate)'
+                'title' => 'QR Code (Auto Gate)'
             ],
             [
                 'action' => '',
@@ -60,13 +60,13 @@ class BarcodeController extends Controller
         if($barcode->ref_type == 'Manifest'){
             $data_barcode = \App\Models\Barcode::select('*')
                 ->join($model, 'barcode_autogate.ref_id', '=', $model.'.TMANIFEST_PK')
-                ->where(array('ref_type' => ucwords($barcode->ref_type), 'ref_action'=>$barcode->ref_action))
+                ->where(array('barcode_autogate.ref_type' => ucwords($barcode->ref_type), 'barcode_autogate.ref_action'=>$barcode->ref_action))
                 ->where($model.'.TMANIFEST_PK', $barcode->ref_id)
                 ->first();
         }else{
             $data_barcode = \App\Models\Barcode::select('*')
                 ->join($model, 'barcode_autogate.ref_id', '=', $model.'.TCONTAINER_PK')
-                ->where(array('ref_type' => ucwords($barcode->ref_type), 'ref_action'=>$barcode->ref_action))
+                ->where(array('barcode_autogate.ref_type' => ucwords($barcode->ref_type), 'barcode_autogate.ref_action'=>$barcode->ref_action))
                 ->where($model.'.TCONTAINER_PK', $barcode->ref_id)
                 ->first();
         }
@@ -81,7 +81,7 @@ class BarcodeController extends Controller
     public function delete($id)
     {
         \App\Models\Barcode::where('id', $id)->delete();
-        return back()->with('success', 'Barcode has been deleted.'); 
+        return back()->with('success', 'QR Code has been deleted.'); 
     }
     
     public function printBarcodePreview($id, $type, $action)
@@ -173,6 +173,16 @@ class BarcodeController extends Controller
         
         $data_barcode = \App\Models\Barcode::where('barcode', $barcode)->first();
         
+//        $destinationPath = public_path().'/uploads/'.$barcode.'/';
+//        
+//        if ($request->hasFile('kamere_in_1')) {
+//            $request->file('kamere_in_1')->move($destinationPath, 'in_1.jpg');
+//        }
+//        
+//        if ($request->hasFile('kamere_out_1')) {
+//            $request->file('kamere_out_1')->move($destinationPath, 'out_1.jpg');
+//        }
+//        
         if($data_barcode){
 //            return $barcode;
             switch ($data_barcode->ref_type) {
@@ -199,6 +209,11 @@ class BarcodeController extends Controller
                         $model->UIDMASUK = 'Autogate';
 
                         if($model->save()){
+                            // Update Manifest If LCL
+                            if($data_barcode->ref_type == 'Lcl'){
+                                \App\Models\Manifest::where('TCONTAINER_FK', $model->TCONTAINER_PK)->update(array('tglmasuk' => $model->TGLMASUK, 'jammasuk' => $model->JAMMASUK));
+                            }
+                            
                             // Upload Coari Container TPS Online
                             // Check Coari Exist
                             if($ref_number){
@@ -330,8 +345,8 @@ class BarcodeController extends Controller
                     $coaricontdetail->TGL_BL_AWB = (!empty($container->TGL_BL_AWB) ? date('Ymd', strtotime($container->TGL_BL_AWB)) : '');
                     $coaricontdetail->NO_MASTER_BL_AWB = $container->NOMBL;
                     $coaricontdetail->TGL_MASTER_BL_AWB = (!empty($container->TGL_MASTER_BL) ? date('Ymd', strtotime($container->TGL_MASTER_BL)) : '');
-                    $coaricontdetail->ID_CONSIGNEE = $container->ID_CONSOLIDATOR;
-                    $coaricontdetail->CONSIGNEE = $container->NAMACONSOLIDATOR;
+                    $coaricontdetail->ID_CONSIGNEE = $container->ID_CONSIGNEE;
+                    $coaricontdetail->CONSIGNEE = $container->CONSIGNEE;
                     $coaricontdetail->BRUTO = (!empty($container->WEIGHT) ? $container->WEIGHT : 0);
                     $coaricontdetail->NO_BC11 = $container->NO_BC11;
                     $coaricontdetail->TGL_BC11 = (!empty($container->TGL_BC11) ? date('Ymd', strtotime($container->TGL_BC11)) : '');
@@ -440,7 +455,7 @@ class BarcodeController extends Controller
                     $coaricontdetail->UID = 'Autogate';
                     $coaricontdetail->NOURUT = 1;
                     $coaricontdetail->RESPONSE = '';
-                    $coaricontdetail->STATUS_TPS = 1;
+                    $coaricontdetail->STATUS_TPS = '1';
                     $coaricontdetail->KODE_KANTOR = '040300';
                     $coaricontdetail->NO_DAFTAR_PABEAN = '';
                     $coaricontdetail->TGL_DAFTAR_PABEAN = '';

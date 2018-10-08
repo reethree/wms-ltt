@@ -5,7 +5,22 @@
 @stop
 
 @section('content')
-
+    <style>
+        @media print {
+            @page {
+                size: auto;   /* auto is the initial value */
+                margin-top: 48px;
+                margin-bottom: 48px;/* this affects the margin in the printer settings */
+                background: #FFF;
+                color: #000;
+                font-weight: bold;
+            }
+            .print-btn {
+                display: none;
+            }
+        }
+    </style>
+    <a href="#" class="print-btn" type="button" onclick="window.print();">PRINT</a> 
     <div id="details" class="clearfix">
         <div id="title">SURAT JALAN</div>
         <table border="0" cellspacing="0" cellpadding="0">
