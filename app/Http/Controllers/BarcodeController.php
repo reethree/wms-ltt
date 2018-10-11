@@ -234,7 +234,7 @@ class BarcodeController extends Controller
 //                    }else{
 //                        return 'Time In is NULL';
 //                    }
-                }elseif($data_barcode->ref_action = 'release'){
+                }elseif($data_barcode->ref_action == 'release'){
 //                    if($data_barcode->time_out != NULL){
                         // RELEASE
                         if($data_barcode->ref_type == 'Manifest'){
