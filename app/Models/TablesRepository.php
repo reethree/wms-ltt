@@ -241,7 +241,7 @@ class TablesRepository extends EloquentRepositoryAbstract {
 //                            ->join('tperusahaan', 'tperusahaan.TPERUSAHAAN_PK', '=', 'tmanifest.TCONSIGNEE_FK');
 //                        $Model = \DB::table('tmanifest')
                             ->whereNotNull('tglrelease')
-//                            ->whereNotNull('jamrelease')
+                            ->whereNotNull('jamrelease')
                             ->whereNotNull('tglstripping');
                     break;
                 }
