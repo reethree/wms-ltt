@@ -36,21 +36,21 @@ class EasygoController extends Controller
 
     public function vts_inputdo(Request $request)
     {
-//        $data = $request->all();
-        $dispatche = \App\Models\Easygo::where('OB_ID', $request->ob_id)->orderBy('created_at', 'DESC')->first();
+        $data = $request->all();
+//        $dispatche = \App\Models\Easygo::where('OB_ID', $request->ob_id)->orderBy('created_at', 'DESC')->first();
         
-//        if($data['container_type'] == 'F'){
-//            $container = \App\Models\Containercy::find($data['TCONTAINER_PK']);
-//        }else{
-//            $container = \App\Models\Container::find($data['TCONTAINER_PK']);
-//        }
-//        
-//        $kode_asal = \App\Models\Lokasisandar::find($container->TLOKASISANDAR_FK);
-//        
-//        if(empty($kode_asal->KD_TPS_ASAL) || !isset($kode_asal->KD_TPS_ASAL))
-//        {
-//            return json_encode(array('success' => false, 'message' => 'Kode TPS ASAL tidak ada.'));
-//        }
+        if($data['container_type'] == 'F'){
+            $dispatche = \App\Models\Containercy::find($data['TCONTAINER_PK']);
+        }else{
+            $dispatche = \App\Models\Container::find($data['TCONTAINER_PK']);
+        }
+        
+        $kode_asal = \App\Models\Lokasisandar::find($dispatche->TLOKASISANDAR_FK);
+        
+        if(empty($kode_asal->KD_TPS_ASAL) || !isset($kode_asal->KD_TPS_ASAL))
+        {
+            return json_encode(array('success' => false, 'message' => 'Kode TPS ASAL tidak ada.'));
+        }
         
         $fileurl = 'vts_inputDO.aspx';
         
@@ -104,7 +104,7 @@ class EasygoController extends Controller
             $dispatche->url_reply = $this->url_reply;
 
             if($dispatche->save()){
-                $updateOB = \App\Models\TpsOb::where('TPSOBXML_PK', $request->ob_id)->update(['STATUS_DISPATCHE' => 'Y','DO_ID' => $results->DO_ID,'RESPONSE_DISPATCHE' => $results->ResponseStatus,'KODE_DISPATCHE' => $results->ResponseCode,'WAKTU_DISPATCHE' => $wkt_dis]);
+//                $updateOB = \App\Models\TpsOb::where('TPSOBXML_PK', $request->ob_id)->update(['STATUS_DISPATCHE' => 'Y','DO_ID' => $results->DO_ID,'RESPONSE_DISPATCHE' => $results->ResponseStatus,'KODE_DISPATCHE' => $results->ResponseCode,'WAKTU_DISPATCHE' => $wkt_dis]);
 
                 return json_encode(array('success' => true, 'message' => 'Dispatche successfully updated!'));
             }

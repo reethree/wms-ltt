@@ -231,8 +231,8 @@ class LclController extends Controller
         
         $data['eseals'] = DBEseal::select('eseal_id as id','esealcode as code')->get();
         
-        return view('import.lcl.index-dispatche-ob')->with($data);
-//        return view('import.lcl.index-dispatche')->with($data);
+//        return view('import.lcl.index-dispatche-ob')->with($data);
+        return view('import.lcl.index-dispatche')->with($data);
     }
     
     /**
@@ -844,29 +844,35 @@ class LclController extends Controller
     {
         $data = $request->json()->all(); 
 //        return $data;
-//        unset($data['TCONTAINER_PK'], $data['_token'], $data['container_type']);
-//        
-//        $update = DBContainer::where('TCONTAINER_PK', $id)
-//            ->update($data);
+        unset($data['TCONTAINER_PK'], $data['_token'], $data['container_type']);
         
-        $insert = new \App\Models\Easygo;
-        $insert->ESEALCODE = $data['ESEALCODE'];
-	$insert->TGL_PLP = $data['TGL_PLP'];
-	$insert->NO_PLP = $data['NO_PLP'];
-        $insert->KD_TPS_ASAL = $data['KD_TPS_ASAL'];
-        $insert->KD_TPS_TUJUAN = 'TRMA';
-        $insert->NOCONTAINER = $data['NO_CONT'];
-        $insert->SIZE = $data['UK_CONT'];
-        $insert->TYPE = $data['TYPE'];
-        $insert->NOPOL = $data['NOPOL'];
-        $insert->OB_ID = $id;
+        $update = DBContainer::where('TCONTAINER_PK', $id)
+            ->update($data);
         
-        if($insert->save()){
-            
-            $updateOB = \App\Models\TpsOb::where('TPSOBXML_PK', $id)->update(['STATUS_DISPATCHE' => 'S']);
-            
+        if($update){
             return json_encode(array('success' => true, 'message' => 'Container successfully updated.'));
         }
+        
+//        $insert = new \App\Models\Easygo;
+//        $insert->ESEALCODE = $data['ESEALCODE'];
+//	$insert->TGL_PLP = $data['TGL_PLP'];
+//	$insert->NO_PLP = $data['NO_PLP'];
+//        $insert->KD_TPS_ASAL = $data['KD_TPS_ASAL'];
+//        $insert->KD_TPS_TUJUAN = 'TRMA';
+//        $insert->NOCONTAINER = $data['NOCONTAINER'];
+////        $insert->NOCONTAINER = $data['NO_CONT'];
+//        $insert->SIZE = $data['SIZE'];
+////        $insert->SIZE = $data['UK_CONT'];
+//        $insert->TYPE = 'L';
+//        $insert->NOPOL = $data['NOPOL'];
+//        $insert->OB_ID = $id;
+//        
+//        if($insert->save()){
+//            
+////            $updateOB = \App\Models\TpsOb::where('TPSOBXML_PK', $id)->update(['STATUS_DISPATCHE' => 'S']);
+//            
+//            return json_encode(array('success' => true, 'message' => 'Container successfully updated.'));
+//        }
         
         return json_encode(array('success' => false, 'message' => 'Something went wrong, please try again later.'));
     }
