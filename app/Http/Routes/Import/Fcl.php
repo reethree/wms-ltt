@@ -64,5 +64,18 @@ Route::group(['prefix' => 'fcl', 'namespace' => 'Import'], function(){
         'as' => 'fcl-report-rekap-sendemail',
         'uses' => 'FclController@reportRekapSend'
     ]);
+
+    Route::get('/report/longstay/change-status/{id}', [
+        'as' => 'fcl-change-status',
+        'uses' => 'FclController@changeStatusBc'
+    ]);
+    Route::get('/report/longstay/change-status-flag/{id}', [
+        'as' => 'fcl-change-status-flag',
+        'uses' => 'FclController@changeStatusFlag'
+    ]);
+    Route::post('/report/longstay/lock-flag', [
+        'as' => 'fcl-lock-flag',
+        'uses' => 'FclController@lockFlag'
+    ]);
 });
 

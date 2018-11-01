@@ -559,7 +559,8 @@ class FclController extends Controller
         if($update){
             $cont = DBContainer::find($id);
             if($cont->yor_update == 0){
-                $yor = $this->updateYor('gatein', $teus->TEUS);
+//                $yor = $this->updateYor('gatein', $teus->TEUS);
+                $this->updateYorByTeus();
                 $cont->yor_update = 1;
                 $cont->save();
             }
@@ -714,7 +715,7 @@ class FclController extends Controller
         $data = $request->json()->all(); 
         unset($data['TCONTAINER_PK'], $data['_token']);
         
-        $teus = DBContainer::select('TEUS')->where('TCONTAINER_PK', $id)->first();
+        $container = DBContainer::find($id);
         $kd_dok = \App\Models\KodeDok::find($data['KD_DOK_INOUT']);
         if($kd_dok):
             $data['KODE_DOKUMEN'] = $kd_dok->name;
@@ -725,6 +726,24 @@ class FclController extends Controller
             $data['JAMRELEASE'] = NULL;
         }
         
+        if($container->release_bc == 'Y'){
+            $data['status_bc'] = 'RELEASE';
+        }else{
+            if($data['KD_DOK_INOUT'] > 1){
+                $data['status_bc'] = 'HOLD';
+                $data['TGLRELEASE'] = NULL;
+                $data['JAMRELEASE'] = NULL;
+            }else{
+                if($container->flag_bc == 'Y'){
+                    $data['status_bc'] = 'HOLD';
+                    $data['TGLRELEASE'] = NULL;
+                    $data['JAMRELEASE'] = NULL;
+                }else{
+                    $data['status_bc'] = 'RELEASE';
+                }
+            }
+        }
+
         $data['TGLFIAT'] = $data['TGLRELEASE'];
         $data['JAMFIAT'] = $data['JAMRELEASE'];
         $data['TGLSURATJALAN'] = $data['TGLRELEASE'];
@@ -732,13 +751,16 @@ class FclController extends Controller
         $data['NAMAEMKL'] = '';
         $data['NOPOL'] = $data['NOPOL_OUT'];
         
+        $data['ID_CONSIGNEE'] = str_replace(array('.','-'), array('',''), $data['ID_CONSIGNEE']);
+
         $update = DBContainer::where('TCONTAINER_PK', $id)
             ->update($data);
         
         if($update){
             $cont = DBContainer::find($id);
             if($cont->yor_update == 1){
-                $yor = $this->updateYor('release', $teus->TEUS);
+//                $yor = $this->updateYor('release', $container->TEUS);
+                $this->updateYorByTeus();
                 $cont->yor_update = 2;
                 $cont->save();
             }
@@ -773,6 +795,14 @@ class FclController extends Controller
             
             $updateOB = \App\Models\TpsOb::where('TPSOBXML_PK', $id)->update(['STATUS_DISPATCHE' => 'S']);
             
+            // Update Container
+            $container = DBContainer::where(array('NOCONTAINER' => $data['NO_CONT'], 'NO_PLP' => $data['NO_PLP']))->first(); 
+            if($container){
+                $container->NOPOL = $data['NOPOL'];
+                $container->ESEALCODE = $data['ESEALCODE'];
+                $container->save();
+            }
+            
             return json_encode(array('success' => true, 'message' => 'Container successfully updated.'));
         }
         
@@ -787,10 +817,17 @@ class FclController extends Controller
      */
     public function destroy($id)
     {
-        DBJoborder::where('TCONTAINER_FK', $id)->delete();
+        $container = DBContainer::find($id);
+        if($container){
         // Delete Container
-        DBContainer::where('TCONTAINER_PK', $id)->delete();
-        return back()->with('success', 'FCL Register has been deleted.'); 
+            DBContainer::where('TJOBORDER_FK', $container->TJOBORDER_FK)->delete();
+            // Delete Joborder
+            DBJoborder::where('TJOBORDER_PK', $container->TJOBORDER_FK)->delete();
+            
+            return back()->with('success', 'FCL Register has been deleted.'); 
+        }
+    
+        return back()->with('error', 'Error delete FCL register, please try again.'); 
     }
     
     public function registerPrintPermohonan(Request $request)
@@ -951,6 +988,7 @@ class FclController extends Controller
         $data['month'] = $month;
         $data['year'] = $year;
         
+        $this->updateYorByTeus();
         $data['yor'] = \App\Models\SorYor::where('type', 'yor')->first();
         
         return view('import.fcl.report-rekap')->with($data);
@@ -1543,5 +1581,58 @@ class FclController extends Controller
         }
         
         return json_encode(array('success' => false, 'message' => 'Something went wrong, please try again later.'));
+    }
+    
+    public function changeStatusBc($id)
+    { 
+        $container = DBContainer::find($id);
+        $container->status_bc = 'RELEASE';
+        $container->release_bc = 'Y';
+        $container->release_bc_date = date('Y-m-d H:i:s');
+              
+        if($container->save()){
+
+            return json_encode(array('success' => true, 'message' => 'Status has been Change!'));
+    }
+        
+        return json_encode(array('success' => false, 'message' => 'Something went wrong, please try again later.'));
+    }
+    
+    public function changeStatusFlag($id)
+    {
+        $container = DBContainer::find($id);
+        $container->flag_bc = 'N';
+              
+        if($container->save()){
+
+            return json_encode(array('success' => true, 'message' => 'Status has been Change!'));
+        }
+        
+        return json_encode(array('success' => false, 'message' => 'Something went wrong, please try again later.'));
+    }
+    
+    public function lockFlag(Request $request)
+    {
+        $container_id = $request->id;
+        $alasan = $request->alasan_segel;
+//        $lainnya = $request->alasan_lainnya;
+        
+//        return $request->all();
+        
+        $container = DBContainer::find($container_id);
+        $container->flag_bc = 'Y';
+        $container->no_flag_bc = $request->no_flag_bc;
+        $container->description_flag_bc = $request->description_flag_bc;
+//        if($alasan == 'Lainnya' && !empty($lainnya)){
+//            $container->alasan_segel = $lainnya;
+//        }else{
+            $container->alasan_segel = $alasan;
+//        }
+        
+        if($container->save()){
+            return back()->with('success', 'Flag has been update.')->withInput();
+        }
+        
+        return back()->with('error', 'Something wrong, please try again.')->withInput();
     }
 }

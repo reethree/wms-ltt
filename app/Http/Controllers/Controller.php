@@ -156,6 +156,27 @@ class Controller extends BaseController
         return preg_replace('!\s+!', ' ', $string);
     }
     
+    public function updateSorByMeas()
+    {
+        $meas_count = \App\Models\Manifest::whereNotNull('tglmasuk')
+                                ->whereNotNull('tglstripping')
+                                ->whereNull('tglrelease')
+                                ->sum('MEAS');
+        
+        $sor = \App\Models\SorYor::where('type', 'sor')->first();
+        
+        $k_trisi = $meas_count*1000;
+        $k_kosong = ($sor->kapasitas_default*1000) - $k_trisi;       
+        $tot_sor = ($k_trisi / ($sor->kapasitas_default*1000)) * 100;
+        
+        $sor->kapasitas_terisi = (float)($k_trisi/1000);
+        $sor->kapasitas_kosong = (float)($k_kosong/1000);
+        $sor->total = $tot_sor;
+        $sor->save();
+        
+        return true;
+    }
+    
     public function updateSor($type, $value)
     {
      
@@ -177,6 +198,26 @@ class Controller extends BaseController
         $sor->save();
         
         return json_encode(array('value' => $value, 'default' => $sor->kapasitas_default,'awal' => $sor->kapasitas_awal,'terisi' => (float)($k_trisi/1000), 'sor' => $tot_sor));
+    }
+    
+    public function updateYorByTeus()
+    {
+        $teus_count = \App\Models\Containercy::whereNotNull('TGLMASUK')
+                                ->whereNull('TGLRELEASE')
+                                ->sum('TEUS');
+        
+        $yor = \App\Models\SorYor::where('type', 'yor')->first();
+        
+        $k_trisi = $teus_count*1000;
+        $k_kosong = ($yor->kapasitas_default*1000) - $k_trisi;       
+        $tot_sor = ($k_trisi / ($yor->kapasitas_default*1000)) * 100;
+        
+        $yor->kapasitas_terisi = (float)($k_trisi/1000);
+        $yor->kapasitas_kosong = (float)($k_kosong/1000);
+        $yor->total = $tot_sor;
+        $yor->save();
+        
+        return true;
     }
     
     public function updateYor($type, $value)

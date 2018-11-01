@@ -252,6 +252,10 @@ class ManifestController extends Controller
         $data['tglmasuk'] = $container->TGLMASUK;
         $data['jammasuk'] = $container->JAMMASUK;
         
+        if(empty($data['perubahan_hbl']) || $data['perubahan_hbl'] == 'N'){
+            $data['alasan_perubahan'] = '';
+        }
+        
         $location = \DB::table('location')->find($data['location_id']);
         if($location){
             $data['location_id'] = $location->id;
@@ -322,7 +326,8 @@ class ManifestController extends Controller
         if($update){
             $manifest = DBManifest::find($id);
             if($manifest->sor_update == 0){
-                $sor = $this->updateSor('approve', $meas->MEAS);
+//                $sor = $this->updateSor('approve', $meas->MEAS);
+                $this->updateSorByMeas();
                 $manifest->sor_update = 1;
                 $manifest->save();
             }
@@ -344,7 +349,8 @@ class ManifestController extends Controller
             $manifest = DBManifest::where('TCONTAINER_FK', $container_id)->get();
             foreach ($manifest as $mfs):
                 if($mfs->sor_update == 0){
-                    $sor = $this->updateSor('approve', $mfs->MEAS);
+//                    $sor = $this->updateSor('approve', $mfs->MEAS);
+                    $this->updateSorByMeas();
                     DBManifest::where('TMANIFEST_PK', $mfs->TMANIFEST_PK)->update(array('sor_update'=>1));
                 }
             endforeach;

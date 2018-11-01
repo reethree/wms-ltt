@@ -10,9 +10,115 @@
         var colweightSum = $grid.jqGrid('getCol', 'WEIGHT', false, 'sum');
         var colmeasSum = $grid.jqGrid('getCol', 'MEAS', false, 'sum');
         
-        $grid.jqGrid('footerData', 'set', { WEIGHT: precisionRound(colweightSum, 4) });
-        $grid.jqGrid('footerData', 'set', { MEAS: precisionRound(colmeasSum, 4) });
+//        $grid.jqGrid('footerData', 'set', { WEIGHT: precisionRound(colweightSum, 4) });
+//        $grid.jqGrid('footerData', 'set', { MEAS: precisionRound(colmeasSum, 4) });
     
+        var ids = jQuery("#lcllongstayGrid").jqGrid('getDataIDs'),
+            apv = '', sgl = '';   
+            
+        for(var i=0;i < ids.length;i++){ 
+            var cl = ids[i];
+            
+            rowdata = $('#lcllongstayGrid').getRowData(cl);
+            
+//            if(rowdata.tglmasuk && rowdata.tglrelease == ''){
+//                lt = jQuery.timeago(rowdata.tglmasuk+' '+rowdata.jammasuk);
+//            }else if(rowdata.tglmasuk == ''){
+//                lt = 'Belum GateIn';
+//            }else{
+//                lt = 'Sudah Release';
+//            }
+            
+
+            if(rowdata.flag_bc == 'Y') {
+                sgl = '<button style="margin:5px;" class="btn btn-info btn-xs" data-id="'+cl+'" onclick="if (confirm(\'Apakah anda yakin ingin membuka Segel Merah ?\')){ changeStatusFlag('+cl+',\'unlock\'); }else{return false;};"><i class="fa fa-unlock"></i> UNLOCK</button>';
+            }else{
+                sgl = '<button style="margin:5px;" class="btn btn-info btn-xs" data-id="'+cl+'" onclick="if (confirm(\'Apakah anda yakin ingin mengunci Segel Merah ?\')){ changeStatusFlag('+cl+',\'lock\'); }else{return false;};"><i class="fa fa-lock"></i> LOCK</button>';
+            }
+
+            if(rowdata.status_bc == 'HOLD') {
+                apv = '<button style="margin:5px;" class="btn btn-danger btn-xs" data-id="'+cl+'" onclick="if (confirm(\'Are You Sure to change status HOLD to RELEASE ?\')){ changeStatus('+cl+'); }else{return false;};"><i class="fa fa-check"></i> RELEASE</button>';
+            }else{
+                apv = '';
+            }    
+
+            if(rowdata.perubahan_hbl == 'Y') {
+                $("#" + cl).find("td").css("background-color", "#3dc6f2");
+            }
+            if(rowdata.flag_bc == 'Y') {
+                $("#" + cl).find("td").css("background-color", "#FF0000");
+            }
+            if(rowdata.status_bc == 'HOLD') {
+                $("#" + cl).find("td").css("background-color", "#ffe500");
+            } 
+    
+            jQuery("#lcllongstayGrid").jqGrid('setRowData',ids[i],{action:apv+' '+sgl}); 
+        } 
+    
+    }
+    
+    function changeStatus($id)
+    {
+        $.ajax({
+            type: 'GET',
+            dataType : 'json',
+            url: "{{ route('lcl-change-status','') }}/"+$id,
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert('Something went wrong, please try again later.');
+            },
+            beforeSend:function()
+            {
+
+            },
+            success:function(json)
+            {
+                if(json.success) {
+                    $('#btn-toolbar').showAlertAfterElement('alert-success alert-custom', json.message, 5000);
+                    $('#lcllongstayGrid').jqGrid().trigger("reloadGrid");
+                } else {
+                    $('#btn-toolbar').showAlertAfterElement('alert-danger alert-custom', json.message, 5000);
+                }
+
+                //Triggers the "Refresh" button funcionality.
+                $('#btn-refresh').click();
+            }
+        });
+    }
+    
+    function changeStatusFlag($id,$action)
+    {        
+        if($action == 'lock'){
+            $("#manifest_id").val($id);
+            $('#lock-flag-modal').modal('show');
+        }else{
+            $.ajax({
+                type: 'GET',
+                dataType : 'json',
+                url: "{{ route('lcl-change-status-flag','') }}/"+$id,
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert('Something went wrong, please try again later.');
+                },
+                beforeSend:function()
+                {
+
+                },
+                success:function(json)
+                {
+                    if(json.success) {
+                        $('#btn-toolbar').showAlertAfterElement('alert-success alert-custom', json.message, 5000);
+                        $('#lcllongstayGrid').jqGrid().trigger("reloadGrid");
+                    } else {
+                        $('#btn-toolbar').showAlertAfterElement('alert-danger alert-custom', json.message, 5000);
+                    }
+
+                    //Triggers the "Refresh" button funcionality.
+                    $('#btn-refresh').click();
+                }
+            });
+        }
+
     }
     
     function precisionRound(number, precision) {
@@ -24,6 +130,18 @@
 <style>
     .datepicker.dropdown-menu {
         z-index: 100 !important;
+    }
+    .ui-jqgrid tr.jqgrow td {
+        word-wrap: break-word; /* IE 5.5+ and CSS3 */
+        white-space: pre-wrap; /* CSS3 */
+        white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+        white-space: -pre-wrap; /* Opera 4-6 */
+        white-space: -o-pre-wrap; /* Opera 7 */
+        overflow: hidden;
+        height: auto;
+        vertical-align: middle;
+        padding-top: 3px;
+        padding-bottom: 3px
     }
 </style>
 <div class="box">
@@ -70,6 +188,7 @@
                 </div>
             </div>
         </div>
+        <div id="btn-toolbar" class="section-header btn-toolbar" role="toolbar" style="margin: 10px 0;"></div>
         {{
             GridRender::setGridId("lcllongstayGrid")
             ->enableFilterToolbar()
@@ -79,44 +198,105 @@
             ->setGridOption('shrinkToFit', true)
             ->setGridOption('sortname','TMANIFEST_PK')
             ->setGridOption('rownumbers', true)
-            ->setGridOption('height', '320')
+            ->setGridOption('rownumWidth', 50)
+            ->setGridOption('height', '395')
             ->setGridOption('rowList',array(50,100,200,500))
             ->setGridOption('useColSpanStyle', true)
-            ->setGridOption('footerrow', true)
+//            ->setGridOption('footerrow', true)
             ->setNavigatorOptions('navigator', array('viewtext'=>'view'))
             ->setNavigatorOptions('view',array('closeOnEscape'=>false))
             ->setFilterToolbarOptions(array('autosearch'=>true))
             ->setGridEvent('gridComplete', 'gridCompleteEvent')
 //            ->setGridEvent('onSelectRow', 'onSelectRowEvent')
             ->addColumn(array('key'=>true,'index'=>'TMANIFEST_PK','hidden'=>true))
-            ->addColumn(array('label'=>'No. Joborder','index'=>'NOJOBORDER', 'width'=>150))
+            ->addColumn(array('label'=>'Action','index'=>'action', 'width'=>120, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
+            ->addColumn(array('label'=>'Status BC','index'=>'status_bc', 'width'=>80,'align'=>'center'))
+            ->addColumn(array('label'=>'Segel Merah','index'=>'flag_bc', 'width'=>100,'align'=>'center'))
+            ->addColumn(array('label'=>'No. SPK','index'=>'NOJOBORDER', 'width'=>150))
+            ->addColumn(array('label'=>'No. HBL','index'=>'NOHBL','width'=>160))
+            ->addColumn(array('label'=>'Tgl. HBL','index'=>'TGL_HBL', 'width'=>150,'align'=>'center'))
+            ->addColumn(array('label'=>'No. Container','index'=>'NOCONTAINER', 'width'=>150,'align'=>'center'))
+            ->addColumn(array('label'=>'Size','index'=>'SIZE', 'width'=>100,'align'=>'center'))
             ->addColumn(array('label'=>'Nama Angkut','index'=>'VESSEL','width'=>160))
             ->addColumn(array('label'=>'Call Sign','index'=>'CALL_SIGN','width'=>100,'align'=>'center'))
             ->addColumn(array('label'=>'VOY','index'=>'VOY','width'=>100,'align'=>'center'))
-            ->addColumn(array('label'=>'No. Container','index'=>'NOCONTAINER', 'width'=>150,'align'=>'center'))
-            ->addColumn(array('label'=>'Size','index'=>'SIZE', 'width'=>100,'align'=>'center'))
-            ->addColumn(array('label'=>'Weight','index'=>'WEIGHT', 'width'=>100,'align'=>'center'))
-            ->addColumn(array('label'=>'Meas','index'=>'MEAS', 'width'=>100,'align'=>'center'))
-//            ->addColumn(array('label'=>'Teus','index'=>'TEUS', 'width'=>100,'align'=>'center','hidden'=>true))
             ->addColumn(array('label'=>'ETA','index'=>'ETA', 'width'=>120,'align'=>'center'))
-//            ->addColumn(array('label'=>'TPS Asal','index'=>'KD_TPS_ASAL', 'width'=>100,'align'=>'center'))
-            ->addColumn(array('label'=>'Consolidator','index'=>'NAMACONSOLIDATOR','width'=>250))
-            ->addColumn(array('label'=>'No. HBL','index'=>'NOHBL','width'=>160))
-            ->addColumn(array('label'=>'Tgl. HBL','index'=>'TGL_HBL', 'width'=>150,'align'=>'center'))
+            ->addColumn(array('label'=>'Consolidator','index'=>'NAMACONSOLIDATOR','width'=>300))
+            ->addColumn(array('label'=>'No. MBL','index'=>'NOMBL','width'=>160))
+            ->addColumn(array('label'=>'Tgl. MBL','index'=>'TGL_MASTER_BL', 'width'=>150,'hidden'=>false, 'align'=>'center'))
+            ->addColumn(array('label'=>'Shipper','index'=>'SHIPPER','width'=>160))
+            ->addColumn(array('label'=>'Consignee','index'=>'CONSIGNEE', 'width'=>300))
+            ->addColumn(array('label'=>'Desc of Goods','index'=>'DESCOFGOODS', 'width'=>300))
             ->addColumn(array('label'=>'Qty','index'=>'QUANTITY', 'width'=>80,'align'=>'center'))
             ->addColumn(array('label'=>'Packing','index'=>'NAMAPACKING', 'width'=>120))
             ->addColumn(array('label'=>'Kode Kemas','index'=>'KODE_KEMAS', 'width'=>100,'align'=>'center'))
-            ->addColumn(array('label'=>'Consignee','index'=>'CONSIGNEE', 'width'=>250))
+            ->addColumn(array('label'=>'Weight','index'=>'WEIGHT', 'width'=>100,'align'=>'center'))
+            ->addColumn(array('label'=>'Meas','index'=>'MEAS', 'width'=>100,'align'=>'center'))
             ->addColumn(array('label'=>'No.BC 1.1','index'=>'NO_BC11', 'width'=>150,'align'=>'center'))
             ->addColumn(array('label'=>'Tgl.BC 1.1','index'=>'TGL_BC11', 'width'=>150,'align'=>'center'))
             ->addColumn(array('label'=>'No.POS BC11','index'=>'NO_POS_BC11', 'width'=>150,'align'=>'center'))
             ->addColumn(array('label'=>'Tgl. Gate In','index'=>'tglmasuk', 'width'=>120,'align'=>'center'))
             ->addColumn(array('label'=>'Jam. Gate In','index'=>'jammasuk', 'width'=>100,'align'=>'center'))
+            ->addColumn(array('label'=>'Tgl. Stripping','index'=>'tglstripping', 'width'=>120,'align'=>'center'))
+            ->addColumn(array('label'=>'Jam. Stripping','index'=>'jamstripping', 'width'=>100,'align'=>'center'))
+            ->addColumn(array('label'=>'No. Segel','index'=>'no_flag_bc','width'=>100,'align'=>'center'))
+            ->addColumn(array('label'=>'Alasan Segel','index'=>'alasan_segel','width'=>150,'align'=>'center'))
+            ->addColumn(array('label'=>'Perubahan HBL','index'=>'perubahan_hbl','width'=>100, 'align'=>'center'))
+            ->addColumn(array('label'=>'Alasan Perubahan','index'=>'alasan_perubahan','width'=>150,'align'=>'center'))
             ->addColumn(array('label'=>'Lama Timbun (Hari)','index'=>'timeSinceUpdate', 'width'=>150, 'search'=>false, 'align'=>'center'))
             ->renderGrid()
         }}
     </div>
 </div>
+
+<div id="lock-flag-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Silahkan pilih alasan segel</h4>
+            </div>
+            <form id="create-invoice-form" class="form-horizontal" action="{{ route('lcl-lock-flag') }}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body"> 
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input name="_token" type="hidden" value="{{ csrf_token() }}" />
+                            <input name="id" type="hidden" id="manifest_id" />
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">No. Segel</label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="no_flag_bc" name="no_flag_bc" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Alasan Segel</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control select2" id="alasan_segel" name="alasan_segel" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                        <option value="Nota Hasil Intelijen (NHI)" selected>Nota Hasil Intelijen (NHI)</option>
+                                        <option value="Surveilance">Surveilance</option>
+                                        <option value="SPBL">SPBL</option>
+                                        <option value="IKP / Temuan Lapangan">IKP / Temuan Lapangan</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Keterangan</label>
+                                <div class="col-sm-8">
+                                    <textarea class="form-control" name="description_flag_bc"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-primary">Lock</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 @endsection
 

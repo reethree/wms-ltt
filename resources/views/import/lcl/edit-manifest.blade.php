@@ -138,9 +138,18 @@
                 apv = '<button style="margin:5px;" class="btn btn-danger btn-xs approve-manifest-btn" data-id="'+cl+'" disabled><i class="fa fa-check"></i> Approve</button>';
                 $("#" + cl).find("td").css("color", "#999999");
             }
-            if(rowdata.flag_bc == 'Y') {
-                $("#" + cl).find("td").css("color", "#FF0000");
+            
+            if(rowdata.perubahan_hbl == 'Y') {
+                $("#" + cl).find("td").css("background-color", "#3dc6f2");
             }
+            if(rowdata.flag_bc == 'Y') {
+                $("#" + cl).find("td").css("background-color", "#FF0000");
+            }
+            if(rowdata.status_bc == 'HOLD') {
+                $("#" + cl).find("td").css("background-color", "#ffe500");
+            }
+
+              
             jQuery("#lclManifestGrid").jqGrid('setRowData',ids[i],{action:apv}); 
         } 
     }
@@ -186,6 +195,16 @@
         $('#btn-group-1').enableButtonGroup();
         $('#btn-group-6').enableButtonGroup();
 
+        $("#perubahan_hbl").on("change", function(){
+            var $this = $(this).val();
+            console.log($this);
+            if($this == 'Y'){
+                $(".select-alasan").show();
+            }else{
+                $(".select-alasan").hide();
+            }
+        });
+        
       //Binds onClick event to the "Refresh" button.
       $('#btn-refresh').click(function()
       {
@@ -193,10 +212,10 @@
             
             $('#manifest-form')[0].reset();
             $('.select2').val(null).trigger("change");
-            $('#TNOTIFYPARTY_FK').val('Same As Consignee').trigger("change");
+            $('#TNOTIFYPARTY_FK').val('Same of Consignee').trigger("change");
             $('#DG_SURCHARGE').val('N').trigger("change");
             $('#WEIGHT_SURCHARGE').val('N').trigger("change");
-            $('#flag_bc').val('N').trigger("change");
+            $('#perubahan_hbl').val('N').trigger("change");
             $('#id').val("");
             
             //Disables all buttons within the toolbar
@@ -244,7 +263,12 @@
         $("#TPACKING_FK").val(rowdata.TPACKING_FK).trigger("change");
         $("#DG_SURCHARGE").val(rowdata.DG_SURCHARGE).trigger("change");
         $("#WEIGHT_SURCHARGE").val(rowdata.WEIGHT_SURCHARGE).trigger("change");
-        $("#flag_bc").val(rowdata.flag_bc).trigger("change");
+        if(rowdata.perubahan_hbl != ''){
+            $("#perubahan_hbl").val(rowdata.perubahan_hbl).trigger("change");
+        }
+        if(rowdata.alasan_perubahan != ''){
+            $("#alasan_perubahan").val(rowdata.alasan_perubahan).trigger("change");
+        }
         $("#location_id").val(rowdata.location_id).trigger("change")
         
         $("#TGL_HBL").datepicker('setDate', rowdata.TGL_HBL);
@@ -264,7 +288,6 @@
       $('#btn-delete').click(function()
       {
         if(!confirm('Apakah anda yakin ingin menghapus data ini?')){return false;}
-          
         //Gets the selected row id
         rowid = $('#lclManifestGrid').jqGrid('getGridParam', 'selrow');
         rowdata = $('#lclManifestGrid').getRowData(rowid);
@@ -492,8 +515,11 @@
                         ->addColumn(array('label'=>'Tgl.PLP','index'=>'TGL_PLP', 'width'=>150,'hidden'=>true))                
                         ->addColumn(array('label'=>'Surcharge (DG)','index'=>'DG_SURCHARGE', 'width'=>150,'hidden'=>true))
                         ->addColumn(array('label'=>'Surcharge (Weight)','index'=>'WEIGHT_SURCHARGE', 'width'=>150,'hidden'=>true))      
-                        ->addColumn(array('label'=>'Flag','index'=>'flag_bc','width'=>80, 'align'=>'center'))
                         ->addColumn(array('label'=>'Location','index'=>'location_name','width'=>200, 'align'=>'center'))
+                        ->addColumn(array('label'=>'Segel Merah','index'=>'flag_bc','width'=>100, 'align'=>'center'))
+                        ->addColumn(array('label'=>'Alasan Segel','index'=>'alasan_segel','width'=>150,'align'=>'center'))
+                        ->addColumn(array('label'=>'Perubahan HBL','index'=>'perubahan_hbl','width'=>100, 'align'=>'center'))
+                        ->addColumn(array('label'=>'Alasan Perubahan','index'=>'alasan_perubahan','width'=>150,'align'=>'center'))
                         ->addColumn(array('label'=>'Tgl. Entry','index'=>'tglentry', 'width'=>120))
                         ->addColumn(array('label'=>'Jam. Entry','index'=>'jamentry', 'width'=>70,'hidden'=>true))
                         ->addColumn(array('label'=>'Updated','index'=>'last_update', 'width'=>150, 'search'=>false,'hidden'=>true))
@@ -577,7 +603,7 @@
                             <label class="col-sm-3 control-label">Notify Party</label>
                             <div class="col-sm-8">
                                 <select class="form-control select2" id="TNOTIFYPARTY_FK" name="TNOTIFYPARTY_FK" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
-                                    <option value="Same As Consignee">Same As Consignee</option>
+                                    <option value="Same of Consignee">Same of Consignee</option>
 <!--                                    @foreach($perusahaans as $perusahaan)
                                         <option value="{{ $perusahaan->id }}">{{ $perusahaan->name }}</option>
                                     @endforeach-->
@@ -682,11 +708,22 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">FLAG</label>
+                            <label class="col-sm-3 control-label">Perubahan HBL</label>
                             <div class="col-sm-2">
-                                <select class="form-control select2" id="flag_bc" name="flag_bc" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                <select class="form-control select2" id="perubahan_hbl" name="perubahan_hbl" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
                                     <option value="N">N</option>
                                     <option value="Y">Y</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group select-alasan" style="display:none;">
+                            <label class="col-sm-3 control-label">Alasan Perubahan</label>
+                            <div class="col-sm-8">
+                                <select class="form-control select2" id="alasan_perubahan" name="alasan_perubahan" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                    <option value="Perubahan Quantity" selected>Perubahan Quantity</option>
+                                    <option value="Perubahan kemasan">Perubahan kemasan</option>
+                                    <option value="Redress">Redress</option>
+                                    <option value="Lainnya">Lainnya</option>
                                 </select>
                             </div>
                         </div>

@@ -783,7 +783,7 @@ class LclController extends Controller
         $data = $request->json()->all(); 
         unset($data['TMANIFEST_PK'], $data['_token']);
         
-        $meas = DBManifest::select('MEAS')->where('TMANIFEST_PK', $id)->first();
+        $manifest = DBManifest::find($id);
         
         if(empty($data['NOTALLY'])) {
             $manifestID = DBManifest::select('NOTALLY')->where('NOTALLY', NULL)->count();
@@ -802,6 +802,24 @@ class LclController extends Controller
             $data['jamrelease'] = NULL;
         }
         
+        if($manifest->release_bc == 'Y'){
+            $data['status_bc'] = 'RELEASE';
+        }else{
+            if($data['KD_DOK_INOUT'] > 1){
+                $data['status_bc'] = 'HOLD';
+                $data['tglrelease'] = NULL;
+                $data['jamrelease'] = NULL;
+            }else{
+                if($manifest->flag_bc == 'Y'){
+                    $data['status_bc'] = 'HOLD';
+                    $data['tglrelease'] = NULL;
+                    $data['jamrelease'] = NULL;
+                }else{
+                    $data['status_bc'] = 'RELEASE';
+                }
+            }
+        }
+        
         $data['TGLSURATJALAN'] = $data['tglrelease'];
         $data['JAMSURATJALAN'] = $data['jamrelease'];
         $data['tglfiat'] = $data['tglrelease'];
@@ -814,7 +832,7 @@ class LclController extends Controller
             ->update($data);
         
         if($update){
-            $sor = $this->updateSor('release', $meas->MEAS);
+//            $sor = $this->updateSor('release', $meas->MEAS);
 
             return json_encode(array('success' => true, 'message' => 'Release successfully updated!'));
         }
@@ -975,6 +993,7 @@ class LclController extends Controller
                                 ->whereNull('tglrelease')
                                 ->sum('MEAS');
         $data['meas'] = $meas_count;
+        $this->updateSorByMeas();
         $data['sor'] = \App\Models\SorYor::where('type', 'sor')->first();
         
         return view('import.lcl.report-inout')->with($data);
@@ -1186,7 +1205,7 @@ class LclController extends Controller
                 $coaricontdetail->UID = \Auth::getUser()->name;
                 $coaricontdetail->NOURUT = 1;
                 $coaricontdetail->RESPONSE = '';
-                $coaricontdetail->STATUS_TPS = '1';
+                $coaricontdetail->STATUS_TPS = 1;
                 $coaricontdetail->KODE_KANTOR = '040300';
                 $coaricontdetail->NO_DAFTAR_PABEAN = '';
                 $coaricontdetail->TGL_DAFTAR_PABEAN = '';
@@ -1313,6 +1332,9 @@ class LclController extends Controller
                 $codecocontdetail->JAM_ENTRY = date('H:i:s');
                 
                 if($codecocontdetail->save()){
+                    
+                    $container->REF_NUMBER_OUT = $reff_number;
+                    $container->save();
                     
                     return json_encode(array('insert_id' => $codecocont->TPSCODECOCONTXML_PK, 'ref_number' => $reff_number, 'success' => true, 'message' => 'No. Container '.$container->NOCONTAINER.' berhasil di simpan. Reff Number : '.$reff_number));
                 }
@@ -2145,9 +2167,11 @@ class LclController extends Controller
                             // Get Packing
                             if($df['pack']) {
                                 $packing = \App\Models\Packing::where('KODEPACKING', $df['pack'])->first();
-                                $data['TPACKING_FK'] = $packing->TPACKING_PK;
-                                $data['NAMAPACKING'] = $packing->NAMAPACKING;
-                                $data['KODE_KEMAS'] = $packing->KODEPACKING;
+                                if($packing){
+                                    $data['TPACKING_FK'] = $packing->TPACKING_PK;
+                                    $data['NAMAPACKING'] = $packing->NAMAPACKING;
+                                    $data['KODE_KEMAS'] = $packing->KODEPACKING;
+                                }
                             }
 
                             $data['tglmasuk'] = $container->TGL_PLP;
@@ -2362,6 +2386,60 @@ class LclController extends Controller
         }
         
         return back()->with('error', 'Please upload EXCEL file format.')->withInput();
+    }
+    
+    public function changeStatusBc($id)
+    {
+        $manifest = DBManifest::find($id);
+        $manifest->status_bc = 'RELEASE';
+        $manifest->release_bc = 'Y';
+        $manifest->release_bc_date = date('Y-m-d H:i:s');
+//        $manifest->release_bc_uid = \Auth::getUser()->name;
+        
+        if($manifest->save()){
+
+            return json_encode(array('success' => true, 'message' => 'Status has been Change!'));
+}
+        
+        return json_encode(array('success' => false, 'message' => 'Something went wrong, please try again later.'));
+    }
+    
+    public function changeStatusFlag($id)
+    {
+        $manifest = DBManifest::find($id);
+        $manifest->flag_bc = 'N';
+        
+        if($manifest->save()){
+
+            return json_encode(array('success' => true, 'message' => 'Status has been Change!'));
+        }
+        
+        return json_encode(array('success' => false, 'message' => 'Something went wrong, please try again later.'));
+    }
+    
+    public function lockFlag(Request $request)
+    {
+        $manifest_id = $request->id;
+        $alasan = $request->alasan_segel;
+//        $lainnya = $request->alasan_lainnya;
+        
+//        return $request->all();
+        
+        $manifest = DBManifest::find($manifest_id);
+        $manifest->flag_bc = 'Y';
+        $manifest->no_flag_bc = $request->no_flag_bc;
+        $manifest->description_flag_bc = $request->description_flag_bc;
+//        if($alasan == 'Lainnya' && !empty($lainnya)){
+//            $manifest->alasan_segel = $lainnya;
+//        }else{
+            $manifest->alasan_segel = $alasan;
+//        }
+        
+        if($manifest->save()){
+            return back()->with('success', 'Flag has been update.')->withInput();
+        }
+        
+        return back()->with('error', 'Something wrong, please try again.')->withInput();
     }
     
 }
