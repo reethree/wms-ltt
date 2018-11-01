@@ -29,6 +29,7 @@
             $('#NOJOBORDER').val(rowdata.NoJob);
             $('#NO_PLP').val(rowdata.NO_PLP);
             $('#TGL_PLP').val(rowdata.TGL_PLP);
+            $('#KD_TPS_ASAL').val(rowdata.KD_TPS_ASAL);
             $('#ESEALCODE').val(rowdata.ESEALCODE).trigger('change');
             $('#RESPONSE_DISPATCHE').val(rowdata.RESPONSE_DISPATCHE);
             $('#STATUS_DISPATCHE').val(rowdata.STATUS_DISPATCHE);
@@ -201,7 +202,7 @@
                     ->addColumn(array('label'=>'Jam Keluar TPK','index'=>'JAM_KELUAR_TPK_ESEAL', 'width'=>150,'hidden'=>true))
 //                    ->addColumn(array('label'=>'Kode Dokumen','index'=>'KODE_DOKUMEN', 'width'=>150,'hidden'=>true))
 //                    ->addColumn(array('index'=>'KD_DOK_INOUT', 'width'=>150,'hidden'=>true))
-//                    ->addColumn(array('label'=>'Kode Kuitansi','index'=>'NO_KUITANSI', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'TPS Asal','index'=>'KD_TPS_ASAL', 'width'=>150,'hidden'=>true)) 
 //                    ->addColumn(array('label'=>'Consignee','index'=>'CONSIGNEE','width'=>160))
 //                    ->addColumn(array('label'=>'Importir','index'=>'NAMA_IMP','width'=>160))
 //                    ->addColumn(array('label'=>'NPWP Importir','index'=>'NPWP_IMP','width'=>160))
@@ -291,6 +292,12 @@
                             <input type="text" id="VESSEL" name="VESSEL" class="form-control" readonly>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">TPS Asal</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="KD_TPS_ASAL" name="KD_TPS_ASAL" class="form-control" readonly>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
@@ -303,16 +310,6 @@
                             <input type="text" id="TGL_PLP" name="TGL_PLP" class="form-control" readonly>
                         </div>
                     </div>
-<!--                    <div class="form-group">
-                        <label class="col-sm-3 control-label">No.SPJM</label>
-                        <div class="col-sm-3">
-                            <input type="text" id="NO_SPJM" name="NO_SPJM" class="form-control" readonly>
-                        </div>
-                        <label class="col-sm-2 control-label">Tgl.SPJM</label>
-                        <div class="col-sm-3">
-                            <input type="text" id="TGL_SPJM" name="TGL_SPJM" class="form-control" readonly>
-                        </div>
-                    </div>-->
                     <div class="form-group">
                         <label class="col-sm-3 control-label">ETA</label>
                         <div class="col-sm-8">
