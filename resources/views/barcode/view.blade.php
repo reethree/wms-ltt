@@ -64,7 +64,7 @@
                         <tr>
                             <td><b>Tgl. Masuk</b></td>
                             <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
-                            <td>{{ date('d F Y', strtotime($barcode->tglmasuk)) }}</td>
+                            <td>{{ (isset($barcode->tglmasuk)) ? date('d F Y', strtotime($barcode->tglmasuk)) : date('d F Y', strtotime($barcode->TGLMASUK)) }}</td>
                         </tr>
                         <tr>
                             <td><b>Tgl. ETA</b></td>
@@ -74,7 +74,7 @@
                         <tr>
                             <td><b>Tgl. Keluar</b></td>
                             <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
-                            <td>{{ date('d F Y', strtotime($barcode->tglrelease)) }}</td>
+                            <td>{{ (isset($barcode->tglrelease)) ? date('d F Y', strtotime($barcode->tglrelease)) : date('d F Y', strtotime($barcode->TGLRELEASE)) }}</td>
                         </tr>
                         <tr>
                             <td colspan="3">&nbsp;</td>
@@ -138,7 +138,7 @@
                         <tr>
                             <td><b>Tgl. Masuk</b></td>
                             <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
-                            <td>{{ date('d F Y', strtotime($barcode->tglmasuk)) }}</td>
+                            <td>{{ (isset($barcode->tglmasuk)) ? date('d F Y', strtotime($barcode->tglmasuk)) : date('d F Y', strtotime($barcode->TGLMASUK)) }}</td>
                         </tr>
                         <tr>
                             <td><b>Tgl. ETA</b></td>
@@ -148,7 +148,7 @@
                         <tr>
                             <td><b>Tgl. Keluar</b></td>
                             <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
-                            <td>{{ date('d F Y', strtotime($barcode->tglrelease)) }}</td>
+                            <td>{{ (isset($barcode->tglrelease)) ? date('d F Y', strtotime($barcode->tglrelease)) : date('d F Y', strtotime($barcode->TGLRELEASE)) }}</td>
                         </tr>
                         <tr>
                             <td colspan="3">&nbsp;</td>
@@ -184,11 +184,25 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><b>Photo</b></td>
+                        <td><b>Photo IN</b></td>
                     </tr>
                     <tr>
                         <td>
-                            <img src="http://3.bp.blogspot.com/-TioWLznDy8U/VarAN7nrIuI/AAAAAAAAFzY/BjQhq2P6REU/s1600/Transportasi%2BTruk%2BPeti%2BKemas%2B09.jpg" width="400" />
+                            @if($barcode->photo_in)
+                            <img src="{{url("uploads/photos/autogate/".str_replace('_C2','_C1',$barcode->photo_in))}}" width="400" />
+                            <img src="{{url("uploads/photos/autogate/".$barcode->photo_in)}}" width="400" />
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Photo OUT</b></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @if($barcode->photo_out)
+                            <img src="{{url("uploads/photos/autogate/".str_replace('_C2','_C1',$barcode->photo_out))}}" width="400" />
+                            <img src="{{url("uploads/photos/autogate/".$barcode->photo_out)}}" width="400" />
+                            @endif
                         </td>
                     </tr>
                 </table>
