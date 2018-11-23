@@ -106,7 +106,7 @@
             ->addColumn(array('label'=>'Consolidator','index'=>'NAMACONSOLIDATOR','width'=>250))
             ->addColumn(array('label'=>'No. HBL','index'=>'NOHBL','width'=>160))
             ->addColumn(array('label'=>'Tgl. HBL','index'=>'TGL_HBL', 'width'=>150,'align'=>'center'))
-            ->addColumn(array('label'=>'No. Tally','index'=>'NOTALLY','width'=>160))
+            ->addColumn(array('label'=>'No. Tally','index'=>'NOTALLY','width'=>160,'hidden'=>true))
             ->addColumn(array('label'=>'Consignee','index'=>'CONSIGNEE', 'width'=>250))
             ->addColumn(array('label'=>'Quantity','index'=>'QUANTITY', 'width'=>80,'align'=>'center'))
             ->addColumn(array('label'=>'Packing','index'=>'NAMAPACKING', 'width'=>120,'align'=>'center'))
@@ -129,6 +129,9 @@
             ->addColumn(array('label'=>'Tgl. SPPB','index'=>'TGL_SPPB', 'width'=>150))
             ->addColumn(array('label'=>'No. SPJM','index'=>'NO_SPJM', 'width'=>150))
             ->addColumn(array('label'=>'Tgl. SPJM','index'=>'TGL_SPJM', 'width'=>150))
+            ->addColumn(array('index'=>'location_id', 'width'=>100,'hidden'=>true))
+            ->addColumn(array('label'=>'Lokasi Barang','index'=>'location_name', 'width'=>150,'hidden'=>false))
+    
 //            ->addColumn(array('label'=>'No. POL','index'=>'NOPOL', 'width'=>120,'align'=>'center'))
 //            ->addColumn(array('label'=>'Kode Dokumen','index'=>'KODE_DOKUMEN', 'width'=>150))
 //            ->addColumn(array('label'=>'Shipper','index'=>'SHIPPER','width'=>160))
