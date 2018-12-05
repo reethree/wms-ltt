@@ -603,6 +603,10 @@ class LclController extends Controller
             $data['JAMMASUK'] = NULL;
         }
         
+        if($delete_photo == 'Y'){
+            $data['photo_gatein_extra'] = '';
+        }
+        
         $update = DBContainer::where('TCONTAINER_PK', $id)
             ->update($data);
         
@@ -672,6 +676,13 @@ class LclController extends Controller
         $working_hours = $interval->format("%H:%i");
         $dataupdate['working_hours'] = $working_hours;
         
+        if(empty($data['STARTSTRIPPING']) || $data['ENDSTRIPPING'] == '0000-00-00'){
+            $dataupdate['STARTSTRIPPING'] = NULL;
+            $dataupdate['ENDSTRIPPING'] = NULL;
+            $dataupdate['TGLSTRIPPING'] = NULL;
+            $dataupdate['JAMSTRIPPING'] = NULL;
+        }
+        
         $update = DBContainer::where('TCONTAINER_PK', $id)
             ->update($dataupdate);
         
@@ -696,6 +707,70 @@ class LclController extends Controller
         
         return json_encode(array('success' => false, 'message' => 'Something went wrong, please try again later.'));
         
+    }
+    
+    public function strippingApprove($id)
+    {
+        $dataupdate = array();
+               
+        $dataupdate['STARTSTRIPPING'] = date('Y-m-d H:i:s');
+        $dataupdate['ENDSTRIPPING'] = date('Y-m-d H:i:s', strtotime('+1 hour'));
+        $dataupdate['TGLSTRIPPING'] = date('Y-m-d');
+        $dataupdate['JAMSTRIPPING'] = date('H:i:s', strtotime('+1 hour'));
+        $dataupdate['UIDSTRIPPING'] = \Auth::getUser()->name;
+        $dataupdate['mulai_tunda'] = '00:00';
+        $dataupdate['selesai_tunda'] = '00:00';
+        
+        // Calculate Working Hours
+//        $date_start_stripping = strtotime($dataupdate['STARTSTRIPPING']);
+//        $date_end_stripping = strtotime($dataupdate['ENDSTRIPPING']);
+//        $stripping = abs($date_start_stripping - $date_end_stripping);
+        
+        $s_time1 = new \DateTime($dataupdate['STARTSTRIPPING']);
+        $s_time2 = new \DateTime($dataupdate['ENDSTRIPPING']);
+
+        $s_interval =  $s_time2->diff($s_time1);
+        
+//        $s_hours = $stripping / ( 60 * 60 );
+        
+//        $date_start_tunda = strtotime($dataupdate['mulai_tunda']);
+//        $date_end_tunda = strtotime($dataupdate['selesai_tunda']);
+//        $tunda = abs($date_start_tunda - $date_end_tunda);
+        
+        $t_time1 = new \DateTime($dataupdate['mulai_tunda']);
+        $t_time2 = new \DateTime($dataupdate['selesai_tunda']);
+
+        $t_interval =  $t_time2->diff($t_time1);
+        
+        $time1 = new \DateTime($s_interval->format("%H:%i:%s"));
+        $time2 = new \DateTime($t_interval->format("%H:%i:%s"));
+        
+        $interval = $time2->diff($time1);
+        
+        $working_hours = $interval->format("%H:%i");
+        $dataupdate['working_hours'] = $working_hours;
+        
+        $update = DBContainer::where('TCONTAINER_PK', $id)
+            ->update($dataupdate);
+        
+        if($update){
+            
+            $dataManifest['tglstripping'] = $dataupdate['TGLSTRIPPING'];
+            $dataManifest['jamstripping'] = $dataupdate['JAMSTRIPPING'];  
+            $dataManifest['STARTSTRIPPING'] = $dataupdate['STARTSTRIPPING'];
+            $dataManifest['ENDSTRIPPING'] = $dataupdate['ENDSTRIPPING'];
+            
+            $updateManifest = DBManifest::where('TCONTAINER_FK', $id)
+                    ->update($dataManifest);
+            
+            if($updateManifest){
+                return json_encode(array('success' => true, 'message' => 'Stripping successfully updated!'));
+            }
+            
+            return json_encode(array('success' => true, 'message' => 'Container successfully updated, but Manifest not updated!'));
+        }
+        
+        return json_encode(array('success' => false, 'message' => 'Something went wrong, please try again later.'));
     }
     
     public function buangmtyUpdate(Request $request, $id)
@@ -781,7 +856,8 @@ class LclController extends Controller
     public function releaseUpdate(Request $request, $id)
     {
         $data = $request->json()->all(); 
-        unset($data['TMANIFEST_PK'], $data['_token']);
+        $delete_photo = $data['delete_photo'];
+        unset($data['TMANIFEST_PK'], $data['delete_photo'], $data['_token']);
         
         $manifest = DBManifest::find($id);
         
@@ -827,6 +903,10 @@ class LclController extends Controller
         $data['NAMAEMKL'] = $data['UIDRELEASE'];
         $data['UIDSURATJALAN'] = $data['UIDRELEASE'];
         $data['NOPOL'] = $data['NOPOL_RELEASE'];
+        
+        if($delete_photo == 'Y'){
+            $data['photo_release'] = '';
+        }
         
         $update = DBManifest::where('TMANIFEST_PK', $id)
             ->update($data);
@@ -885,13 +965,19 @@ class LclController extends Controller
      */
     public function destroy($id)
     {
-        DBJoborder::where('TCONTAINER_FK', $id)->delete();
+        $container = DBContainer::find($id);
+        if($container){
+            // Delete Manifest
+            DBManifest::where('TJOBORDER_FK', $container->TJOBORDER_FK)->delete();
         // Delete Container
-        DBContainer::where('TCONTAINER_PK', $id)->delete();
-        // Delete Manifest
-        DBManifest::where('TCONTAINER_FK', $id)->delete();
+            DBContainer::where('TJOBORDER_FK', $container->TJOBORDER_FK)->delete();
+            // Delete Joborder
+            DBJoborder::where('TJOBORDER_PK', $container->TJOBORDER_FK)->delete();
         
         return back()->with('success', 'LCL Register has been deleted.'); 
+    }
+    
+        return back()->with('error', 'Error delete LCL register, please try again.'); 
     }
     
     public function registerPrintPermohonan(Request $request)
@@ -1005,6 +1091,13 @@ class LclController extends Controller
         return view('import.lcl.report-inout')->with($data);
     }
     
+    public function reportInoutViewPhoto($manifestID)
+    {
+        $manifest = DBManifest::find($manifestID);
+        
+        return json_encode(array('success' => true, 'data' => $manifest));
+    }
+    
     public function reportContainer(Request $request)
     {
         if ( !$this->access->can('show.lcl.report.container') ) {
@@ -1078,6 +1171,13 @@ class LclController extends Controller
         $data['year'] = $year;
         
         return view('import.lcl.report-container')->with($data);
+    }
+    
+    public function reportContainerViewPhoto($containerID)
+    {
+        $container = DBContainer::find($containerID);
+        
+        return json_encode(array('success' => true, 'data' => $container));
     }
     
     public function reportHarian()
@@ -2394,6 +2494,36 @@ class LclController extends Controller
         return back()->with('error', 'Please upload EXCEL file format.')->withInput();
     }
     
+    public function gateinUploadPhoto(Request $request)
+    {
+        $picture = array();
+        if ($request->hasFile('photos')) {
+            $files = $request->file('photos');
+            $destinationPath = base_path() . '/public/uploads/photos/container/lcl/'.$request->no_cont;
+            $i = 1;
+            foreach($files as $file){
+//                $filename = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                
+                $filename = date('dmyHis').'_'.str_slug($request->no_cont).'_'.$i.'.'.$extension;
+                $picture[] = $filename;
+                $file->move($destinationPath, $filename);
+                $i++;
+            }
+            // update to Database
+            $container = DBContainer::find($request->id_cont);
+            $container->photo_gatein_extra = json_encode($picture);
+            if($container->save()){
+                return back()->with('success', 'Photo for Container '. $request->no_cont .' has been uploaded.');
+            }else{
+                return back()->with('error', 'Photo uploaded, but not save in Database.');
+            }
+            
+        } else {
+            return back()->with('error', 'Something wrong!!! Can\'t upload photo, please try again.');
+        }
+    }
+    
     public function changeStatusBc($id)
     {
         $manifest = DBManifest::find($id);
@@ -2442,8 +2572,24 @@ class LclController extends Controller
 //        }
         
         if($manifest->save()){
-            return back()->with('success', 'Flag has been update.')->withInput();
+            return back()->with('success', 'Flag has been locked.')->withInput();
         }
+        
+        return back()->with('error', 'Something wrong, please try again.')->withInput();
+    }
+    
+    public function unlockFlag(Request $request)
+    {
+        $manifest_id = $request->id;
+        $alasan = $request->alasan_lepas_segel;
+        
+        $manifest = DBManifest::find($manifest_id);
+        $manifest->flag_bc = 'N';
+        $manifest->alasan_lepas_segel = $alasan;
+        
+        if($manifest->save()){
+            return back()->with('success', 'Flag has been unlocked.')->withInput();
+}
         
         return back()->with('error', 'Something wrong, please try again.')->withInput();
     }

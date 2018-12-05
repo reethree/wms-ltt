@@ -52,6 +52,10 @@ Route::group(['prefix' => 'fcl', 'namespace' => 'Import'], function(){
         'as' => 'fcl-report-rekap',
         'uses' => 'FclController@reportRekap'
     ]);
+    Route::get('/report/rekap/view-photo/{id}', [
+        'as' => 'fcl-report-rekap-view-photo',
+        'uses' => 'FclController@reportRekapViewPhoto'
+    ]);
     Route::get('/report/stock', [
         'as' => 'fcl-report-stock',
         'uses' => 'FclController@reportStock'
@@ -64,7 +68,10 @@ Route::group(['prefix' => 'fcl', 'namespace' => 'Import'], function(){
         'as' => 'fcl-report-rekap-sendemail',
         'uses' => 'FclController@reportRekapSend'
     ]);
-
+    Route::post('/report/rekap/sendebilling', [
+        'as' => 'fcl-report-rekap-sendbilling',
+        'uses' => 'FclController@reportRekapSendBilling'
+    ]);
     Route::get('/report/longstay/change-status/{id}', [
         'as' => 'fcl-change-status',
         'uses' => 'FclController@changeStatusBc'
@@ -76,6 +83,10 @@ Route::group(['prefix' => 'fcl', 'namespace' => 'Import'], function(){
     Route::post('/report/longstay/lock-flag', [
         'as' => 'fcl-lock-flag',
         'uses' => 'FclController@lockFlag'
+    ]);
+    Route::post('/report/longstay/unlock-flag', [
+        'as' => 'fcl-unlock-flag',
+        'uses' => 'FclController@unlockFlag'
     ]);
 });
 

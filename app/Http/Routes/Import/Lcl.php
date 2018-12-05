@@ -64,9 +64,17 @@ Route::group(['prefix' => 'lcl', 'namespace' => 'Import'], function(){
         'as' => 'lcl-report-inout',
         'uses' => 'LclController@reportInout'
     ]);
+    Route::get('/report/inout/view-photo/{id}', [
+        'as' => 'lcl-report-inout-view-photo',
+        'uses' => 'LclController@reportInoutViewPhoto'
+    ]);
     Route::get('/report/container', [
         'as' => 'lcl-report-container',
         'uses' => 'LclController@reportContainer'
+    ]);
+    Route::get('/report/container/view-photo/{id}', [
+        'as' => 'lcl-report-container-view-photo',
+        'uses' => 'LclController@reportContainerViewPhoto'
     ]);
     Route::get('/report/harian', [
         'as' => 'lcl-report-harian',
@@ -95,5 +103,9 @@ Route::group(['prefix' => 'lcl', 'namespace' => 'Import'], function(){
     Route::post('/report/longstay/lock-flag', [
         'as' => 'lcl-lock-flag',
         'uses' => 'LclController@lockFlag'
+    ]);
+    Route::post('/report/longstay/unlock-flag', [
+        'as' => 'lcl-unlock-flag',
+        'uses' => 'LclController@unlockFlag'
     ]);
 });

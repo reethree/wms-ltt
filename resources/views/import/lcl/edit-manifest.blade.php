@@ -156,6 +156,12 @@
     
     function approveManifest($id)
     {
+        var rowdata = $('#lclManifestGrid').getRowData($id);
+        if(rowdata.tglstripping == '' || rowdata.tglstripping == '0000-00-00'){
+            alert('HBL ini belum melakukan stripping!');
+            return false;
+        }
+
         $.ajax({
             type: 'GET',
             dataType : 'json',
@@ -189,7 +195,7 @@
     
     $(document).ready(function()
     {
-        $('#btn-toolbar').disabledButtonGroup();
+        $('#btn-toolbar, #btn-photo').disabledButtonGroup();
         $('#btn-group-4').enableButtonGroup();
         $('#btn-group-3').enableButtonGroup();
         $('#btn-group-1').enableButtonGroup();
@@ -219,7 +225,7 @@
             $('#id').val("");
             
             //Disables all buttons within the toolbar
-            $('#btn-toolbar').disabledButtonGroup();
+            $('#btn-toolbar, #btn-photo').disabledButtonGroup();
             $('#btn-group-4').enableButtonGroup();
             $('#btn-group-3').enableButtonGroup();
             $('#btn-group-1').enableButtonGroup();
@@ -280,8 +286,23 @@
         
 //        console.log(rowdata);
         $('#btn-toolbar').disabledButtonGroup();
-        $('#btn-group-1').enableButtonGroup();
+        $('#btn-group-1, #btn-photo').enableButtonGroup();
         $('#btn-group-3').enableButtonGroup();
+        
+        $('#upload-title').html('Upload Photo for '+rowdata.NOHBL);
+        $('#no_hbl').val(rowdata.NOHBL);
+        $('#id_hbl').val(rowdata.TMANIFEST_PK);
+        $('#load_photos').html('');
+        $('#delete_photo').val('N');
+        if(rowdata.photo_stripping){
+            var photos = $.parseJSON(rowdata.photo_stripping);
+            var html = '';
+            $.each(photos, function(i, item) {
+                /// do stuff
+                html += '<img src="{{url("uploads/photos/manifest")}}/'+item+'" style="width: 200px;padding:5px;" />';
+            });
+            $('#load_photos').html(html);
+        }
       });
 
       //Bind onClick event to the "Delete" button.
@@ -522,6 +543,9 @@
                         ->addColumn(array('label'=>'Alasan Perubahan','index'=>'alasan_perubahan','width'=>150,'align'=>'center'))
                         ->addColumn(array('label'=>'Tgl. Entry','index'=>'tglentry', 'width'=>120))
                         ->addColumn(array('label'=>'Jam. Entry','index'=>'jamentry', 'width'=>70,'hidden'=>true))
+                        ->addColumn(array('label'=>'Tgl. Stripping','index'=>'tglstripping', 'width'=>70,'hidden'=>true))
+                        ->addColumn(array('label'=>'Jam. Stripping','index'=>'jamstripping', 'width'=>70,'hidden'=>true))
+                        ->addColumn(array('label'=>'Photo Stripping','index'=>'photo_stripping', 'width'=>70,'hidden'=>true))
                         ->addColumn(array('label'=>'Updated','index'=>'last_update', 'width'=>150, 'search'=>false,'hidden'=>true))
                         ->renderGrid()
                     }}
@@ -557,6 +581,7 @@
                         <input name="_token" type="hidden" value="{{ csrf_token() }}">
                         <input name="TCONTAINER_FK" id="TCONTAINER_FK" type="hidden" value="{{ $container->TCONTAINER_PK }}">
                         <input name="id" id="id" type="hidden">
+                        <input name="delete_photo" id="delete_photo" value="N" type="hidden">
                         <div class="form-group">
                             <label class="col-sm-3 control-label">No. HBL</label>
                             <div class="col-sm-8">
@@ -627,6 +652,19 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="form-group" id="btn-photo">
+                          <label class="col-sm-3 control-label">Photo</label>
+                          <div class="col-sm-8">
+                              <button type="button" class="btn btn-warning" id="upload-photo-btn">Upload Photo</button>
+                              <button type="button" class="btn btn-danger" id="delete-photo-btn">Delete Photo</button>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <div class="col-sm-12">
+                              <div id="load_photos" style="text-align: center;"></div>
+                          </div>
+                        </div>
+                        
                     </div>
                     <div class="col-md-6"> 
                         <div class="form-group">
@@ -794,6 +832,39 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+<div id="photo-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="upload-title"></h4>
+            </div>
+            <form class="form-horizontal" id="upload-photo-form" action="{{ route('lcl-manifest-upload-photo','photo_stripping') }}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body"> 
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input name="_token" type="hidden" value="{{ csrf_token() }}">
+                            <input type="hidden" id="id_hbl" name="id_hbl" required>   
+                            <input type="hidden" id="no_hbl" name="no_hbl" required>    
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Photo</label>
+                                <div class="col-sm-8">
+                                    <input type="file" name="photos[]" class="form-control" multiple="true" required>
+                                </div>
+                            </div>
+
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 @endsection
 
@@ -825,6 +896,19 @@
         e.preventDefault();
         $("#consignee-modal").modal('show');
         return false;
+    });
+    
+    $("#upload-photo-btn").on("click", function(e){
+        e.preventDefault();
+        $("#photo-modal").modal('show');
+        return false;
+    });
+    
+    $("#delete-photo-btn").on("click", function(e){
+        if(!confirm('Apakah anda yakin akan menghapus photo?')){return false;}
+        
+        $('#load_photos').html('');
+        $('#delete_photo').val('Y');
     });
     
     $("#create-consignee-form").on("submit", function(){

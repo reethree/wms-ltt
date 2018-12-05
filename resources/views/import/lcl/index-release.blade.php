@@ -40,8 +40,9 @@
     $(document).ready(function()
     {
         $('#release-form').disabledFormGroup();
-        $('#btn-toolbar,#btn-sppb').disabledButtonGroup();
+        $('#btn-toolbar,#btn-sppb, #btn-photo').disabledButtonGroup();
         $('#btn-group-3').enableButtonGroup();
+        $(".hide-kddoc").hide();
         
         $("#KD_DOK_INOUT").on("change", function(){
             var $this = $(this).val();
@@ -49,6 +50,18 @@
                 $(".select-bcf-consignee").show();
             }else{
                 $(".select-bcf-consignee").hide();
+            }
+            
+            if($this == 2){
+                $(".pabean-field").show();
+            }else{
+                $(".pabean-field").hide();
+            }
+            
+            if($this){
+                $(".hide-kddoc").show();
+            }else{
+                $(".hide-kddoc").hide();
             }
         });
         
@@ -120,8 +133,8 @@
             $('#NO_BC11').val(rowdata.NO_BC11);
             $('#TGL_BC11').val(rowdata.TGL_BC11);
             $('#NO_POS_BC11').val(rowdata.NO_POS_BC11);
-            $('#NO_SPJM').val(rowdata.NO_SPJM);
-            $('#TGL_SPJM').val(rowdata.TGL_SPJM);
+            $('#no_pabean').val(rowdata.no_pabean);
+            $('#tgl_pabean').val(rowdata.tgl_pabean);
             $('#ID_CONSIGNEE').val(rowdata.ID_CONSIGNEE);
             $('#NO_SPPB').val(rowdata.NO_SPPB);
             $('#TGL_SPPB').val(rowdata.TGL_SPPB);
@@ -133,10 +146,26 @@
             $('#KD_DOK_INOUT').val(rowdata.KD_DOK_INOUT).trigger('change');
             $('#bcf_consignee').val(rowdata.bcf_consignee).trigger('change');
                         
+            $('#upload-title').html('Upload Photo for '+rowdata.NOHBL);
+            $('#no_hbl').val(rowdata.NOHBL);
+            $('#id_hbl').val(rowdata.TMANIFEST_PK);
+            $('#load_photos').html('');
+            $('#delete_photo').val('N');
+            
+            if(rowdata.photo_release){
+                var html = '';
+                var photos = $.parseJSON(rowdata.photo_release);
+                $.each(photos, function(i, item) {
+                    /// do stuff
+                    html += '<img src="{{url("uploads/photos/manifest")}}/'+item+'" style="width: 200px;padding:5px;" />';
+                });
+                $('#load_photos').html(html);
+            }
+            
 //            if(!rowdata.tglrelease && !rowdata.jamrelease) {
 //                $('#btn-group-4').disabledButtonGroup();
 //                $('#btn-group-5').disabledButtonGroup();
-                $('#btn-group-2,#btn-sppb').enableButtonGroup();
+                $('#btn-group-2,#btn-sppb,#btn-photo').enableButtonGroup();
                 $('#release-form').enableFormGroup();
 //            }else{
                 $('#btn-group-4').enableButtonGroup();
@@ -145,10 +174,20 @@
 //                $('#release-form').disabledFormGroup();
 //            }
             
+            if(rowdata.status_bc == 'HOLD'){
+                $('#tglrelease').attr('disabled','disabled');
+                $('#jamrelease').attr('disabled','disabled');
+                $('#NOPOL_RELEASE').attr('disabled','disabled');
+            }else{
+                $('#tglrelease').removeAttr('disabled');
+                $('#jamrelease').removeAttr('disabled');
+                $('#NOPOL_RELEASE').removeAttr('disabled');
+            }
+            
             if(rowdata.flag_bc == 'Y'){
                 $('#btn-group-4').disabledButtonGroup();
                 $('#btn-group-5').disabledButtonGroup();
-                $('#btn-group-2').disabledButtonGroup();
+                $('#btn-group-2,#btn-sppb,#btn-photo').disabledButtonGroup();
                 $('#release-form').disabledFormGroup();
             }
 
@@ -383,7 +422,8 @@
                     ->addColumn(array('label'=>'Jam. Release','index'=>'jamrelease', 'width'=>120,'hidden'=>false, 'align'=>'center'))
                     ->addColumn(array('label'=>'No. POL','index'=>'NOPOL_RELEASE', 'width'=>100,'hidden'=>false, 'align'=>'center'))
                     
-            
+                    ->addColumn(array('label'=>'No. Pabean','index'=>'no_pabean', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'Tgl. Pabean','index'=>'tgl_pabean', 'width'=>150,'hidden'=>true))
                     ->addColumn(array('label'=>'No. SPJM','index'=>'NO_SPJM', 'width'=>150,'hidden'=>true))
                     ->addColumn(array('label'=>'Tgl. SPJM','index'=>'TGL_SPJM', 'width'=>150,'hidden'=>true))
                     
@@ -462,6 +502,7 @@
                     
                     <input name="_token" type="hidden" value="{{ csrf_token() }}">
                     <input id="TMANIFEST_PK" name="TMANIFEST_PK" type="hidden">
+                    <input name="delete_photo" id="delete_photo" value="N" type="hidden">
                     <div class="form-group">
                         <label class="col-sm-3 control-label">No. HBL</label>
                         <div class="col-sm-8">
@@ -629,7 +670,24 @@
                             </select>
                         </div>
                     </div>-->
-                    <div class="form-group">
+                    <div class="form-group pabean-field" style="display:none;">
+                        <label class="col-sm-3 control-label">No. Pabean</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="no_pabean" name="no_pabean" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group pabean-field" style="display:none;">
+                        <label class="col-sm-3 control-label">Tgl. Pabean</label>
+                        <div class="col-sm-8">
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" id="tgl_pabean" name="tgl_pabean" class="form-control pull-right datepicker" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group hide-kddoc">
                         <label class="col-sm-3 control-label">Tgl.Release</label>
                         <div class="col-sm-8">
                             <div class="input-group date">
@@ -641,7 +699,7 @@
                         </div>
                     </div>
                     
-                    <div class="bootstrap-timepicker">
+                    <div class="bootstrap-timepicker hide-kddoc">
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Jam Release</label>
                             <div class="col-sm-8">
@@ -655,16 +713,28 @@
                         </div>
                     </div>
                     
-                    <div class="form-group">
+                    <div class="form-group hide-kddoc">
                         <label class="col-sm-3 control-label">Petugas</label>
                         <div class="col-sm-8">
                             <input type="text" id="UIDRELEASE" name="UIDRELEASE" class="form-control" required>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group hide-kddoc">
                         <label class="col-sm-3 control-label">No. POL</label>
                         <div class="col-sm-8">
                             <input type="text" id="NOPOL_RELEASE" name="NOPOL_RELEASE" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group hide-kddoc" id="btn-photo">
+                        <label class="col-sm-3 control-label">Photo</label>
+                        <div class="col-sm-8">
+                            <button type="button" class="btn btn-warning" id="upload-photo-btn">Upload Photo</button>
+                            <button type="button" class="btn btn-danger" id="delete-photo-btn">Delete Photo</button>
+                </div>
+            </div>
+                    <div class="form-group hide-kddoc">
+                        <div class="col-sm-12">
+                            <div id="load_photos" style="text-align: center;"></div>
                         </div>
                     </div>
                 </div>
@@ -672,7 +742,39 @@
         </form>  
     </div>
 </div>
+<div id="photo-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="upload-title"></h4>
+            </div>
+            <form class="form-horizontal" id="upload-photo-form" action="{{ route('lcl-manifest-upload-photo','photo_release') }}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body"> 
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input name="_token" type="hidden" value="{{ csrf_token() }}">
+                            <input type="hidden" id="id_hbl" name="id_hbl" required>   
+                            <input type="hidden" id="no_hbl" name="no_hbl" required>    
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Photo</label>
+                                <div class="col-sm-8">
+                                    <input type="file" name="photos[]" class="form-control" multiple="true" required>
+                                </div>
+                            </div>
 
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 @endsection
 
 @section('custom_css')
@@ -690,6 +792,20 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 <script type="text/javascript">
     $('.select2').select2();
+    
+    $("#upload-photo-btn").on("click", function(e){
+        e.preventDefault();
+        $("#photo-modal").modal('show');
+        return false;
+    });
+    
+    $("#delete-photo-btn").on("click", function(e){
+        if(!confirm('Apakah anda yakin akan menghapus photo?')){return false;}
+        
+        $('#load_photos').html('');
+        $('#delete_photo').val('Y');
+    });
+    
     $('.datepicker').datepicker({
         autoclose: true,
         todayHighlight: false,
