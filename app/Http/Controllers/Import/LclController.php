@@ -596,7 +596,8 @@ class LclController extends Controller
     public function gateinUpdate(Request $request, $id)
     {
         $data = $request->json()->all(); 
-        unset($data['TCONTAINER_PK'], $data['_token']);
+        $delete_photo = $data['delete_photo'];
+        unset($data['TCONTAINER_PK'], $data['delete_photo'], $data['_token']);
         
         if(empty($data['TGLMASUK']) || $data['TGLMASUK'] == '0000-00-00'){
             $data['TGLMASUK'] = NULL;
@@ -690,8 +691,8 @@ class LclController extends Controller
             
             $dataManifest['tglstripping'] = $data['ENDSTRIPPING'];
             $dataManifest['jamstripping'] = $data['JAMENDSTRIPPING'];  
-            $dataManifest['STARTSTRIPPING'] = $data['STARTSTRIPPING'].' '.$data['JAMSTARTSTRIPPING'].':00';
-            $dataManifest['ENDSTRIPPING'] = $data['ENDSTRIPPING'].' '.$data['JAMENDSTRIPPING'].':00';
+            $dataManifest['STARTSTRIPPING'] = $data['STARTSTRIPPING'].' '.$data['JAMSTARTSTRIPPING'];
+            $dataManifest['ENDSTRIPPING'] = $data['ENDSTRIPPING'].' '.$data['JAMENDSTRIPPING'];
             
             $updateManifest = DBManifest::where('TCONTAINER_FK', $id)
                     ->update($dataManifest);

@@ -8,6 +8,23 @@
 </style>
 <script>
     
+    function gridCompleteEvent()
+    {
+        var ids = jQuery("#fclGateinGrid").jqGrid('getDataIDs');
+            
+        for(var i=0;i < ids.length;i++){ 
+            var cl = ids[i];
+            
+            rowdata = $('#fclGateinGrid').getRowData(cl);
+            if(rowdata.flag_bc == 'Y') {
+                $("#" + cl).find("td").css("background-color", "#ff0000");
+            }
+            if(rowdata.status_bc == 'HOLD') {
+                $("#" + cl).find("td").css("background-color", "#ffe500");
+            }     
+        } 
+    }
+    
     function onSelectRowEvent()
     {
         $('#btn-group-1, #btn-group-4').enableButtonGroup();
@@ -16,7 +33,7 @@
     $(document).ready(function()
     {
         $('#gatein-form').disabledFormGroup();
-        $('#btn-toolbar').disabledButtonGroup();
+        $('#btn-toolbar, #btn-photo').disabledButtonGroup();
         $('#btn-group-3').enableButtonGroup();
         
         $('#btn-edit').click(function() {
@@ -28,6 +45,9 @@
             $('#TCONTAINER_PK').val(rowid);
             $('#NO_BC11').val(rowdata.NO_BC11);
             $('#TGL_BC11').val(rowdata.TGL_BC11);
+            $('#NO_PLP').val(rowdata.NO_PLP);
+            $('#TGL_PLP').val(rowdata.TGL_PLP);
+            $('#KD_TPS_ASAL').val(rowdata.KD_TPS_ASAL);
             $("#P_TGLKELUAR").datepicker('setDate', rowdata.P_TGLKELUAR);
             $('#NO_SP2').val(rowdata.NO_SP2);
             $("#TGL_SP2").datepicker('setDate', rowdata.TGL_SP2);
@@ -35,8 +55,24 @@
             $('#TGLKELUAR_TPK').val(rowdata.TGLKELUAR_TPK);
             $('#JAMKELUAR_TPK').val(rowdata.JAMKELUAR_TPK);
             
+            $('#upload-title').html('Upload Photo for '+rowdata.NOCONTAINER);
+            $('#no_cont').val(rowdata.NOCONTAINER);
+            $('#id_cont').val(rowdata.TCONTAINER_PK);
+            $('#load_photos').html('');
+            $('#delete_photo').val('N');
+            
+            if(rowdata.photo_gatein_extra){
+                var html = '';
+                var photos = $.parseJSON(rowdata.photo_gatein_extra);
+                $.each(photos, function(i, item) {
+                    /// do stuff
+                    html += '<img src="{{url("uploads/photos/container/fcl/")}}/'+rowdata.NOCONTAINER+'/'+item+'" style="width: 200px;padding:5px;" />';
+                });
+                $('#load_photos').html(html);
+            }
+            
 //            if(!rowdata.TGLMASUK && !rowdata.JAMMASUK) {
-                $('#btn-group-2').enableButtonGroup();
+                $('#btn-group-2, #btn-photo').enableButtonGroup();
                 $('#btn-group-5').enableButtonGroup();
                 $('#gatein-form').enableFormGroup();
                 $('#UIDMASUK').val('{{ Auth::getUser()->name }}');
@@ -92,12 +128,13 @@
         $('#btn-refresh').click(function() {
             $('#fclGateinGrid').jqGrid().trigger("reloadGrid");
             $('#gatein-form').disabledFormGroup();
-            $('#btn-toolbar').disabledButtonGroup();
+            $('#btn-toolbar, #btn-photo').disabledButtonGroup();
             $('#btn-group-3').enableButtonGroup();
             
             $('#gatein-form')[0].reset();
             $('.select2').val(null).trigger("change");
             $('#TCONTAINER_PK').val("");
+            $('#flag_bc').val('N').trigger("change");
         });
         
         $('#btn-upload').click(function(){
@@ -186,13 +223,14 @@
                     ->setGridOption('shrinkToFit', true)
                     ->setGridOption('sortname','TCONTAINER_PK')
                     ->setGridOption('rownumbers', true)
-                    ->setGridOption('height', '250')
+                    ->setGridOption('rownumWidth', 50)
+                    ->setGridOption('height', '300')
                     ->setGridOption('rowList',array(20,50,100))
                     ->setGridOption('useColSpanStyle', true)
                     ->setNavigatorOptions('navigator', array('viewtext'=>'view'))
                     ->setNavigatorOptions('view',array('closeOnEscape'=>false))
                     ->setFilterToolbarOptions(array('autosearch'=>true))
-//                    ->setGridEvent('gridComplete', 'gridCompleteEvent')
+                    ->setGridEvent('gridComplete', 'gridCompleteEvent')
                     ->setGridEvent('onSelectRow', 'onSelectRowEvent')
         //            ->addColumn(array('label'=>'Action','index'=>'action', 'width'=>80, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
                     ->addColumn(array('key'=>true,'index'=>'TCONTAINER_PK','hidden'=>true))
@@ -213,14 +251,17 @@
                     ->addColumn(array('label'=>'Jam Keluar TPK','index'=>'JAMKELUAR_TPK','hidden'=>true))
                     ->addColumn(array('label'=>'Perkiraan Keluar','index'=>'P_TGLKELUAR','hidden'=>true))
                     ->addColumn(array('label'=>'Petugas','index'=>'UIDMASUK','hidden'=>true))
-                    ->addColumn(array('label'=>'No. POL','index'=>'NOPOL','hidden'=>true))
+                    ->addColumn(array('label'=>'No. POL','index'=>'NOPOL','hidden'=>false,'align'=>'center'))
                     ->addColumn(array('label'=>'No. SP2','index'=>'NO_SP2','width'=>120,'hidden'=>true))
                     ->addColumn(array('label'=>'Tgl. SP2','index'=>'TGL_SP2','hidden'=>true))
                     ->addColumn(array('label'=>'E-Seal','index'=>'ESEALCODE','hidden'=>true))
-        //            ->addColumn(array('label'=>'Layout','index'=>'layout','width'=>80,'align'=>'center','hidden'=>true))
+                    ->addColumn(array('label'=>'Weight','index'=>'WEIGHT','hidden'=>true))
+                    ->addColumn(array('label'=>'Photo Extra','index'=>'photo_gatein_extra', 'width'=>70,'hidden'=>true))
+                    ->addColumn(array('label'=>'Segel Merah','index'=>'flag_bc','width'=>80, 'align'=>'center'))
+                    ->addColumn(array('label'=>'Alasan Segel','index'=>'alasan_segel','width'=>150,'align'=>'center'))
         //            ->addColumn(array('label'=>'UID','index'=>'UID', 'width'=>150))
-                    ->addColumn(array('label'=>'Tgl. Entry','index'=>'TGLENTRY', 'width'=>150))
-                    ->addColumn(array('label'=>'Updated','index'=>'last_update', 'width'=>150, 'search'=>false))
+                    ->addColumn(array('label'=>'Tgl. Entry','index'=>'TGLENTRY', 'width'=>150,'align'=>'center'))
+//                    ->addColumn(array('label'=>'Updated','index'=>'last_update', 'width'=>150, 'search'=>false))
         //            ->addColumn(array('label'=>'Action','index'=>'action', 'width'=>80, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
                     ->renderGrid()
                 }}
@@ -252,6 +293,7 @@
                     
                     <input name="_token" type="hidden" value="{{ csrf_token() }}">
                     <input id="TCONTAINER_PK" name="TCONTAINER_PK" type="hidden">
+                    <input name="delete_photo" id="delete_photo" value="N" type="hidden">
                     
                     <div class="form-group">
                         <label class="col-sm-3 control-label">No. SPK</label>
@@ -263,6 +305,16 @@
                         <label class="col-sm-3 control-label">No. Container</label>
                         <div class="col-sm-8">
                             <input type="text" id="NOCONTAINER" name="NOCONTAINER" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Size</label>
+                        <div class="col-sm-3">
+                            <input type="text" id="SIZE" name="SIZE" class="form-control" readonly>
+                </div>
+                        <label class="col-sm-2 control-label">TPS Asal</label>
+                        <div class="col-sm-3">
+                            <input type="text" id="KD_TPS_ASAL" name="KD_TPS_ASAL" class="form-control" readonly>
                         </div>
                     </div>
                 </div>
@@ -278,9 +330,19 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">Consolidator</label>
+                        <label class="col-sm-3 control-label">No.PLP</label>
+                        <div class="col-sm-3">
+                            <input type="text" id="NO_PLP" name="NO_PLP" class="form-control" readonly>
+                        </div>
+                        <label class="col-sm-2 control-label">Tgl.PLP</label>
+                        <div class="col-sm-3">
+                            <input type="text" id="TGL_PLP" name="TGL_PLP" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Weight</label>
                         <div class="col-sm-8">
-                            <input type="text" id="NAMACONSOLIDATOR" name="NAMACONSOLIDATOR" class="form-control" readonly>
+                            <input type="text" id="WEIGHT" name="WEIGHT" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -341,7 +403,7 @@
                         </div>
                     </div>
                     
-                    <div class="form-group" style="display: none;">
+<!--                    <div class="form-group">
                         <label class="col-sm-3 control-label">Perkiraan Tgl.Kaluar</label>
                         <div class="col-sm-8">
                             <div class="input-group date">
@@ -351,8 +413,8 @@
                                 <input type="text" id="P_TGLKELUAR" name="P_TGLKELUAR" class="form-control pull-right datepicker" required value="{{ date('Y-m-d',strtotime('+3Days')) }}">
                             </div>
                         </div>
+                    </div>-->
                     </div>
-                </div>
                 <div class="col-md-6"> 
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Petugas</label>
@@ -395,13 +457,77 @@
                             </select>
                         </div>
                     </div>
-                    
+                    <div class="form-group hide-kddoc" id="btn-photo">
+                        <label class="col-sm-3 control-label">Photo</label>
+                        <div class="col-sm-8">
+                            <button type="button" class="btn btn-warning" id="upload-photo-btn">Upload Photo</button>
+                            <button type="button" class="btn btn-danger" id="delete-photo-btn">Delete Photo</button>
+                </div>
+            </div>
+                    <div class="form-group hide-kddoc">
+                        <div class="col-sm-12">
+                            <div id="load_photos" style="text-align: center;"></div>
+                        </div>
+                    </div>
+<!--                    <div class="form-group" style="display:none;">
+                        <label class="col-sm-3 control-label">Segel Merah</label>
+                        <div class="col-sm-2">
+                            <select class="form-control select2" id="flag_bc" name="flag_bc" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                <option value="N">N</option>
+                                <option value="Y">Y</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group select-alasan" style="display:none;">
+                        <label class="col-sm-3 control-label">Alasan Segel</label>
+                        <div class="col-sm-8">
+                            <select class="form-control select2" id="alasan_segel" name="alasan_segel" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                <option value="Nota Hasil Intelijen (NHI)" selected>Nota Hasil Intelijen (NHI)</option>
+                                <option value="Surveilance">Surveilance</option>
+                                <option value="SPBL">SPBL</option>
+                                <option value="IKP / Temuan Lapangan">IKP / Temuan Lapangan</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                    </div>-->
                 </div>
             </div>
         </form>  
     </div>
 </div>
+<div id="photo-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="upload-title"></h4>
+            </div>
+            <form class="form-horizontal" id="upload-photo-form" action="{{ route('fcl-gatein-upload-photo') }}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body"> 
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input name="_token" type="hidden" value="{{ csrf_token() }}">
+                            <input type="hidden" id="id_cont" name="id_cont" required>   
+                            <input type="hidden" id="no_cont" name="no_cont" required>    
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Photo</label>
+                                <div class="col-sm-8">
+                                    <input type="file" name="photos[]" class="form-control" multiple="true" required>
+                                </div>
+                            </div>
 
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 @endsection
 
 @section('custom_css')
@@ -418,6 +544,20 @@
 <script src="{{ asset("/bower_components/AdminLTE/plugins/timepicker/bootstrap-timepicker.min.js") }}"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 <script type="text/javascript">
+    
+    $("#upload-photo-btn").on("click", function(e){
+        e.preventDefault();
+        $("#photo-modal").modal('show');
+        return false;
+    });
+    
+    $("#delete-photo-btn").on("click", function(e){
+        if(!confirm('Apakah anda yakin akan menghapus photo?')){return false;}
+        
+        $('#load_photos').html('');
+        $('#delete_photo').val('Y');
+    });
+    
     $('.select2').select2();
     $('.datepicker').datepicker({
         autoclose: true,
@@ -431,11 +571,14 @@
         minuteStep: 1,
         secondStep: 1
     });
-    $('#TGLMASUK').on("change", function (e) { 
-        var actualDate = new Date($(this).val());
-        var newDate = new Date(actualDate.getFullYear(), actualDate.getMonth(), actualDate.getDate()+3);
-        $('#P_TGLKELUAR').datepicker('setDate', newDate );
-    });
+    $(".timepicker").mask("99:99:99");
+    $(".datepicker").mask("9999-99-99");
+    
+//    $('#TGLMASUK').on("change", function (e) { 
+//        var actualDate = new Date($(this).val());
+//        var newDate = new Date(actualDate.getFullYear(), actualDate.getMonth(), actualDate.getDate()+3);
+//        $('#P_TGLKELUAR').datepicker('setDate', newDate );
+//    });
 </script>
 
 @endsection

@@ -59,10 +59,10 @@ class ManifestController extends Controller
     public function store(Request $request)
     {
         $data = $request->json()->all(); 
-        unset($data['id'], $data['_token']);
+        unset($data['id'], $data['delete_photo'], $data['_token']);
         
         $container = DBContainer::find($data['TCONTAINER_FK']);  
-//        $packing = DBPacking::find($data['TPACKING_FK']);
+        
         
         $num = 0; 
 //        $manifestID = DBManifest::select('NOTALLY')->where('TJOBORDER_FK',$container->TJOBORDER_FK)->count();
@@ -76,8 +76,8 @@ class ManifestController extends Controller
  
         $data['NOTALLY'] = $container->NoJob.'.'.$regID; 
         $data['TJOBORDER_FK'] = $container->TJOBORDER_FK;
-        if($data['TPACKING_FK']){
             $packing = DBPacking::find($data['TPACKING_FK']);
+        if($packing){
             $data['KODE_KEMAS'] = $packing->KODEPACKING;
             $data['NAMAPACKING'] = $packing->NAMAPACKING;
         }
@@ -226,7 +226,8 @@ class ManifestController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->json()->all(); 
-        unset($data['id'], $data['_token']);
+        $delete_photo = $data['delete_photo'];
+        unset($data['id'], $data['delete_photo'], $data['_token']);
         
         $container = DBContainer::find($data['TCONTAINER_FK']); 
         $packing = DBPacking::find($data['TPACKING_FK']);
@@ -256,12 +257,14 @@ class ManifestController extends Controller
             $data['alasan_perubahan'] = '';
         }
         
+        if($delete_photo == 'Y'){
+            $data['photo_stripping'] = '';
+        }
         $location = \DB::table('location')->find($data['location_id']);
         if($location){
             $data['location_id'] = $location->id;
             $data['location_name'] = $location->name;
         }
-        
         $update = DBManifest::where('TMANIFEST_PK', $id)
             ->update($data);
         
@@ -318,8 +321,12 @@ class ManifestController extends Controller
     public function approve($id)
     {
         
-        $meas = DBManifest::select('MEAS')->where('TMANIFEST_PK', $id)->first();
+        $manifest = DBManifest::find($id);
 
+        if(empty($manifest->tglstripping) || $manifest->tglstripping == '0000-00-00' || $manifest->tglstripping == '01-01-1970'){
+            return json_encode(array('success' => false, 'message' => 'HBL ini belum melakukan stripping!'));
+        }
+        
         $update = DBManifest::where('TMANIFEST_PK', $id)
             ->update(array('VALIDASI'=>'Y'));
         
@@ -341,6 +348,12 @@ class ManifestController extends Controller
     public function approveAll($container_id)
     {
         
+        $container = DBContainer::find($container_id)->first();
+        
+        if(empty($container->TGLSTRIPPING) || $container->TGLSTRIPPING == '0000-00-00' || $container->TGLSTRIPPING == '01-01-1970'){
+            return json_encode(array('success' => false, 'message' => 'Kontainer ini belum melakukan stripping!'));
+        }
+
         $update = DBManifest::where('TCONTAINER_FK', $container_id)
             ->update(array('VALIDASI'=>'Y'));
         
@@ -487,6 +500,36 @@ class ManifestController extends Controller
         }
               
         return json_encode(array('success' => false, 'message' => 'Something went wrong, please try again later.'));
+    }
+    
+    public function uploadPhoto(Request $request, $ref)
+    {
+        $picture = array();
+        if ($request->hasFile('photos')) {
+            $files = $request->file('photos');
+            $destinationPath = base_path() . '/public/uploads/photos/manifest';
+            $i = 1;
+            foreach($files as $file){
+//                $filename = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                
+                $filename = date('dmyHis').'_'.str_slug($request->no_hbl).'_'.$i.'.'.$extension;
+                $picture[] = $filename;
+                $file->move($destinationPath, $filename);
+                $i++;
+}
+            // update to Database
+            $manifest = DBManifest::find($request->id_hbl);
+            $manifest->$ref = json_encode($picture);
+            if($manifest->save()){
+                return back()->with('success', 'Photo for Manifest '. $request->no_hbl .' has been uploaded.');
+            }else{
+                return back()->with('error', 'Photo uploaded, but not save in Database.');
+            }
+            
+        } else {
+            return back()->with('error', 'Something wrong!!! Can\'t upload photo, please try again.');
+        }
     }
     
 }
