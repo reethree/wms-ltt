@@ -186,16 +186,22 @@ class BarcodeController extends Controller
         
 //                $filename = date('dmyHis').'_'.$barcode.'_'.ucwords($data_barcode->ref_type).'_'.ucwords($data_barcode->ref_action).'_'.ucwords($tipe).'.'.$extension;
 //                $picture[] = $filename;
-                $file->move($destinationPath, $filename);
+                $store = $file->move($destinationPath, $filename);
 //                $i++;
 //            }
-                if($tipe == 'in'){
-                    $data_barcode->photo_in = $filename;
-                }else{
-                    $data_barcode->photo_out = $filename;
-                }
                 
-                $data_barcode->save();
+                if($store){
+                    if($tipe == 'in'){
+                        $data_barcode->photo_in = $filename;
+                    }else{
+                        $data_barcode->photo_out = $filename;
+                    }
+
+                    $data_barcode->save();
+                }else{
+                    
+                }
+  
         }
         
         
@@ -237,20 +243,15 @@ class BarcodeController extends Controller
                             
                             // Upload Coari Container TPS Online
                             // Check Coari Exist
-                            if($ref_number){
+//                            if($ref_number){
                                 return $model->NOCONTAINER.' '.$data_barcode->ref_type.' '.$data_barcode->ref_action.' Updated';
-                            }else{
-                                // $check_coari = \App\Models\TpsCoariCont::where('REF_NUMBER', $ref_number)->count();
-                                // if($check_coari > 0){
-                                //     return $model->NOCONTAINER.' '.$data_barcode->ref_type.' '.$data_barcode->ref_action.' Updated';
-                                // }else{
-                                    $coari_id = $this->uploadTpsOnlineCoariCont($data_barcode->ref_type,$data_barcode->ref_id);
-                                    return redirect()->route('tps-coariCont-upload', $coari_id);
-                                // }
-                            }
+//                            }else{
+//                                    $coari_id = $this->uploadTpsOnlineCoariCont($data_barcode->ref_type,$data_barcode->ref_id);
+//                                    return redirect()->route('tps-coariCont-upload', $coari_id);
+//                            }
   
                         }else{
-                            return 'Something wrong!!!';
+                            return 'Something wrong!!! Cannot store to database';
                         }
 //                    }else{
 //                        return 'Time In is NULL';
@@ -302,7 +303,7 @@ class BarcodeController extends Controller
                             if($model->save()){
                                 return $model->NOCONTAINER.' '.$data_barcode->ref_type.' '.$data_barcode->ref_action.' Updated';
                             }else{
-                                return 'Something wrong!!!';
+                                return 'Something wrong!!! Cannot store to database';
                             }
                         }
 //                    }else{
@@ -324,7 +325,7 @@ class BarcodeController extends Controller
                         if($model->save()){
                             return $model->NOCONTAINER.' '.$data_barcode->ref_type.' '.$data_barcode->ref_action.' Updated';
                         }else{
-                            return 'Something wrong!!!';
+                            return 'Something wrong!!! Cannot store to database';
                         }
 //                    }else{
 //                        
