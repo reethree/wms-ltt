@@ -15,7 +15,10 @@
                 <p style="font-size: 13px;">
                     NO. POS {{$barcode->NO_POS_BC11}}<br />
                     NO. BC11 {{$barcode->NO_BC11}}<br />
-                    TGL. BC11 {{date('d/m/Y', strtotime($barcode->TGL_BC11))}}
+                    TGL. BC11 {{date('d/m/Y', strtotime($barcode->TGL_BC11))}}<br />
+                    @if($barcode->NOPOL_RELEASE)
+                    No. POL {{$barcode->NOPOL_RELEASE}}
+                    @endif
                 </p>
             </div>
         </div>
