@@ -168,9 +168,9 @@ class BarcodeController extends Controller
 //        return $pdf->stream('Delivery-Release-Barcode-'.$mainfest->NOHBL.'-'.date('dmy').'.pdf');
     }
     
-    public function autogateNotification(Request $request, $barcode)
+    public function autogateNotification(Request $request)
     {
-//        $barcode = $request->barcode;
+        $barcode = $request->barcode;
         $tipe = $request->tipe;
         
         $data_barcode = \App\Models\Barcode::where('barcode', $barcode)->first();
