@@ -177,7 +177,11 @@ class BarcodeController extends Controller
 //      
         $filename = '';
         if ($request->hasFile('fileKamera')) {
+            
             $file = $request->file('fileKamera');
+            
+            return $file->getClientOriginalName();
+            
             $destinationPath = base_path() . '/public/uploads/photos/autogate';
 //            $i = 1;
 //            foreach($files as $file){
@@ -202,6 +206,8 @@ class BarcodeController extends Controller
                     
                 }
   
+        }else{
+            return 'Ga ada gambar';
         }
         
         
