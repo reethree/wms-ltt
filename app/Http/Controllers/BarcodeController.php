@@ -207,7 +207,7 @@ class BarcodeController extends Controller
                 }
   
         }else{
-            return 'Ga ada gambar';
+            return 'Ga ada gambar '.$barcode;
         }
         
         
