@@ -174,7 +174,7 @@ class BarcodeController extends Controller
         $tipe = $request->tipe;
         
         $data_barcode = \App\Models\Barcode::where('barcode', $barcode)->first();
-//      
+        
         $filename = '';
         if ($request->hasFile('fileKamera')) {
             $file = $request->file('fileKamera');
@@ -203,10 +203,9 @@ class BarcodeController extends Controller
                 }
   
         }
-        
-        
+            
         if($data_barcode){
-//            return $barcode;
+//            return $data_barcode;
             switch ($data_barcode->ref_type) {
                 case 'Fcl':
                     $model = \App\Models\Containercy::find($data_barcode->ref_id);
