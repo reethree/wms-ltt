@@ -18,17 +18,19 @@
             
             rowdata = $('#fcllongstayGrid').getRowData(cl); 
             
+            @role('p2')
             if(rowdata.flag_bc == 'Y') {
                 sgl = '<button style="margin:5px;" class="btn btn-info btn-xs" data-id="'+cl+'" onclick="if (confirm(\'Apakah anda yakin ingin membuka Segel Merah ?\')){ changeStatusFlag('+cl+',\'unlock\'); }else{return false;};"><i class="fa fa-unlock"></i> UNLOCK</button>';
             }else{
                 sgl = '<button style="margin:5px;" class="btn btn-info btn-xs" data-id="'+cl+'" onclick="if (confirm(\'Apakah anda yakin ingin mengunci Segel Merah ?\')){ changeStatusFlag('+cl+',\'lock\'); }else{return false;};"><i class="fa fa-lock"></i> LOCK</button>';
             }
-
+            @else
             if(rowdata.status_bc == 'HOLD') {
                 apv = '<button style="margin:5px;" class="btn btn-danger btn-xs" data-id="'+cl+'" onclick="if (confirm(\'Are You Sure to change status HOLD to RELEASE ?\')){ changeStatus('+cl+'); }else{return false;};"><i class="fa fa-check"></i> RELEASE</button>';
             }else{
                 apv = '';
             }    
+            @endrole
             
             if(rowdata.flag_bc == 'Y') {
                 $("#" + cl).find("td").css("background-color", "#FF0000");
@@ -77,33 +79,35 @@
             $("#container_id").val($id);
             $('#lock-flag-modal').modal('show');
         }else{
-            $.ajax({
-                type: 'GET',
-                dataType : 'json',
-                url: "{{ route('fcl-change-status-flag','') }}/"+$id,
-                error: function (jqXHR, textStatus, errorThrown)
-                {
-                    alert('Something went wrong, please try again later.');
-                },
-                beforeSend:function()
-                {
-
-                },
-                success:function(json)
-                {
-                    if(json.success) {
-                        $('#btn-toolbar').showAlertAfterElement('alert-success alert-custom', json.message, 5000);
-                        $('#fcllongstayGrid').jqGrid().trigger("reloadGrid");
-                    } else {
-                        $('#btn-toolbar').showAlertAfterElement('alert-danger alert-custom', json.message, 5000);
+            $("#container_unlock_id").val($id);
+            $('#unlock-flag-modal').modal('show');
+//            $.ajax({
+//                type: 'GET',
+//                dataType : 'json',
+//                url: "{{ route('fcl-change-status-flag','') }}/"+$id,
+//                error: function (jqXHR, textStatus, errorThrown)
+//                {
+//                    alert('Something went wrong, please try again later.');
+//                },
+//                beforeSend:function()
+//                {
+//
+//                },
+//                success:function(json)
+//                {
+//                    if(json.success) {
+//                        $('#btn-toolbar').showAlertAfterElement('alert-success alert-custom', json.message, 5000);
+//                        $('#fcllongstayGrid').jqGrid().trigger("reloadGrid");
+//                    } else {
+//                        $('#btn-toolbar').showAlertAfterElement('alert-danger alert-custom', json.message, 5000);
+//                    }
+//
+//                    //Triggers the "Refresh" button funcionality.
+//                    $('#btn-refresh').click();
+//                }
+//            });
                     }
-
-                    //Triggers the "Refresh" button funcionality.
-                    $('#btn-refresh').click();
                 }
-            });
-        }
-    }
     
 </script>
 <div class="box">
@@ -167,9 +171,11 @@
             ->setGridEvent('gridComplete', 'gridCompleteEvent')
             ->addColumn(array('key'=>true,'index'=>'TCONTAINER_PK','hidden'=>true))
             ->addColumn(array('label'=>'Action','index'=>'action', 'width'=>120, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
-            ->addColumn(array('label'=>'Status BC','index'=>'status_bc','width'=>100, 'align'=>'center'))
             ->addColumn(array('label'=>'Segel Merah','index'=>'flag_bc','width'=>100, 'align'=>'center'))
-            ->addColumn(array('label'=>'No. SPK','index'=>'NoJob', 'width'=>150))
+            ->addColumn(array('label'=>'Status BC','index'=>'status_bc','width'=>100, 'align'=>'center'))
+            ->addColumn(array('label'=>'Nama Dokumen','index'=>'KODE_DOKUMEN', 'width'=>130))
+            ->addColumn(array('label'=>'No. SPPB','index'=>'NO_SPPB', 'width'=>120,'align'=>'center'))
+//            ->addColumn(array('label'=>'No. SPK','index'=>'NoJob', 'width'=>150))
             ->addColumn(array('label'=>'No. Container','index'=>'NOCONTAINER', 'width'=>150,'align'=>'center'))
             ->addColumn(array('label'=>'Size','index'=>'SIZE', 'width'=>100,'align'=>'center'))
             ->addColumn(array('label'=>'Nama Angkut','index'=>'VESSEL','width'=>160))  
@@ -219,11 +225,27 @@
                                 <div class="col-sm-8">
                                     <select class="form-control select2" id="alasan_segel" name="alasan_segel" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
                                         <option value="Nota Hasil Intelijen (NHI)" selected>Nota Hasil Intelijen (NHI)</option>
-                                        <option value="Surveilance">Surveilance</option>
+                                        <option value="Surveilance P2">Surveilance P2</option>
+                                        <option value="P2 Pusat">P2 Pusat</option>
                                         <option value="SPBL">SPBL</option>
                                         <option value="IKP / Temuan Lapangan">IKP / Temuan Lapangan</option>
+                                        <option value="Eks. Pemeriksaan Fisik">Eks. Pemeriksaan Fisik</option>
+                                        <option value="Hico Scan">Hico Scan</option>
+                                        <option value="Eks. Ambil Contoh">Eks. Ambil Contoh</option>
+                                        <option value="CNT">CNT</option>
+                                        <option value="Penegahan">Penegahan</option>
+                                        <option value="Nota Pemberitahuan Barang Lartas (PFPD)">Nota Pemberitahuan Barang Lartas (PFPD)</option>
+                                        <option value="Selisih Bongkar">Selisih Bongkar</option>
+                                        <option value="Seal Pelayaran Hilang">Seal Pelayaran Hilang</option>
+                                        <option value="Stripping MMEA">Stripping MMEA</option>
                                         <option value="Lainnya">Lainnya</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Photo</label>
+                                <div class="col-sm-8">
+                                    <input type="file" name="photos_flag[]" class="form-control" multiple="true">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -238,6 +260,65 @@
                 <div class="modal-footer">
                   <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                   <button type="submit" class="btn btn-primary">Lock</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="unlock-flag-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Silahkan pilih alasan lepas segel</h4>
+            </div>
+            <form id="create-invoice-form" class="form-horizontal" action="{{ route('fcl-unlock-flag') }}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body"> 
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input name="_token" type="hidden" value="{{ csrf_token() }}" />
+                            <input name="id" type="hidden" id="container_unlock_id" />
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">No. Segel</label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="no_unflag_bc" name="no_unflag_bc" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Alasan Lepas Segel</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control select2" id="alasan_lepas_segel" name="alasan_lepas_segel" style="width: 100%;" tabindex="-1" aria-hidden="true" required>                                        
+                                        <option value="SPBL">SPPB</option>
+                                        <option value="SPPBE">SPPBE</option>
+                                        <option value="Re Ekspor">Re Ekspor</option>
+                                        <option value="Pemusnahan">Pemusnahan</option>
+                                        <option value="Lelang">Lelang</option>
+                                        <option value="Serah Terima">Serah Terima</option>
+                                        <option value="Surveilance">Surveilance</option>
+                                        <option value="Selesai Hico">Selesai Hico</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Photo</label>
+                                <div class="col-sm-8">
+                                    <input type="file" name="photos_unflag[]" class="form-control" multiple="true">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Keterangan</label>
+                                <div class="col-sm-8">
+                                    <textarea class="form-control" name="description_unflag_bc"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-primary">Unlock</button>
                 </div>
             </form>
         </div><!-- /.modal-content -->
