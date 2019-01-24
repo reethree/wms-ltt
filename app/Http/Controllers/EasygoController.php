@@ -38,11 +38,11 @@ class EasygoController extends Controller
     {
         $data = $request->all();
 //        $dispatche = \App\Models\Easygo::where('OB_ID', $request->ob_id)->orderBy('created_at', 'DESC')->first();
-        return $data;
-        if($request->container_type == 'F'){
-            $dispatche = \App\Models\Containercy::find($request->TCONTAINER_PK);
+        
+        if($data['container_type'] == 'F'){
+            $dispatche = \App\Models\Containercy::find($data['TCONTAINER_PK']);
         }else{
-            $dispatche = \App\Models\Container::find($request->TCONTAINER_PK);
+            $dispatche = \App\Models\Container::find($data['TCONTAINER_PK']);
         }
         
         $kode_asal = \App\Models\Lokasisandar::find($dispatche->TLOKASISANDAR_FK);
@@ -75,7 +75,7 @@ class EasygoController extends Controller
 //            'Idle_time_alert' => '',
 //            'Durasi_valid_tujuan' => '',
             'Container_size' => $dispatche->SIZE,
-            'Container_type' => $request->container_type,
+            'Container_type' => $dispatche->TYPE,
             'No_Polisi' => $dispatche->NOPOL,
 //            'Telegram1' => '',
 //            'Telegram2' => '',
