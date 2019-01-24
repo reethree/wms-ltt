@@ -45,9 +45,9 @@ class EasygoController extends Controller
             $dispatche = \App\Models\Container::find($request->TCONTAINER_PK);
         }
         
-        $kode_asal = \App\Models\Lokasisandar::find($dispatche->TLOKASISANDAR_FK);
+//        $kode_asal = \App\Models\Lokasisandar::find($dispatche->TLOKASISANDAR_FK);
         
-        if(empty($kode_asal->KD_TPS_ASAL) || !isset($kode_asal->KD_TPS_ASAL))
+        if(empty($request->KD_TPS_ASAL) || !isset($request->KD_TPS_ASAL))
         {
             return json_encode(array('success' => false, 'message' => 'Kode TPS ASAL tidak ada.'));
         }
@@ -64,7 +64,7 @@ class EasygoController extends Controller
             'token' => $this->token, // Token
             'Car_plate' => $dispatche->ESEALCODE,
             'Tgl_DO' => date('Y-m-d H:i:s', strtotime($dispatche->TGL_PLP)), // Tgl.PLP
-            'Kode_asal' => $dispatche->KD_TPS_ASAL, 
+            'Kode_asal' => $request->KD_TPS_ASAL, 
             'Kode_tujuan' => $dispatche->KD_TPS_TUJUAN,
             'No_do' => $dispatche->NO_PLP, // No.PLP
 //            'No_sj' => '', // No.Surat Jalan
