@@ -38,13 +38,13 @@ class EasygoController extends Controller
     {
         $data = $request->all();
 //        $dispatche = \App\Models\Easygo::where('OB_ID', $request->ob_id)->orderBy('created_at', 'DESC')->first();
-        
+        return $data;
         if($request->container_type == 'F'){
             $dispatche = \App\Models\Containercy::find($request->TCONTAINER_PK);
         }else{
             $dispatche = \App\Models\Container::find($request->TCONTAINER_PK);
         }
-        return $dispatche;
+        
         $kode_asal = \App\Models\Lokasisandar::find($dispatche->TLOKASISANDAR_FK);
         
         if(empty($kode_asal->KD_TPS_ASAL) || !isset($kode_asal->KD_TPS_ASAL))
