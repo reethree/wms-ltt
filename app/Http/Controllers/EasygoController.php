@@ -101,7 +101,7 @@ class EasygoController extends Controller
             $dispatche->DO_ID = $results->DO_ID;
             $dispatche->RESPONSE_DISPATCHE = $results->ResponseStatus;
             $dispatche->KODE_DISPATCHE = $results->ResponseCode;
-            $dispatche->url_reply = $this->url_reply;
+//            $dispatche->url_reply = $this->url_reply;
 
             if($dispatche->save()){
 //                $updateOB = \App\Models\TpsOb::where('TPSOBXML_PK', $request->ob_id)->update(['STATUS_DISPATCHE' => 'Y','DO_ID' => $results->DO_ID,'RESPONSE_DISPATCHE' => $results->ResponseStatus,'KODE_DISPATCHE' => $results->ResponseCode,'WAKTU_DISPATCHE' => $wkt_dis]);
