@@ -44,7 +44,7 @@ class EasygoController extends Controller
         }else{
             $dispatche = \App\Models\Container::find($data['TCONTAINER_PK']);
         }
-        return $dispatche;
+//        return $dispatche;
         $kode_asal = \App\Models\Lokasisandar::find($dispatche->TLOKASISANDAR_FK);
         
         if(empty($kode_asal->KD_TPS_ASAL) || !isset($kode_asal->KD_TPS_ASAL))
