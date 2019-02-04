@@ -77,7 +77,7 @@
         </div>-->
         <div class="box-tools" id="btn-toolbar">
             <div id="btn-group-4">
-                <button class="btn btn-warning" id="btn-renew"><i class="fa fa-recycle"></i> Renew</button>
+                <button class="btn btn-warning" id="btn-renew"><i class="fa fa-recycle"></i> Extension</button>
             </div>
         </div>
     </div>
@@ -244,6 +244,17 @@
                         <div class="col-md-12">
                             <input name="_token" type="hidden" value="{{ csrf_token() }}" />
                             <input name="invoice_id" type="hidden" id="invoice_id" />
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">No. Invoice</label>
+                                <div class="col-sm-6">
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            {{'SAJ/LTT-CFS'.date('Y').'/'}}
+                                        </div>                                   
+                                        <input type="number" class="form-control pull-right" name="no_invoice" required />
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Tgl. Perpanjang</label>
                                 <div class="col-sm-6">

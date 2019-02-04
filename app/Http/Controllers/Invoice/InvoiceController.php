@@ -131,7 +131,7 @@ class InvoiceController extends Controller
         $invoice->manifest_id = $manifest->TMANIFEST_PK;
         $invoice->template_id = $template->id;
         $invoice->template_type = $data_invoice->template_type;
-        $invoice->number = $data_invoice->number;
+        $invoice->number = $request->no_invoice;
         $invoice->officer = $request->officer;
         $invoice->tgl_cetak = $request->tgl_cetak;
         $invoice->renew = 'Y';
@@ -162,7 +162,7 @@ class InvoiceController extends Controller
         //Baru
         $dayby = $manifest->tglrelease;
         $date1 = date_create($dayby);
-        $date2 = date_create(date('Y-m-d',strtotime($request->renew_date. '+1 days')));
+        $date2 = date_create(date('Y-m-d', strtotime($request->renew_date)));
         $diff = date_diff($date1, $date2);
         $days = $diff->format("%a");
 
