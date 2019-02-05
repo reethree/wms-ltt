@@ -639,5 +639,28 @@ class InvoiceController extends Controller
         return back()->with('error', 'Something went wrong, please try again later.');
         
     }
-    
+    public function deleteCustomItem($item_id)
+    {
+        $invoice_item = \App\Models\InvoiceItem::find($item_id);
+        
+        if($invoice_item){          
+            // Update Invoice
+            $invoice = \App\Models\Invoice::find($invoice_item->billing_invoice_id);
+            if($invoice){
+                $invoice->subtotal_amount = $invoice->subtotal_amount-$invoice_item->item_subtotal;
+                $invoice->total_tax = $invoice->total_tax-$invoice_item->item_ppn;
+                $invoice->total_amount = $invoice->subtotal_amount+$invoice->total_tax;
+                
+                if($invoice->save()){
+                    $delete = \App\Models\InvoiceItem::where('id', $item_id)->delete();
+                    return back()->with('success', 'No. Invoice '.$invoice->number.', item berhasih dihapus.');
+                }
+                
+                return back()->with('error', 'Tidak dapat menghapus item invoice.');
+            }          
+        }
+        
+        return back()->with('error', 'Something went wrong, please try again later.');       
+    }
+     
 }
