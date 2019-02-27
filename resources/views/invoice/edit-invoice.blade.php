@@ -268,7 +268,8 @@
 <script type="text/javascript">
     function deleteItem(item_id)
     {
-        alert(item_id);
+//        alert(item_id);
+        window.location.href = "{{route('invoice-custom-item-delete', '')}}/"+item_id;
     }
     $(document).ready(function()
     {

@@ -93,6 +93,10 @@ Route::group(['prefix' => 'invoice', 'namespace' => 'Invoice'], function(){
         'as' => 'invoice-custom-item-add',
         'uses' => 'InvoiceController@addCustomItem'
     ]);
+    Route::get('/custom/item/delete/{item_id}', [
+        'as' => 'invoice-custom-item-delete',
+        'uses' => 'InvoiceController@deleteCustomItem'
+    ]);
 
     // FCL NCT1
     Route::group(['prefix' => 'fcl'], function(){

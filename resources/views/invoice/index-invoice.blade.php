@@ -251,7 +251,7 @@
                                         <div class="input-group-addon">
                                             {{'SAJ/LTT-CFS'.date('Y').'/'}}
                                         </div>                                   
-                                        <input type="number" class="form-control pull-right" name="no_invoice" required />
+                                        <input type="text" class="form-control pull-right" name="no_invoice" required />
                                     </div>
                                 </div>
                             </div>
