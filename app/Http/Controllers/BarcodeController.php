@@ -168,11 +168,9 @@ class BarcodeController extends Controller
 //        return $pdf->stream('Delivery-Release-Barcode-'.$mainfest->NOHBL.'-'.date('dmy').'.pdf');
     }
     
-    public function autogateNotification(Request $request, $barcode)
+    public function autogateNotification(Request $request)
     {
-        if(!$barcode){
-            $barcode = $request->barcode;
-        }
+        $barcode = $request->barcode;
         return $barcode;
         $tipe = $request->tipe;
 
