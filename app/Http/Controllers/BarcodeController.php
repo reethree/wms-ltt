@@ -206,7 +206,7 @@ class BarcodeController extends Controller
                     
                 }
         }
-            
+        return $barcode;    
         if($data_barcode){
 //            return $data_barcode;
             switch ($data_barcode->ref_type) {
