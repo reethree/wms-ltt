@@ -200,7 +200,7 @@ class InvoiceController extends Controller
                             $lastqty = $item_qty;
                         }else{
                             if(($daysold+$days) > $item->day_start){
-                                $item_qty = $days-$lastqty;
+                                $item_qty = $days-1;
                             }else{
                                 $item_qty = (($daysold+$days) - $item->day_start)+1;
                             }
