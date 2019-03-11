@@ -171,7 +171,7 @@ class BarcodeController extends Controller
     public function autogateNotification(Request $request)
     {
         $barcode = $request->barcode;
-        return $barcode;
+        return $request->all();
         $tipe = $request->tipe;
 
         $data_barcode = \App\Models\Barcode::where('barcode', $barcode)->first();
