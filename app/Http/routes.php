@@ -108,7 +108,7 @@ Route::get('/flat', [
 ]);
 
 // Auto Gate
-Route::any('/autogate/notification/{barcode}', [
+Route::get('/autogate/notification/{barcode}', [
     'uses' => 'BarcodeController@autogateNotification',
     'as' => 'autogate-notification'
 ]);
