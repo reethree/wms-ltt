@@ -175,7 +175,7 @@ class InvoiceController extends Controller
         if($invoice->save()){
             $subtotal_amount = array();
             $total_tax = array();
-
+            $lastqty = 0;
             foreach ($items as $item):
                 $invoice_item = new \App\Models\InvoiceItem;
                 $invoice_item->billing_invoice_id = $invoice->id;
@@ -188,7 +188,6 @@ class InvoiceController extends Controller
                     $item_qty = $days;
                 }elseif($item->type == 'Storage Masa'){
                     // Perhitungan Masa
-                    $lastqty = 0;
                     if(($daysold) > $item->day_end && $item->day_end != 0){
                         continue;
                     }else{
