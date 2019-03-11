@@ -205,7 +205,6 @@ class BarcodeController extends Controller
                 }else{
                     
                 }
-  
         }
             
         if($data_barcode){
@@ -280,10 +279,11 @@ class BarcodeController extends Controller
                                 }else{
                                     $model->photo_release_out = $filename;
                                 }
+                                return $data_barcode->time_out;
                                 if($model->save()){
                                     return $model->NOHBL.' '.$data_barcode->ref_type.' '.$data_barcode->ref_action.' Updated';
                                 }else{
-                                        return 'Something wrong!!! Cannot store to database';
+                                    return 'Something wrong!!! Cannot store to database';
                                 }
                             else:
                                 return 'Status BC Manifest is HOLD!!!';
