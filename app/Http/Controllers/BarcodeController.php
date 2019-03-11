@@ -172,7 +172,7 @@ class BarcodeController extends Controller
     {
         $barcode = $request->barcode;
         $tipe = $request->tipe;
-        
+        return $barcode;
         $data_barcode = \App\Models\Barcode::where('barcode', $barcode)->first();
         
         $filename = '';
@@ -206,7 +206,7 @@ class BarcodeController extends Controller
                     
                 }
         }
-        return $barcode;    
+            
         if($data_barcode){
 //            return $data_barcode;
             switch ($data_barcode->ref_type) {
