@@ -175,7 +175,7 @@ class InvoiceController extends Controller
         if($invoice->save()){
             $subtotal_amount = array();
             $total_tax = array();
-            $lastqty = 0;
+
             foreach ($items as $item):
                 $invoice_item = new \App\Models\InvoiceItem;
                 $invoice_item->billing_invoice_id = $invoice->id;
@@ -197,10 +197,10 @@ class InvoiceController extends Controller
                             }else{
                                 $item_qty = (($item->day_end-$item->day_start)+1)-(($daysold-$item->day_start)+($days));
                             }
-                            $lastqty = $item_qty;
                         }else{
                             if(($daysold+$days) > $item->day_start){
-                                $item_qty = $days-1;
+                                $minqty = ($daysold+$days)-$item->day_start;
+                                $item_qty = $days-$minqty;
                             }else{
                                 $item_qty = (($daysold+$days) - $item->day_start)+1;
                             }
