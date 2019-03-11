@@ -193,12 +193,12 @@ class InvoiceController extends Controller
                     }else{
                         if($item->day_end > 0){
                             if(($daysold+$days) >= $item->day_end){
-                                $item_qty = (($item->day_end-$item->day_start)+1)-(($daysold-$item->day_start));
+                                $item_qty = (($item->day_end-$item->day_start))-(($daysold-$item->day_start)+1);
                             }else{
-                                $item_qty = (($item->day_end-$item->day_start)+1)-(($daysold-$item->day_start)+($days));
+                                $item_qty = (($item->day_end-$item->day_start))-(($daysold-$item->day_start)+($days+1));
                             }
                         }else{
-                            $item_qty = (($daysold+$days) - $item->day_start)+1;
+                            $item_qty = (($daysold+$days) - $item->day_start);
                             if($item_qty <= 0){
                                 continue;
                             }
