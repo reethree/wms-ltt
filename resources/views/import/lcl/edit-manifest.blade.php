@@ -604,9 +604,6 @@
                             <div class="col-sm-8">
                                 <select class="form-control select2" id="TSHIPPER_FK" name="TSHIPPER_FK" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
                                     <option value="">Choose Shipper</option>
-<!--                                    @foreach($perusahaans as $perusahaan)
-                                        <option value="{{ $perusahaan->id }}">{{ $perusahaan->name }}</option>
-                                    @endforeach-->
                                 </select>
                             </div>
                         </div>
@@ -615,9 +612,6 @@
                             <div class="col-sm-6">
                                 <select class="form-control select2" id="TCONSIGNEE_FK" name="TCONSIGNEE_FK" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
                                     <option value="">Choose Consignee</option>
-<!--                                    @foreach($perusahaans as $perusahaan)
-                                        <option value="{{ $perusahaan->id }}">{{ $perusahaan->name }}</option>
-                                    @endforeach-->
                                 </select>
                             </div>
                             <div class="col-sm-2">
@@ -629,9 +623,6 @@
                             <div class="col-sm-8">
                                 <select class="form-control select2" id="TNOTIFYPARTY_FK" name="TNOTIFYPARTY_FK" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
                                     <option value="Same of Consignee">Same of Consignee</option>
-<!--                                    @foreach($perusahaans as $perusahaan)
-                                        <option value="{{ $perusahaan->id }}">{{ $perusahaan->name }}</option>
-                                    @endforeach-->
                                 </select>
                             </div>
                         </div>
