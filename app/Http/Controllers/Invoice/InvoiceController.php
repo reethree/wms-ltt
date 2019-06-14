@@ -193,10 +193,13 @@ class InvoiceController extends Controller
                         continue;
                     }else{
                         if($item->day_end > 0){
-                            if(($daysold+$days) >= $item->day_end){
-                                $item_qty = (($item->day_end-$item->day_start)+1)-(($daysold-$item->day_start)+1);
+                            $terpakai = ($daysold-$item->day_start)+1; 
+                            $tersedia = $item->day_end;
+                            if(($terpakai+$days) <= $tersedia){
+                                $item_qty = $days;
                             }else{
-                                $item_qty = (($item->day_end-$item->day_start)+1)-(($daysold-$item->day_start)+($days));
+                                $lebihhari = ($terpakai+$days)-$item->day_end;
+                                $item_qty = $lebihhari;
                             }
                         }else{
                             if(($daysold+$days) > $item->day_start){
@@ -209,6 +212,24 @@ class InvoiceController extends Controller
                                 continue;
                             }
                         }
+                        
+//                        if($item->day_end > 0){
+//                            if(($daysold+$days) >= $item->day_end){
+//                                $item_qty = (($item->day_end-$item->day_start)+1)-(($daysold-$item->day_start)+1);
+//                            }else{
+//                                $item_qty = (($item->day_end-$item->day_start)+1)-(($daysold-$item->day_start)+($days));
+//                            }
+//                        }else{
+//                            if(($daysold+$days) > $item->day_start){
+//                                $item_qty = $days-$lastqty;
+//                            }else{
+//                                $item_qty = (($daysold+$days) - $item->day_start)+1;
+//                            }
+//                            
+//                            if($item_qty <= 0){
+//                                continue;
+//                            }
+//                        }
                     }
                     $lastqty = $item_qty;
                 }else{
