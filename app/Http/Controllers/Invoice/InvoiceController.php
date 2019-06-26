@@ -189,7 +189,7 @@ class InvoiceController extends Controller
                     $item_qty = $days;
                 }elseif($item->type == 'Storage Masa'){
                     // Perhitungan Masa
-                    if(($daysold) > $item->day_end && $item->day_end != 0){
+                    if(($daysold+$days) > $item->day_end && $item->day_end != 0){
                         continue;
                     }else{
                         if($item->day_end > 0){
@@ -201,7 +201,7 @@ class InvoiceController extends Controller
                                 $lebihhari = ($terpakai+$days)-$item->day_end;
                                 $item_qty = $lebihhari;
                             }
-                        }else{
+                        }else{                            
                             if(($daysold+$days) > $item->day_start){
                                 $item_qty = $days-$lastqty;
                             }else{
