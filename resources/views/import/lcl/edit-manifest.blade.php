@@ -11,7 +11,7 @@
 
 <div class="box box-default">
     <div class="box-header with-border">
-      <h3 class="box-title">LCL Registrer Information</h3>
+      <h3 class="box-title">LCL Register Information</h3>
       <div class="box-tools pull-right">
         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
       </div>
@@ -196,7 +196,7 @@
     $(document).ready(function()
     {
         $('#btn-toolbar, #btn-photo').disabledButtonGroup();
-        $('#btn-group-4').enableButtonGroup();
+        $('#btn-group-4,#btn-group-7').enableButtonGroup();
         $('#btn-group-3').enableButtonGroup();
         $('#btn-group-1').enableButtonGroup();
         $('#btn-group-6').enableButtonGroup();
@@ -227,7 +227,7 @@
             //Disables all buttons within the toolbar
             $('#btn-toolbar, #btn-photo').disabledButtonGroup();
             $('#btn-group-4').enableButtonGroup();
-            $('#btn-group-3').enableButtonGroup();
+            $('#btn-group-3,#btn-group-7').enableButtonGroup();
             $('#btn-group-1').enableButtonGroup();
       });
 
@@ -275,6 +275,7 @@
         if(rowdata.alasan_perubahan != ''){
             $("#alasan_perubahan").val(rowdata.alasan_perubahan).trigger("change");
         }
+        
         $("#location_id").val(rowdata.location_id).trigger("change")
         
         $("#TGL_HBL").datepicker('setDate', rowdata.TGL_HBL);
@@ -473,6 +474,35 @@
         });
     });
 
+    $("#btn-get-nopos").on("click", function() {
+        if(!confirm('Apakah anda yakin? Data No.POS yang sudah terisi tidak akan di update.')){return false;}
+        
+        $.ajax({
+            type: 'GET',
+            dataType : 'json',
+            url: "{{route('lcl-manifest-get-nopos', $container->TCONTAINER_PK)}}",
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert('Something went wrong, please try again later.');
+            },
+            beforeSend:function()
+            {
+
+            },
+            success:function(json)
+            {
+                if(json.success) {
+                    $('#btn-toolbar').showAlertAfterElement('alert-success alert-custom', json.message, 5000);
+                } else {
+                    $('#btn-toolbar').showAlertAfterElement('alert-danger alert-custom', json.message, 5000);
+                }
+
+                //Triggers the "Refresh" button funcionality.
+                $('#btn-refresh').click();
+            }
+});
+    });
+    
 });
     
 </script>
@@ -560,6 +590,9 @@
                         </div>
                         <div id="btn-group-3" class="btn-group toolbar-block">
                             <button class="btn btn-default" id="btn-save"><i class="fa fa-save"></i> Save</button>
+                        </div>
+                        <div id="btn-group-7" class="btn-group pull-right">
+                            <button class="btn btn-info" id="btn-get-nopos"><i class="fa fa-download"></i> Get No.POS</button>
                         </div>
                         <div id="btn-group-4" class="btn-group pull-right">
                             <button class="btn btn-default" id="btn-print-tally" onclick="window.open('{{ route('lcl-manifest-cetak', array('id'=>$container->TCONTAINER_PK,'type'=>'tally')) }}','preview tally sheet','width=800,height=800,menubar=no,status=no,scrollbars=yes');"><i class="fa fa-print"></i> Cetak Tally Sheet</button>
