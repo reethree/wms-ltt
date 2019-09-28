@@ -8,17 +8,17 @@
     </head>
     <body>
         <div>
-            <div>
-                <h2 class="name">PT. PRIMANATA JASA PERSADA</h2>
-                <div>Jl. Enggano No. 40 E Jakarta 14310 - Indonesia</div>
-                <div>Tel. (021) 43932076-77, (021) 43909872-73 &nbsp;Fax. (021) 43932087</div>
-                <div>Email : <a href="mailto:primanatajp@yahoo.co.id">primanatajp@yahoo.co.id</a></div>
-                <hr />
+            <div style="text-align: center;">
+                <h2 class="name"><b>PT. LAUTAN TIRTA TRANSPORTAMA</b></h2>
+                <div style="font-size: 12px;"><b>WAREHOUSING, CONTAINER YARD, CUSTOM CLEARANCE & TRANSPORTATION</b></div>
+                <div style="font-size: 12px;">Jl. Ende No. 58 B Tanjung Priok - Jakarta Utara</div>
+                <div style="font-size: 12px;">Phone: (021) 4371929, (Hunting) 4371902 &nbsp;Fax: 4371879, 4371917</div>
+                <div style="font-size: 12px;">Email : <a href="mailto:primanatajp@yahoo.co.id">lttjkt@cbn.co.id</a></div>
             </div>
         </div>
         <div class="clearfix"></div>
         <div id="main">
-            
+            <br /><br />
             @yield('content')
 
         </div>

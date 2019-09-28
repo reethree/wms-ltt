@@ -90,6 +90,7 @@
         <h4>Additional Costs</h4>
         <table class="table table-striped" border="0">
           <tbody>
+            <?php $subtotal_Add = 0;?>
             @foreach($itemsAdd as $itemAdd)
             <tr>
                 <td>{{$j}}</td>
@@ -97,7 +98,7 @@
                 <td align="center">{{number_format($itemAdd->amount)}}</td>
                 <td align="right"><button onclick="if(!confirm('Apakah anda yakin ingin menghapus data ini?')){return false;}else{deleteItem({{$itemAdd->id}})}" class="btn btn-xs btn-danger delete-item-btn"><i class="fa fa-close"></i></button></td>
             </tr>
-            <?php $j++;?>
+            <?php $j++;$subtotal_Add+=$itemAdd->amount;?>
             @endforeach          
           </tbody>
         </table>
@@ -123,7 +124,7 @@
             <tr>
               <th style="width:50%" align="right">Total Tanpa Pajak</th>
               <td align="right">Rp.</td>
-              <td align="right">{{ number_format($rekap->subtotal) }}</td>
+              <td align="right">{{ number_format($rekap->subtotal+$subtotal_Add) }}</td>
             </tr>
             <tr>
               <th align="right">PPn {{$rekap->tax.'%'}}</th>
@@ -180,6 +181,12 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="form-group mainprice">
+                                <label class="col-sm-3 control-label">PPN 10%</label>
+                                <div class="col-sm-6">
+                                    <input type="checkbox" id="ppn" name="ppn" value="1" />
+                                </div>
+                            </div>
 <!--                            <div class="form-group">
                                 <label class="col-sm-3 control-label">Tax(%)</label>
                                 <div class="col-sm-4">
@@ -212,7 +219,7 @@
 <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
 
 <!-- Bootstrap Switch -->
-<!--<link rel="stylesheet" href="{{ asset("/bower_components/AdminLTE/plugins/bootstrap-switch/bootstrap-switch.min.css") }}">-->
+<link rel="stylesheet" href="{{ asset("/bower_components/AdminLTE/plugins/bootstrap-switch/bootstrap-switch.min.css") }}">
 @endsection
 
 @section('custom_js')
@@ -221,17 +228,22 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 
 <!-- Bootstrap Switch -->
-<!--<script src="{{ asset("/bower_components/AdminLTE/plugins/bootstrap-switch/bootstrap-switch.min.js") }}"></script>-->
+<script src="{{ asset("/bower_components/AdminLTE/plugins/bootstrap-switch/bootstrap-switch.min.js") }}"></script>
 
 <script type="text/javascript">
-     
-     $('select').select2();
-//    $.fn.bootstrapSwitch.defaults.size = 'mini';
-//    $.fn.bootstrapSwitch.defaults.onColor = 'danger';
-//    $.fn.bootstrapSwitch.defaults.onText = 'Ya';
-//    $.fn.bootstrapSwitch.defaults.offText = 'Tidak';
-//    
-//    $("input[type='checkbox']").bootstrapSwitch();
+    function deleteItem(item_id)
+    {
+//        alert(item_id);
+        window.location.href = "{{route('mechanic-custom-item-remove', '')}}/"+item_id;
+    }
+    
+    $('select').select2();
+    $.fn.bootstrapSwitch.defaults.size = 'small';
+    $.fn.bootstrapSwitch.defaults.onColor = 'danger';
+    $.fn.bootstrapSwitch.defaults.onText = 'Ya';
+    $.fn.bootstrapSwitch.defaults.offText = 'Tidak';
+    
+    $("input[type='checkbox']").bootstrapSwitch();
   
     $(document).ready(function(){
         

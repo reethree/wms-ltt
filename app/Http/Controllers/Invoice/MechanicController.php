@@ -381,11 +381,13 @@ class MechanicController extends Controller
             
             if($insert_id){
                 
-                $sum_cost = \DB::table('mechanic_rekap_item')->where(array('rekap_id' => $rekap->id, 'type' => 'add'))->sum('amount');
-                $total = $rekap->subtotal+$rekap->ppn+$sum_cost;
+                $sum_cost = \DB::table('mechanic_rekap_item')->where(array('rekap_id' => $rekap->id, 'type' => 'add', 'ppn' => 0))->sum('amount');
+                $sum_cost_ppn = \DB::table('mechanic_rekap_item')->where(array('rekap_id' => $rekap->id, 'type' => 'add', 'ppn' => 1))->sum('amount');
+                $ppn = (($rekap->subtotal*10)/100)+(($sum_cost_ppn*10)/100);
+                $total = $rekap->subtotal+$ppn+$sum_cost+$sum_cost_ppn;
                 
-                \DB::table('mechanic_rekap')->where('id', $rekap->id)->update(['cost' => $sum_cost, 'total' => $total]);
-                
+                \DB::table('mechanic_rekap')->where('id', $rekap->id)->update(['cost' => $sum_cost+$sum_cost_ppn, 'ppn' => $ppn, 'total' => $total]);
+//                return $sum_cost_ppn.' '.$ppn.' '.$total;
                 return back()->with('success', 'Item berhasil di tambah.');
             }
             
@@ -398,6 +400,29 @@ class MechanicController extends Controller
     
     public function removeCustomItemRekap($id)
     {
+        $item_rekap = \DB::table('mechanic_rekap_item')->find($id);
         
+        if($item_rekap){          
+            // Update Mechanic
+            $rekap = \DB::table('mechanic_rekap')->find($item_rekap->rekap_id);
+            if($rekap){
+                \DB::table('mechanic_rekap_item')->where('id', $id)->delete();
+                
+                $sum_cost = \DB::table('mechanic_rekap_item')->where(array('rekap_id' => $rekap->id, 'type' => 'add', 'ppn' => 0))->sum('amount');
+                $sum_cost_ppn = \DB::table('mechanic_rekap_item')->where(array('rekap_id' => $rekap->id, 'type' => 'add', 'ppn' => 1))->sum('amount');
+                $ppn = (($rekap->subtotal*10)/100)+(($sum_cost_ppn*10)/100);
+                $total = $rekap->subtotal+$ppn+$sum_cost+$sum_cost_ppn;
+                
+//                $rekap->cost = $sum_cost;
+//                $rekap->total = $total;
+                
+                $update = \DB::table('mechanic_rekap')->where('id', $rekap->id)->update(['cost' => $sum_cost+$sum_cost_ppn, 'ppn' => $ppn, 'total' => $total]);
+                if($update){
+                    return back()->with('success', 'Item mechanic berhasil di hapus.');
+                }              
+            }          
+        }
+        
+        return back()->with('error', 'Something went wrong, please try again later.');     
     }
 }
