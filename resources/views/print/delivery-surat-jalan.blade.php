@@ -88,7 +88,7 @@
                     <td style="width: 40%;vertical-align: top;">{{ $manifest->MARKING }}</td>
                     <td style="width: 10%;text-align: center;vertical-align: top;">{{ $manifest->QUANTITY }}/{{ $manifest->NAMAPACKING }}</td>
                     <td style="width: 10%;text-align: center;vertical-align: top;">{{ $manifest->MEAS }}</td>
-                    <td style="width: 25%;vertical-align: top;">{{ str_limit($manifest->DESCOFGOODS, 150) }}</td>
+                    <td style="width: 25%;vertical-align: top;">{{ // str_limit($manifest->DESCOFGOODS, 150) }}</td>
                 </tr>
             </tbody>
         </table>
