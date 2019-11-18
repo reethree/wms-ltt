@@ -383,7 +383,7 @@ class MechanicController extends Controller
                 
                 $sum_cost = \DB::table('mechanic_rekap_item')->where(array('rekap_id' => $rekap->id, 'type' => 'add', 'ppn' => 0))->sum('amount');
                 $sum_cost_ppn = \DB::table('mechanic_rekap_item')->where(array('rekap_id' => $rekap->id, 'type' => 'add', 'ppn' => 1))->sum('amount');
-                $ppn = (($rekap->subtotal*10)/100)+(($sum_cost_ppn*10)/100);
+                $ppn = (($rekap->subtotal*$rekap->tax)/100)+(($sum_cost_ppn*10)/100);
                 $total = $rekap->subtotal+$ppn+$sum_cost+$sum_cost_ppn;
                 
                 \DB::table('mechanic_rekap')->where('id', $rekap->id)->update(['cost' => $sum_cost+$sum_cost_ppn, 'ppn' => $ppn, 'total' => $total]);
@@ -410,7 +410,7 @@ class MechanicController extends Controller
                 
                 $sum_cost = \DB::table('mechanic_rekap_item')->where(array('rekap_id' => $rekap->id, 'type' => 'add', 'ppn' => 0))->sum('amount');
                 $sum_cost_ppn = \DB::table('mechanic_rekap_item')->where(array('rekap_id' => $rekap->id, 'type' => 'add', 'ppn' => 1))->sum('amount');
-                $ppn = (($rekap->subtotal*10)/100)+(($sum_cost_ppn*10)/100);
+                $ppn = (($rekap->subtotal*$rekap->tax)/100)+(($sum_cost_ppn*10)/100);
                 $total = $rekap->subtotal+$ppn+$sum_cost+$sum_cost_ppn;
                 
 //                $rekap->cost = $sum_cost;
