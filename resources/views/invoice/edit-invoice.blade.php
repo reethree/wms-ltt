@@ -79,7 +79,7 @@
               <tr>
                   <td><b>No. Invoice</b></td>
                   <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
-                  <td>{{ 'SAJ/LTT-CFS'.date('Y').'/'.$invoice->number }}</td>
+                  <td>{{ 'SAJ/LTT-CFS'.date('Y', strtotime($invoice->tgl_cetak)).'/'.$invoice->number }}</td>
               </tr>
               <tr>
                   <td><b>Tgl. Masuk</b></td>
