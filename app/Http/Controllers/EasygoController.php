@@ -37,22 +37,22 @@ class EasygoController extends Controller
     public function vts_inputdo(Request $request)
     {
         $data = $request->all();
-//        $dispatche = \App\Models\Easygo::where('OB_ID', $request->ob_id)->orderBy('created_at', 'DESC')->first();
-//        return $data;
-        if($data['container_type'] == 'F'){
-            $dispatche = \App\Models\Containercy::find($data['TCONTAINER_PK']);
-            $kode_tujuan = $dispatche->GUDANG_TUJUAN;
-        }else{
-            $dispatche = \App\Models\Container::find($data['TCONTAINER_PK']);
-            $kode_tujuan = $dispatche->KD_TPS_TUJUAN;
-        }
-//        return $dispatche;
-        $kode_asal = \App\Models\Lokasisandar::find($dispatche->TLOKASISANDAR_FK);
         
-        if(empty($kode_asal->KD_TPS_ASAL) || !isset($kode_asal->KD_TPS_ASAL))
-        {
-            return json_encode(array('success' => false, 'message' => 'Kode TPS ASAL tidak ada.'));
+        if(isset($data['container_type']) && $data['container_type'] == 'L'){
+            $dispatche = \App\Models\Container::find($data['TCONTAINER_PK']);
+            $type = 'L';
+        }else{
+            $dispatche = \App\Models\Containercy::find($data['TCONTAINER_PK']);
+//            $dispatche = \App\Models\Easygo::where('OB_ID', $request->ob_id)->orderBy('created_at', 'DESC')->first();
+            $type = 'F';
         }
+        
+//        $kode_asal = \App\Models\Lokasisandar::find($container->TLOKASISANDAR_FK);
+//        
+//        if(empty($kode_asal->KD_TPS_ASAL) || !isset($kode_asal->KD_TPS_ASAL))
+//        {
+//            return json_encode(array('success' => false, 'message' => 'Kode TPS ASAL tidak ada.'));
+//        }
         
         $fileurl = 'vts_inputDO.aspx';
         
@@ -67,7 +67,7 @@ class EasygoController extends Controller
             'Car_plate' => $dispatche->ESEALCODE,
             'Tgl_DO' => date('Y-m-d H:i:s', strtotime($dispatche->TGL_PLP)), // Tgl.PLP
             'Kode_asal' => $dispatche->KD_TPS_ASAL, 
-            'Kode_tujuan' => $kode_tujuan,
+            'Kode_tujuan' => 'TRMA',
             'No_do' => $dispatche->NO_PLP, // No.PLP
 //            'No_sj' => '', // No.Surat Jalan
             'No_Container' => $dispatche->NOCONTAINER,
@@ -77,7 +77,7 @@ class EasygoController extends Controller
 //            'Idle_time_alert' => '',
 //            'Durasi_valid_tujuan' => '',
             'Container_size' => $dispatche->SIZE,
-            'Container_type' => $data['container_type'],
+            'Container_type' => $type,
             'No_Polisi' => $dispatche->NOPOL,
 //            'Telegram1' => '',
 //            'Telegram2' => '',
@@ -92,21 +92,25 @@ class EasygoController extends Controller
         $dataResults = curl_exec($ch);
         curl_close($ch);
         
+//        print_r($dataResults);
+        
         $results = json_decode($dataResults);
         if(count($results) > 0){
-            $wkt_dis = date('Y-m-d H:i:s');
-    //        if($results->ResponseStatus == 'OK'){        
                 $dispatche->STATUS_DISPATCHE = 'Y';
-                $dispatche->TGL_DISPATCHE = date('Y-m-d', strtotime($wkt_dis));
-                $dispatche->JAM_DISPATCHE = date('H:i:s', strtotime($wkt_dis));
-    //        }
+//            if($type == 'F'){        
+//                $wkt_dis = date('Y-m-d H:i:s');
+                $dispatche->TGL_DISPATCHE = date('Y-m-d');
+                $dispatche->JAM_DISPATCHE = date('H:i:s');
+//                $dispatche->url_reply = $this->url_reply;
+//            }
             $dispatche->DO_ID = $results->DO_ID;
             $dispatche->RESPONSE_DISPATCHE = $results->ResponseStatus;
             $dispatche->KODE_DISPATCHE = $results->ResponseCode;
-//            $dispatche->url_reply = $this->url_reply;
 
             if($dispatche->save()){
-//                $updateOB = \App\Models\TpsOb::where('TPSOBXML_PK', $request->ob_id)->update(['STATUS_DISPATCHE' => 'Y','DO_ID' => $results->DO_ID,'RESPONSE_DISPATCHE' => $results->ResponseStatus,'KODE_DISPATCHE' => $results->ResponseCode,'WAKTU_DISPATCHE' => $wkt_dis]);
+//                if($type == 'F'){ 
+//                    \App\Models\TpsOb::where('TPSOBXML_PK', $request->ob_id)->update(['STATUS_DISPATCHE' => 'Y','DO_ID' => $results->DO_ID,'RESPONSE_DISPATCHE' => $results->ResponseStatus,'KODE_DISPATCHE' => $results->ResponseCode,'WAKTU_DISPATCHE' => $wkt_dis]);
+//                }
 
                 return json_encode(array('success' => true, 'message' => 'Dispatche successfully updated!'));
             }
@@ -141,12 +145,16 @@ class EasygoController extends Controller
 //        $inset->Lon = $request->Lon;
 //        $inset->Lat = $request->Lat;
         
-        $insert = \App\Models\Easygo::where('DO_ID', $request->DO_ID)->first();
-        $insert->Status_DO = $request->Status_DO;
-        $insert->GPS_TIME = $request->GPS_TIME;
-        $insert->Address = $request->Address;
-        $insert->Lon = $request->Lon;
-        $insert->Lat = $request->Lat;
+        $insert = \App\Models\Easygo::where('DO_ID', $request['DO_ID'])->first();
+        if(count($insert) == 0){
+            $insert = new \App\Models\Easygo;
+            $insert->DO_ID = $request['DO_ID'];
+        }
+        $insert->Status_DO = $request['Status_DO'];
+        $insert->GPS_TIME = $request['GPS_TIME'];
+        $insert->Address = $request['Address'];
+        $insert->Lon = $request['Lon'];
+        $insert->Lat = $request['Lat'];
         
         $insert->save();
         
@@ -156,6 +164,7 @@ class EasygoController extends Controller
     public function getDetailDispatche(Request $request, $ob_id)
     {        
         $dispatche = \App\Models\Easygo::where('ob_id', $ob_id)->orderBy('created_at', 'DESC')->first();
+//        $dispatche = \App\Models\Easygo::where('DO_ID', $do_id)->orderBy('created_at', 'DESC')->first();
         
         if($dispatche){
 
