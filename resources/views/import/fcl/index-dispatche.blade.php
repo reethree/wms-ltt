@@ -30,6 +30,10 @@
             $('#NO_PLP').val(rowdata.NO_PLP);
             $('#TGL_PLP').val(rowdata.TGL_PLP);
             $('#KD_TPS_ASAL').val(rowdata.KD_TPS_ASAL);
+            $('#TGL_DISPATCHE').val(rowdata.TGL_DISPATCHE);
+            $('#JAM_DISPATCHE').val(rowdata.JAM_DISPATCHE);
+            $('#TGL_KELUAR_TPK_ESEAL').val(rowdata.TGL_KELUAR_TPK_ESEAL);
+            $('#JAM_KELUAR_TPK_ESEAL').val(rowdata.JAM_KELUAR_TPK_ESEAL);
             
             $('#ESEALCODE').val(rowdata.ESEALCODE).trigger('change');
             $('#RESPONSE_DISPATCHE').val(rowdata.RESPONSE_DISPATCHE);
@@ -44,6 +48,14 @@
 //                $('#btn-group-2').disabledButtonGroup();
 //                $('#dispatche-form').disabledFormGroup();
 //            }
+
+            if(rowdata.DO_ID && rowdata.DO_ID != 0){
+                $('#ESEALCODE').attr('disabled','disabled');
+                $('#NOPOL').attr('disabled','disabled');
+            }else{
+                $('#ESEALCODE').removeAttr('disabled');
+                $('#NOPOL').removeAttr('disabled');
+            }
 
         });
         
@@ -153,7 +165,7 @@
 
 <div class="box">
     <div class="box-header with-border">
-        <h3 class="box-title">LCL Dispatche E-Seal</h3>
+        <h3 class="box-title">FCL Dispatche E-Seal</h3>
     </div>
     <div class="box-body">
         <div class="row" style="margin-bottom: 30px;">
@@ -456,6 +468,8 @@
         minuteStep: 1,
         secondStep: 1
     });
+    $(".timepicker").mask("99:99:99");
+    $(".datepicker").mask("9999-99-99");
 </script>
 
 @endsection
