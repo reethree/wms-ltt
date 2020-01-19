@@ -267,18 +267,18 @@ class ManifestController extends Controller
             $data['photo_stripping'] = '';
         }
         
-        $locations = \DB::table('location')->whereIn('id', $data['location_id'])->pluck('name');
-        
-        if($locations){
-            $data['location_id'] = implode(',', $data['location_id']);
-            $data['location_name'] = implode(',', $locations);
-        }
-        
-//        $location = \DB::table('location')->find($data['location_id']);
-//        if($location){
-//            $data['location_id'] = $location->id;
-//            $data['location_name'] = $location->name;
+//        $locations = \DB::table('location')->whereIn('id', $data['location_id'])->pluck('name');
+//        
+//        if($locations){
+//            $data['location_id'] = implode(',', $data['location_id']);
+//            $data['location_name'] = implode(',', $locations);
 //        }
+        
+        $location = \DB::table('location')->find($data['location_id']);
+        if($location){
+            $data['location_id'] = $location->id;
+            $data['location_name'] = $location->name;
+        }
         
         $update = DBManifest::where('TMANIFEST_PK', $id)
             ->update($data);
