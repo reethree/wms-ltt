@@ -14,6 +14,7 @@
             
         for(var i=0;i < ids.length;i++){ 
             var cl = ids[i];
+            var vi = '';
             
             rowdata = $('#fclGateinGrid').getRowData(cl);
             if(rowdata.flag_bc == 'Y') {
@@ -22,7 +23,49 @@
             if(rowdata.status_bc == 'HOLD') {
                 $("#" + cl).find("td").css("background-color", "#ffe500");
             }     
+            
+            if(rowdata.photo_gatein_extra != ''){
+                vi = '<button style="margin:5px;" class="btn btn-default btn-xs approve-manifest-btn" data-id="'+cl+'" onclick="viewPhoto('+cl+')"><i class="fa fa-photo"></i> View Photo</button>';
+            }else{
+                vi = '<button style="margin:5px;" class="btn btn-default btn-xs approve-manifest-btn" disabled><i class="fa fa-photo"></i> Not Found</button>';
         } 
+            
+            jQuery("#fclGateinGrid").jqGrid('setRowData',ids[i],{action:vi}); 
+    }
+    }
+    
+    function viewPhoto(containerID)
+    {       
+        $.ajax({
+            type: 'GET',
+            dataType : 'json',
+            url: '{{route("fcl-report-rekap-view-photo","")}}/'+containerID,
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert('Something went wrong, please try again later.');
+            },
+            beforeSend:function()
+            {
+                $('#container-photo').html('');
+            },
+            success:function(json)
+            {
+                var html_container = '';
+                
+                if(json.data.photo_gatein_extra){
+                    var photos_container = $.parseJSON(json.data.photo_gatein_extra);
+                    var html_container = '';
+                    $.each(photos_container, function(i, item) {
+                        /// do stuff
+                        html_container += '<img src="{{url("uploads/photos/container/fcl")}}/'+json.data.NOCONTAINER+'/'+item+'" style="width: 200px;padding:5px;" />';
+
+                    });
+                    $('#container-photo').html(html_container);
+                }
+            }
+        });
+        
+        $('#view-photo-modal').modal('show');
     }
     
     function onSelectRowEvent()
@@ -54,12 +97,17 @@
             $('#ESEALCODE').val(rowdata.ESEALCODE).trigger('change');
             $('#TGLKELUAR_TPK').val(rowdata.TGLKELUAR_TPK);
             $('#JAMKELUAR_TPK').val(rowdata.JAMKELUAR_TPK);
+            $("#jenis_container").val(rowdata.jenis_container).trigger("change");
+//            $("#flag_bc").val(rowdata.flag_bc).trigger("change");
+//            $("#alasan_segel").val(rowdata.alasan_segel).trigger("change");
             
             $('#upload-title').html('Upload Photo for '+rowdata.NOCONTAINER);
             $('#no_cont').val(rowdata.NOCONTAINER);
             $('#id_cont').val(rowdata.TCONTAINER_PK);
             $('#load_photos').html('');
             $('#delete_photo').val('N');
+            
+            $("#location_id").val(rowdata.location_id).trigger("change")
             
             if(rowdata.photo_gatein_extra){
                 var html = '';
@@ -71,15 +119,19 @@
                 $('#load_photos').html(html);
             }
             
-//            if(!rowdata.TGLMASUK && !rowdata.JAMMASUK) {
                 $('#btn-group-2, #btn-photo').enableButtonGroup();
                 $('#btn-group-5').enableButtonGroup();
                 $('#gatein-form').enableFormGroup();
+            if(!rowdata.TGLMASUK && !rowdata.JAMMASUK) {
                 $('#UIDMASUK').val('{{ Auth::getUser()->name }}');
-//            }else{
-//                $('#btn-group-2').disabledButtonGroup();
-//                $('#gatein-form').disabledFormGroup();
-//            }
+            }else{           
+                @role('super-admin')
+
+                @else
+                    $("#TGLMASUK").attr('disabled','disabled');
+                    $("#JAMMASUK").attr('disabled','disabled');
+                @endrole
+            }
 
         });
         
@@ -234,21 +286,32 @@
                     ->setGridEvent('onSelectRow', 'onSelectRowEvent')
         //            ->addColumn(array('label'=>'Action','index'=>'action', 'width'=>80, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
                     ->addColumn(array('key'=>true,'index'=>'TCONTAINER_PK','hidden'=>true))
+                    ->addColumn(array('label'=>'Photo','index'=>'action', 'width'=>120, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
+                    ->addColumn(array('label'=>'No. SPK','index'=>'NoJob','width'=>150))
                     ->addColumn(array('label'=>'No. Container','index'=>'NOCONTAINER','width'=>150))
-                    ->addColumn(array('label'=>'No. Joborder','index'=>'NoJob','width'=>150))
-                    ->addColumn(array('label'=>'Tgl. ETA','index'=>'ETA','width'=>120))
-                    ->addColumn(array('label'=>'Consolidator','index'=>'NAMACONSOLIDATOR','width'=>250))
-                    ->addColumn(array('label'=>'No. BC11','index'=>'NO_BC11','width'=>120))
-                    ->addColumn(array('label'=>'Tgl. BC11','index'=>'TGL_BC11','width'=>120,'hidden'=>true))
-                    ->addColumn(array('label'=>'No. PLP','index'=>'NO_PLP','width'=>120))
-                    ->addColumn(array('label'=>'Tgl. PLP','index'=>'TGL_PLP','width'=>120,'hidden'=>true))
                     ->addColumn(array('label'=>'Size','index'=>'SIZE', 'width'=>80,'align'=>'center'))
+                    ->addColumn(array('label'=>'Vessel','index'=>'VESSEL', 'width'=>150))
+                    ->addColumn(array('label'=>'Callsign','index'=>'CALLSIGN', 'width'=>150,'align'=>'center'))
+                    ->addColumn(array('label'=>'Voy','index'=>'VOY','width'=>80,'align'=>'center'))
+                    ->addColumn(array('label'=>'Tgl. ETA','index'=>'ETA','width'=>120,'align'=>'center'))
+                    ->addColumn(array('label'=>'TPS Asal','index'=>'KD_TPS_ASAL', 'width'=>80,'align'=>'center'))
+                    ->addColumn(array('label'=>'Consolidator','index'=>'NAMACONSOLIDATOR','width'=>250,'hidden'=>true))
+                    ->addColumn(array('label'=>'No. BC11','index'=>'NO_BC11','width'=>120,'hidden'=>true))
+                    ->addColumn(array('label'=>'Tgl. BC11','index'=>'TGL_BC11','width'=>120,'hidden'=>true))
+                    ->addColumn(array('label'=>'No. PLP','index'=>'NO_PLP','width'=>120,'hidden'=>true))
+                    ->addColumn(array('label'=>'Tgl. PLP','index'=>'TGL_PLP','width'=>120,'hidden'=>true))
+                    ->addColumn(array('label'=>'Jenis','index'=>'jenis_container', 'width'=>80,'hidden'=>true))
+                    ->addColumn(array('index'=>'location_id', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'Location','index'=>'location_name','width'=>200, 'align'=>'center'))
+                    
         //            ->addColumn(array('label'=>'Teus','index'=>'TEUS', 'width'=>80,'align'=>'center'))
-                    ->addColumn(array('label'=>'No. Seal','index'=>'NO_SEAL', 'width'=>120,'align'=>'right'))
-                    ->addColumn(array('label'=>'Tgl. Masuk','index'=>'TGLMASUK','width'=>120))
-                    ->addColumn(array('label'=>'Jam Masuk','index'=>'JAMMASUK','width'=>120))
-                    ->addColumn(array('label'=>'Tgl. Keluar TPK','index'=>'TGLKELUAR_TPK','hidden'=>true))
-                    ->addColumn(array('label'=>'Jam Keluar TPK','index'=>'JAMKELUAR_TPK','hidden'=>true))
+                    ->addColumn(array('label'=>'Tgl. Dispatche','index'=>'TGL_DISPATCHE','width'=>120,'align'=>'center'))
+                    ->addColumn(array('label'=>'Jam Dispatche','index'=>'JAM_DISPATCHE','width'=>120,'align'=>'center'))
+                    ->addColumn(array('label'=>'No. Seal','index'=>'NO_SEAL', 'width'=>120,'align'=>'right','hidden'=>true))
+                    ->addColumn(array('label'=>'Tgl. Masuk','index'=>'TGLMASUK','width'=>120,'align'=>'center'))
+                    ->addColumn(array('label'=>'Jam Masuk','index'=>'JAMMASUK','width'=>120,'align'=>'center'))
+                    ->addColumn(array('label'=>'Tgl. Keluar TPK','index'=>'TGLKELUAR_TPK','hidden'=>false,'align'=>'center'))
+                    ->addColumn(array('label'=>'Jam Keluar TPK','index'=>'JAMKELUAR_TPK','hidden'=>false,'align'=>'center'))
                     ->addColumn(array('label'=>'Perkiraan Keluar','index'=>'P_TGLKELUAR','hidden'=>true))
                     ->addColumn(array('label'=>'Petugas','index'=>'UIDMASUK','hidden'=>true))
                     ->addColumn(array('label'=>'No. POL','index'=>'NOPOL','hidden'=>false,'align'=>'center'))
@@ -403,6 +466,18 @@
                         </div>
                     </div>
                     
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Location</label>
+                        <div class="col-sm-8">
+                            <select class="form-control select2" id="location_id" name="location_id" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                <option value="">Choose Location</option>
+                                @foreach($locations as $location)
+                                    <option value="{{ $location->id }}">{{ $location->name.' ('.$location->type.')' }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    
 <!--                    <div class="form-group">
                         <label class="col-sm-3 control-label">Perkiraan Tgl.Kaluar</label>
                         <div class="col-sm-8">
@@ -454,6 +529,15 @@
                                 @foreach($eseals as $eseal)
                                     <option value="{{ $eseal->code }}">{{ $eseal->code }}</option>
                                 @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Jenis Container</label>
+                        <div class="col-sm-8">
+                            <select class="form-control select2" id="jenis_container" name="jenis_container" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                <option value="DRY" selected>DRY</option>
+                                <option value="BB">BB</option>
                             </select>
                         </div>
                     </div>
@@ -525,6 +609,24 @@
                   <button type="submit" class="btn btn-primary">Upload</button>
                 </div>
             </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div id="view-photo-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Photo</h4>
+            </div>
+            <div class="modal-body"> 
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>CONTAINER</h3>
+                        <div id="container-photo"></div>
+                    </div>
+                </div>
+            </div>    
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

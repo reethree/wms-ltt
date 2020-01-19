@@ -14,6 +14,7 @@
             
         for(var i=0;i < ids.length;i++){ 
             var cl = ids[i];
+            var vi = '';
             
             rowdata = $('#fclReleaseGrid').getRowData(cl);
             if(rowdata.VALIDASI == 'Y') {
@@ -25,7 +26,52 @@
             if(rowdata.status_bc == 'HOLD') {
                 $("#" + cl).find("td").css("background-color", "#ffe500");
             }  
+            if(rowdata.status_bc == 'INSPECT') {
+                $("#" + cl).find("td").css("background-color", "#3caea3");
         } 
+            
+            if(rowdata.photo_release_extra != ''){
+                vi = '<button style="margin:5px;" class="btn btn-default btn-xs approve-manifest-btn" data-id="'+cl+'" onclick="viewPhoto('+cl+')"><i class="fa fa-photo"></i> View Photo</button>';
+            }else{
+                vi = '<button style="margin:5px;" class="btn btn-default btn-xs approve-manifest-btn" disabled><i class="fa fa-photo"></i> Not Found</button>';
+    }
+    
+            jQuery("#fclReleaseGrid").jqGrid('setRowData',ids[i],{action:vi}); 
+        } 
+    }
+    
+    function viewPhoto(containerID)
+    {       
+        $.ajax({
+            type: 'GET',
+            dataType : 'json',
+            url: '{{route("fcl-report-rekap-view-photo","")}}/'+containerID,
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert('Something went wrong, please try again later.');
+            },
+            beforeSend:function()
+            {
+                $('#container-photo').html('');
+            },
+            success:function(json)
+            {
+                var html_container = '';
+                
+                if(json.data.photo_release_extra){
+                    var photos_container = $.parseJSON(json.data.photo_release_extra);
+                    var html_container = '';
+                    $.each(photos_container, function(i, item) {
+                        /// do stuff
+                        html_container += '<img src="{{url("uploads/photos/container/fcl")}}/'+json.data.NOCONTAINER+'/'+item+'" style="width: 200px;padding:5px;" />';
+
+                    });
+                    $('#container-photo').html(html_container);
+                }
+            }
+        });
+        
+        $('#view-photo-modal').modal('show');
     }
     
     function onSelectRowEvent()
@@ -36,12 +82,16 @@
     $(document).ready(function()
     {
         $('#release-form').disabledFormGroup();
-        $('#btn-toolbar,#btn-sppb').disabledButtonGroup();
+        $('#btn-toolbar,#btn-sppb,#btn-photo').disabledButtonGroup();
         $('#btn-group-3').enableButtonGroup();
-        $(".hide-kddoc").hide();
+        $(".hide-kddoc,#btn-group-7,#btn-group-8").hide();
         
         $("#KD_DOK_INOUT").on("change", function(){
             var $this = $(this).val();
+            
+            $('#NO_SPPB').val("");
+            $('#TGL_SPPB').val("");
+            
             if($this == 9){
                 $(".select-bcf-consignee").show();
             }else{
@@ -51,6 +101,22 @@
                 $(".hide-kddoc").show();
             }else{
                 $(".hide-kddoc").hide();
+            }
+            if($this == 1){
+                @role('super-admin')
+                    
+                @else
+                    $('#NO_SPPB').attr('disabled','disabled');
+                    $('#TGL_SPPB').attr('disabled','disabled');
+                @endrole
+            }else{
+                if($this == ''){
+                    $('#NO_SPPB').attr('disabled','disabled');
+                    $('#TGL_SPPB').attr('disabled','disabled');
+                }else{
+                    $('#NO_SPPB').removeAttr('disabled');
+                    $('#TGL_SPPB').removeAttr('disabled');
+                }
             }
         });
         
@@ -131,8 +197,8 @@
             $('#TGL_SPJM').val(rowdata.TGL_SPJM);
             $('#NAMA_IMP').val(rowdata.NAMA_IMP);
             $('#NPWP_IMP').val(rowdata.NPWP_IMP);
-            $('#NO_SPPB').val(rowdata.NO_SPPB);
-            $('#TGL_SPPB').val(rowdata.TGL_SPPB);
+            $('#telp_ppjk').val(rowdata.telp_ppjk);
+            
             $('#NO_BL_AWB').val(rowdata.NO_BL_AWB);
             $('#TGL_BL_AWB').val(rowdata.TGL_BL_AWB);
             $('#NO_DAFTAR_PABEAN').val(rowdata.NO_DAFTAR_PABEAN);
@@ -145,33 +211,88 @@
             $('#bcf_consignee').val(rowdata.bcf_consignee).trigger('change');
             $('#KD_TPS_ASAL').val(rowdata.KD_TPS_ASAL);
             
-//            if(!rowdata.TGLRELEASE && !rowdata.JAMRELEASE) {
-                $('#btn-group-2,#btn-sppb').enableButtonGroup();
+            $('#NO_SPPB').val(rowdata.NO_SPPB);
+            $('#TGL_SPPB').val(rowdata.TGL_SPPB);
+            
+            $('#upload-title').html('Upload Photo for '+rowdata.NOCONTAINER);
+            $('#no_cont').val(rowdata.NOCONTAINER);
+            $('#id_cont').val(rowdata.TCONTAINER_PK);
+            $('#id_hold').val(rowdata.TCONTAINER_PK);
+            $('#load_photos').html('');
+            $('#delete_photo').val('N');
+            
+            if(rowdata.photo_release_extra){
+                var html = '';
+                var photos = $.parseJSON(rowdata.photo_release_extra);
+                $.each(photos, function(i, item) {
+                    /// do stuff
+                    html += '<img src="{{url("uploads/photos/container/fcl/")}}/'+rowdata.NOCONTAINER+'/'+item+'" style="width: 200px;padding:5px;" />';
+                });
+                $('#load_photos').html(html);
+            }
+            
+            $('#btn-group-2,#btn-sppb,#btn-photo').enableButtonGroup();
                 $('#release-form').enableFormGroup();
-//                $('#btn-group-5').disabledButtonGroup();
-//            }else{
                 $('#btn-group-4').enableButtonGroup();
                 $('#btn-group-5').enableButtonGroup();
-//                $('#btn-group-2').disabledButtonGroup();
-//                $('#release-form').disabledFormGroup();
-//            }
 
+            if(rowdata.KD_DOK_INOUT == 1){
+                @role('super-admin')
+                    
+                @else
+                    $('#NO_SPPB').attr('disabled','disabled');
+                    $('#TGL_SPPB').attr('disabled','disabled');
+                @endrole
+            }
+            
+            if(!rowdata.TGLRELEASE && !rowdata.JAMRELEASE) {
+                
+            }else{
+                @role('super-admin')
+
+                @else
+                    $('#TGLRELEASE').attr('disabled','disabled');
+                    $('#JAMRELEASE').attr('disabled','disabled');
+                @endrole
+            }
+            
             if(rowdata.status_bc == 'HOLD'){
                 $('#TGLRELEASE').attr('disabled','disabled');
                 $('#JAMRELEASE').attr('disabled','disabled');
                 $('#NOPOL_OUT').attr('disabled','disabled');
             }else{
-                $('#TGLRELEASE').removeAttr('disabled');
-                $('#JAMRELEASE').removeAttr('disabled');
-                $('#NOPOL_OUT').removeAttr('disabled');
+//                $('#TGLRELEASE').removeAttr('disabled');
+//                $('#JAMRELEASE').removeAttr('disabled');
+//                $('#NOPOL_OUT').removeAttr('disabled');
+            }
+            
+            if(rowdata.status_bc == 'INSPECT'){
+                $('#btn-group-8').enableButtonGroup();     
+                $("#btn-group-8").show();   
+                $('#btn-group-7').disabledButtonGroup();     
+                $("#btn-group-7").hide();
+            }else{
+                $('#btn-group-8').disabledButtonGroup();     
+                $("#btn-group-8").hide();
+                if(rowdata.status_bc != 'HOLD' && rowdata.KD_DOK_INOUT == 1){
+                    $('#btn-group-7').enableButtonGroup();     
+                    $("#btn-group-7").show();
+                }else{
+                    $('#btn-group-7').disabledButtonGroup();     
+                    $("#btn-group-7").hide();
+                }
             }
             
             if(rowdata.flag_bc == 'Y'){
                 $('#btn-group-4').disabledButtonGroup();
                 $('#btn-group-5').disabledButtonGroup();
-                $('#btn-group-2,#btn-sppb').disabledButtonGroup();
+                $('#btn-sppb,#btn-photo').disabledButtonGroup();
                 $('#release-form').disabledFormGroup();
+//                $('#btn-group-2').disabledFormGroup();
+                
             }
+            
+            $('#telp_ppjk').removeAttr('disabled');
         });
         
         $('#btn-print-sj').click(function() {
@@ -232,6 +353,8 @@
             $('#release-form')[0].reset();
             $('.select2').val(null).trigger("change");
             $('#TCONTAINER_PK').val("");
+            
+            $("#btn-group-7,#btn-group-8").hide();
         });
         
         $('#btn-print-barcode').click(function() {
@@ -301,6 +424,43 @@
             
         });
         
+        $("#btn-unhold").on("click", function(e){
+            e.preventDefault();
+            if(!confirm('Apakah anda yakin pemeriksaan sudah selesai?')){return false;}
+            
+            var url = '{{ route("fcl-release-unhold") }}';
+
+            $.ajax({
+                type: 'POST',
+                data: 
+                {
+                    'id' : $('#TCONTAINER_PK').val(),
+                    '_token' : '{{ csrf_token() }}'
+                },
+                dataType : 'json',
+                url: url,
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert('Something went wrong, please try again later.');
+                },
+                beforeSend:function()
+                {
+
+                },
+                success:function(json)
+                {
+                    if(json.success) {
+                        $('#btn-toolbar').showAlertAfterElement('alert-success alert-custom', json.message, 5000);
+                    } else {
+                        $('#btn-toolbar').showAlertAfterElement('alert-danger alert-custom', json.message, 5000);
+                    }
+
+                    //Triggers the "Close" button funcionality.
+                    $('#btn-refresh').click();
+                }
+    });
+        });
+    
     });
     
 </script>
@@ -332,6 +492,7 @@
                     ->setGridEvent('onSelectRow', 'onSelectRowEvent')
                     ->setGridEvent('gridComplete', 'gridCompleteEvent')
                     ->addColumn(array('key'=>true,'index'=>'TCONTAINER_PK','hidden'=>true))
+                    ->addColumn(array('label'=>'Photo','index'=>'action', 'width'=>120, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
                     ->addColumn(array('label'=>'Status BC','index'=>'status_bc','width'=>100, 'align'=>'center'))
                     ->addColumn(array('label'=>'Segel Merah','index'=>'flag_bc','width'=>80, 'align'=>'center'))
                     ->addColumn(array('label'=>'No. SPK','index'=>'NoJob','width'=>160,'hidden'=>true))
@@ -358,7 +519,8 @@
                     ->addColumn(array('label'=>'Tgl. Release','index'=>'TGLRELEASE','width'=>120,'align'=>'center'))
                     ->addColumn(array('label'=>'Jam. Release','index'=>'JAMRELEASE', 'width'=>120,'align'=>'center'))
                     ->addColumn(array('label'=>'Alasan Segel','index'=>'alasan_segel','width'=>150,'align'=>'center'))
-                    
+                    ->addColumn(array('index'=>'location_id', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'Location','index'=>'location_name','width'=>200, 'align'=>'center'))
                     ->addColumn(array('label'=>'No. MBL','index'=>'NOMBL','width'=>160,'hidden'=>true))
                     ->addColumn(array('label'=>'Tgl. MBL','index'=>'TGLMBL','width'=>150,'align'=>'center','hidden'=>true))
                     ->addColumn(array('label'=>'Consolidator','index'=>'NAMACONSOLIDATOR','width'=>250,'align'=>'center','hidden'=>true))
@@ -381,9 +543,11 @@
                     ->addColumn(array('label'=>'BCF Consignee','index'=>'bcf_consignee', 'width'=>70,'hidden'=>true))
                     ->addColumn(array('label'=>'Nama EMKL','index'=>'NAMAEMKL', 'width'=>150,'hidden'=>true)) 
                     ->addColumn(array('label'=>'Telp. EMKL','index'=>'TELPEMKL', 'width'=>150,'hidden'=>true)) 
+                    ->addColumn(array('label'=>'Telp. PPJK','index'=>'telp_ppjk', 'width'=>150,'hidden'=>true))
                     ->addColumn(array('label'=>'No. Truck','index'=>'NOPOL', 'width'=>150,'hidden'=>true)) 
                     ->addColumn(array('label'=>'No. POL','index'=>'NOPOLCIROUT', 'width'=>150,'hidden'=>true))
                     ->addColumn(array('label'=>'No. POL Out','index'=>'NOPOL_OUT', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'Photo Extra','index'=>'photo_release_extra', 'width'=>70,'hidden'=>true))
                     ->addColumn(array('label'=>'Ref. Number Out','index'=>'REF_NUMBER_OUT', 'width'=>150,'hidden'=>true))
                     ->addColumn(array('label'=>'UID','index'=>'UID', 'width'=>150,'align'=>'center'))
                     ->addColumn(array('label'=>'Tgl. Entry','index'=>'TGLENTRY', 'width'=>150, 'search'=>false,'align'=>'center'))
@@ -411,9 +575,16 @@
                         <button class="btn btn-danger" id="btn-print-barcode"><i class="fa fa-print"></i> Print Barcode</button>
                     </div>
                     <div id="btn-group-5" class="btn-group pull-right">
-                        <button class="btn btn-warning" id="btn-upload"><i class="fa fa-upload"></i> Upload TPS Online</button>
+                        <button class="btn btn-success" id="btn-upload"><i class="fa fa-upload"></i> Upload TPS Online</button>
                     </div>
+                    <div id="btn-group-7" class="btn-group pull-right" style="display: none;">
+                        <button class="btn btn-warning" id="btn-hold"><i class="fa fa-lock"></i> Inspection</button>
                 </div>
+                    <div id="btn-group-8" class="btn-group pull-right" style="display: none;">
+                        <button class="btn btn-info" id="btn-unhold"><i class="fa fa-unlock"></i> Inspection Complete</button>
+            </div>
+            
+        </div>
             </div>
             
         </div>
@@ -423,6 +594,7 @@
                     
                     <input name="_token" type="hidden" value="{{ csrf_token() }}">
                     <input id="TCONTAINER_PK" name="TCONTAINER_PK" type="hidden">
+                    <input name="delete_photo" id="delete_photo" value="N" type="hidden">
                     <div class="form-group">
                         <label class="col-sm-3 control-label">No. SPK</label>
                         <div class="col-sm-8">
@@ -513,6 +685,12 @@
                             <input type="text" id="ID_CONSIGNEE" name="ID_CONSIGNEE" class="form-control">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Telp. PPJK</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="telp_ppjk" name="telp_ppjk" class="form-control">
+                        </div>
+                    </div>
 <!--                    <div class="form-group">
                         <label class="col-sm-3 control-label">Tgl. Surat Jalan</label>
                         <div class="col-sm-8">
@@ -531,23 +709,6 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">No. SPPB</label>
-                        <div class="col-sm-8">
-                            <input type="text" id="NO_SPPB" name="NO_SPPB" class="form-control" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Tgl. SPPB</label>
-                        <div class="col-sm-8">
-                            <div class="input-group date">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
-                                </div>
-                                <input type="text" id="TGL_SPPB" name="TGL_SPPB" class="form-control pull-right datepicker" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label class="col-sm-3 control-label">Kode Dokumen</label>
                         <div class="col-sm-8">
                             <select class="form-control select2" id="KD_DOK_INOUT" name="KD_DOK_INOUT" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
@@ -558,11 +719,29 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group hide-kddoc">
                         <div class="col-sm-11" id="btn-sppb">
                             <button type="button" class="btn btn-info pull-right" id="get-sppb-btn"><i class="fa fa-download"></i> Get Data</button>
                         </div>
                     </div>
+                    <div class="form-group hide-kddoc">
+                        <label class="col-sm-3 control-label">No. SPPB</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="NO_SPPB" name="NO_SPPB" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group hide-kddoc">
+                        <label class="col-sm-3 control-label">Tgl. SPPB</label>
+                        <div class="col-sm-8">
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" id="TGL_SPPB" name="TGL_SPPB" class="form-control pull-right datepicker" required>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="form-group select-bcf-consignee" style="display:none;">
                         <label class="col-sm-3 control-label">BCF 1.5 Consignee</label>
                         <div class="col-sm-8">
@@ -581,13 +760,13 @@
                             <input type="text" id="NO_KUITANSI" name="NO_KUITANSI" class="form-control" required>
                         </div>
                     </div>-->
-                    <div class="form-group">
+                    <div class="form-group hide-kddoc">
                         <label class="col-sm-3 control-label">No. B/L AWB</label>
                         <div class="col-sm-8">
                             <input type="text" id="NO_BL_AWB" name="NO_BL_AWB" class="form-control" required>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group hide-kddoc">
                         <label class="col-sm-3 control-label">Tgl. B/L AWB</label>
                         <div class="col-sm-8">
                             <div class="input-group date">
@@ -598,7 +777,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group hide-kddoc">
                         <label class="col-sm-3 control-label">Ref. Number</label>
                         <div class="col-sm-8">
                             <input type="text" id="REF_NUMBER_OUT" name="REF_NUMBER_OUT" class="form-control" required>
@@ -657,7 +836,18 @@
                         </div>
                     </div>
                     
-                    
+                    <div class="form-group hide-kddoc" id="btn-photo">
+                        <label class="col-sm-3 control-label">Photo</label>
+                        <div class="col-sm-8">
+                            <button type="button" class="btn btn-warning" id="upload-photo-btn">Upload Photo</button>
+                            <button type="button" class="btn btn-danger" id="delete-photo-btn">Delete Photo</button>
+                </div>
+                    </div>
+                    <div class="form-group hide-kddoc">
+                        <div class="col-sm-12">
+                            <div id="load_photos" style="text-align: center;"></div>
+                        </div>
+                    </div>
                 </div>
                 <!--<div class="col-md-6">--> 
                                      
@@ -673,7 +863,121 @@
         </form>  
     </div>
 </div>
+<div id="photo-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="upload-title"></h4>
+            </div>
+            <form class="form-horizontal" id="upload-photo-form" action="{{ route('fcl-release-upload-photo') }}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body"> 
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input name="_token" type="hidden" value="{{ csrf_token() }}">
+                            <input type="hidden" id="id_cont" name="id_cont" required>   
+                            <input type="hidden" id="no_cont" name="no_cont" required>    
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Photo</label>
+                                <div class="col-sm-8">
+                                    <input type="file" name="photos[]" class="form-control" multiple="true" required>
+                                </div>
+                            </div>
 
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div id="view-photo-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Photo</h4>
+            </div>
+            <div class="modal-body"> 
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>CONTAINER</h3>
+                        <div id="container-photo"></div>
+                    </div>
+                </div>
+            </div>    
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div id="verify-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Verification Container</h4>
+            </div>
+            <form class="form-horizontal" id="verify-form">
+                <div class="modal-body"> 
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="verify-photo"></div>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <hr />
+                            <input type="hidden" id="verify-contid" name="verify_contid" required> 
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Please Insert No. Container</label>
+                                <div class="col-sm-7">
+                                    <input type="text" id="verify-contno" name="verify_contno" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-primary">Verify</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div id="hold-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Inspection Document BC 2.0</h4>
+            </div>
+            <form class="form-horizontal" method="POST" id="hold-form" action="{{ route('fcl-release-hold') }}">
+                <input name="_token" type="hidden" value="{{ csrf_token() }}">
+                <input type="hidden" id="id_hold" name="id_hold" required>
+                <div class="modal-body"> 
+                    <div class="row">                        
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Description</label>
+                                <div class="col-sm-8">
+                                    <textarea name="inspect_desc" class="form-control" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-warning"><i class="fa fa-lock"></i> Inspection</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 @endsection
 
 @section('custom_css')
@@ -692,6 +996,26 @@
 <script type="text/javascript">
     $('.select2').select2();
     $('#ID_CONSIGNEE').mask("99.999.999.9-999.999");
+    
+    $("#upload-photo-btn").on("click", function(e){
+        e.preventDefault();
+        $("#photo-modal").modal('show');
+        return false;
+    });
+    
+    $("#delete-photo-btn").on("click", function(e){
+        if(!confirm('Apakah anda yakin akan menghapus photo?')){return false;}
+        
+        $('#load_photos').html('');
+        $('#delete_photo').val('Y');
+    });
+    
+    $("#btn-hold").on("click", function(e){
+        e.preventDefault();
+        $("#hold-modal").modal('show');
+        return false;
+    });
+    
     $('.datepicker').datepicker({
         autoclose: true,
         todayHighlight: true,

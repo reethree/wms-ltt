@@ -28,8 +28,52 @@
             if(rowdata.status_bc == 'HOLD') {
                 $("#" + cl).find("td").css("background-color", "#ffe500");
             }
+            if(rowdata.status_bc == 'INSPECT') {
+                $("#" + cl).find("td").css("background-color", "#3caea3");
+            } 
             
+            if(rowdata.photo_release != ''){
+                vi = '<button style="margin:5px;" class="btn btn-default btn-xs approve-manifest-btn" data-id="'+cl+'" onclick="viewPhoto('+cl+')"><i class="fa fa-photo"></i> View Photo</button>';
+            }else{
+                vi = '<button style="margin:5px;" class="btn btn-default btn-xs approve-manifest-btn" disabled><i class="fa fa-photo"></i> Not Found</button>';
         } 
+            
+            jQuery("#lclReleaseGrid").jqGrid('setRowData',ids[i],{photo:vi});
+    }
+    }
+    
+    function viewPhoto(manifestID)
+    {
+
+        $.ajax({
+            type: 'GET',
+            dataType : 'json',
+            url: '{{route("lcl-report-inout-view-photo","")}}/'+manifestID,
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert('Something went wrong, please try again later.');
+            },
+            beforeSend:function()
+            {
+                $('#release-photo').html('');
+            },
+            success:function(json)
+            {
+                if(json.data.photo_release){
+                    var photos_release = $.parseJSON(json.data.photo_release);
+                    var html_release = '';
+                    $.each(photos_release, function(i, item) {
+                        /// do stuff
+                        html_release += '<img src="{{url("uploads/photos/manifest")}}/'+item+'" style="width: 200px;padding:5px;" />';
+                    });
+                    $('#release-photo').html(html_release);
+                }
+ 
+                $("#title-photo").html('PHOTO HBL NO. '+json.data.NOHBL);
+            }
+        });
+        
+        $('#view-photo-modal').modal('show');
     }
     
     function onSelectRowEvent()
@@ -42,10 +86,14 @@
         $('#release-form').disabledFormGroup();
         $('#btn-toolbar,#btn-sppb, #btn-photo').disabledButtonGroup();
         $('#btn-group-3').enableButtonGroup();
-        $(".hide-kddoc").hide();
+        $(".hide-kddoc,#btn-group-7,#btn-group-8").hide();
         
         $("#KD_DOK_INOUT").on("change", function(){
             var $this = $(this).val();
+            
+            $('#NO_SPPB').val("");
+            $('#TGL_SPPB').val("");
+//            console.log($this);
             if($this == 9){
                 $(".select-bcf-consignee").show();
             }else{
@@ -62,6 +110,23 @@
                 $(".hide-kddoc").show();
             }else{
                 $(".hide-kddoc").hide();
+            }
+            
+            if($this == 1){
+                @role('super-admin')
+                    
+                @else
+                    $('#NO_SPPB').attr('disabled','disabled');
+                    $('#TGL_SPPB').attr('disabled','disabled');
+                @endrole
+            }else{
+                if($this == ''){
+                    $('#NO_SPPB').attr('disabled','disabled');
+                    $('#TGL_SPPB').attr('disabled','disabled');
+                }else{
+                    $('#NO_SPPB').removeAttr('disabled');
+                    $('#TGL_SPPB').removeAttr('disabled');
+                }   
             }
         });
         
@@ -136,19 +201,21 @@
             $('#no_pabean').val(rowdata.no_pabean);
             $('#tgl_pabean').val(rowdata.tgl_pabean);
             $('#ID_CONSIGNEE').val(rowdata.ID_CONSIGNEE);
-            $('#NO_SPPB').val(rowdata.NO_SPPB);
-            $('#TGL_SPPB').val(rowdata.TGL_SPPB);
             $('#NOPOL_RELEASE').val(rowdata.NOPOL_RELEASE);
             $('#PENAGIHAN').val(rowdata.PENAGIHAN).trigger("change");
             $('#LOKASI_TUJUAN').val(rowdata.LOKASI_TUJUAN).trigger("change");
             $('#REF_NUMBER_OUT').val(rowdata.REF_NUMBER_OUT);
             $('#UIDRELEASE').val(rowdata.UIDRELEASE);
             $('#KD_DOK_INOUT').val(rowdata.KD_DOK_INOUT).trigger('change');
+            $('#NO_SPPB').val(rowdata.NO_SPPB);
+            $('#TGL_SPPB').val(rowdata.TGL_SPPB);
             $('#bcf_consignee').val(rowdata.bcf_consignee).trigger('change');
+            $('#telp_ppjk').val(rowdata.telp_ppjk);
                         
             $('#upload-title').html('Upload Photo for '+rowdata.NOHBL);
             $('#no_hbl').val(rowdata.NOHBL);
             $('#id_hbl').val(rowdata.TMANIFEST_PK);
+            $('#id_hold').val(rowdata.TMANIFEST_PK);
             $('#load_photos').html('');
             $('#delete_photo').val('N');
             
@@ -161,36 +228,67 @@
                 });
                 $('#load_photos').html(html);
             }
-            
-//            if(!rowdata.tglrelease && !rowdata.jamrelease) {
-//                $('#btn-group-4').disabledButtonGroup();
-//                $('#btn-group-5').disabledButtonGroup();
                 $('#btn-group-2,#btn-sppb,#btn-photo').enableButtonGroup();
                 $('#release-form').enableFormGroup();
-//            }else{
                 $('#btn-group-4').enableButtonGroup();
                 $('#btn-group-5').enableButtonGroup();
-//                $('#btn-group-2').disabledButtonGroup();
-//                $('#release-form').disabledFormGroup();
-//            }
             
+            if(rowdata.KD_DOK_INOUT == 1){
+                @role('super-admin')
+                    
+                @else
+                    $('#NO_SPPB').attr('disabled','disabled');
+                    $('#TGL_SPPB').attr('disabled','disabled');
+                @endrole
+            }
+            
+            if(!rowdata.tglrelease && !rowdata.jamrelease) {
+
+            }else{ 
+                @role('super-admin')
+
+                @else
+                    $('#tglrelease').attr('disabled','disabled');
+                    $('#jamrelease').attr('disabled','disabled');
+                @endrole
+            }
+  
             if(rowdata.status_bc == 'HOLD'){
                 $('#tglrelease').attr('disabled','disabled');
                 $('#jamrelease').attr('disabled','disabled');
                 $('#NOPOL_RELEASE').attr('disabled','disabled');
             }else{
-                $('#tglrelease').removeAttr('disabled');
-                $('#jamrelease').removeAttr('disabled');
-                $('#NOPOL_RELEASE').removeAttr('disabled');
+//                $('#tglrelease').removeAttr('disabled');
+//                $('#jamrelease').removeAttr('disabled');
+//                $('#NOPOL_RELEASE').removeAttr('disabled');
             }
             
+            if(rowdata.status_bc == 'INSPECT'){
+                $('#btn-group-8').enableButtonGroup();     
+                $("#btn-group-8").show();   
+                $('#btn-group-7').disabledButtonGroup();     
+                $("#btn-group-7").hide();
+            }else{
+                $('#btn-group-8').disabledButtonGroup();     
+                $("#btn-group-8").hide();
+                if(rowdata.status_bc != 'HOLD' && rowdata.KD_DOK_INOUT == 1){
+                    $('#btn-group-7').enableButtonGroup();     
+                    $("#btn-group-7").show();
+                }else{
+                    $('#btn-group-7').disabledButtonGroup();     
+                    $("#btn-group-7").hide();
+                }
+            }
+
             if(rowdata.flag_bc == 'Y'){
                 $('#btn-group-4').disabledButtonGroup();
                 $('#btn-group-5').disabledButtonGroup();
-                $('#btn-group-2,#btn-sppb,#btn-photo').disabledButtonGroup();
+                $('#btn-sppb,#btn-photo').disabledButtonGroup();
                 $('#release-form').disabledFormGroup();
+                $('#btn-group-2').disabledFormGroup();
             }
 
+            $('#telp_ppjk').removeAttr('disabled');
         });
         
         $('#btn-invoice').click(function() {
@@ -274,17 +372,27 @@
         
         $('#btn-refresh').click(function() {
             $('#lclReleaseGrid').jqGrid().trigger("reloadGrid");
+            
             $('#release-form').disabledFormGroup();
-            $('#btn-toolbar').disabledButtonGroup();
+            $('#btn-toolbar,#btn-sppb, #btn-photo').disabledButtonGroup();
             $('#btn-group-3').enableButtonGroup();
             
             $('#release-form')[0].reset();
             $('.select2').val(null).trigger("change");
             $('#TMANIFEST_PK').val("");
+            
+            $("#btn-group-7,#btn-group-8").hide();
         });
         
         $('#btn-print-sj').click(function() {
             var id = $('#lclReleaseGrid').jqGrid('getGridParam', 'selrow');
+            var rowdata = $('#lclReleaseGrid').getRowData(id);
+            
+            if(rowdata.status_bc == 'INSPECT'){
+                alert("Dokumen masih dalam pemeriksaan.");
+                return false;
+            }
+            
             window.open("{{ route('lcl-delivery-suratjalan-cetak', '') }}/"+id,"preview wo fiat muat","width=600,height=600,menubar=no,status=no,scrollbars=yes");
         });
         
@@ -304,10 +412,25 @@
             var manifestId = cellValues.join(",");
             
             if(!manifestId) {alert('Please Select Row');return false;}               
+
+            if(cellValues.length > 1){
             if(!confirm('Apakah anda yakin?')){return false;}    
+                window.open("{{ route('cetak-barcode', array('','','')) }}/"+manifestId+"/manifest/release","preview barcode","width=305,height=600,menubar=no,status=no,scrollbars=yes");
+            }else{
+                var rowdata = $('#lclReleaseGrid').getRowData(manifestId);
+                $('#barcode_no_hbl').html(rowdata.NOHBL);
+                $('#id_hbl_barcode').val(rowdata.TMANIFEST_PK);
             
-//            console.log(manifestId);
-            window.open("{{ route('cetak-barcode', array('','','')) }}/"+manifestId+"/manifest/release","preview barcode","width=305,height=600,menubar=no,status=no,scrollbars=yes");
+                $('#print-barcode-modal').modal('show');
+            }
+        });
+        
+        $('#print-barcode-single').click(function(){
+            var manifestId = $("#id_hbl_barcode").val();
+            var car = $("#jumlah_mobil").val();
+            $('#print-barcode-modal').modal('hide');
+            
+            window.open("{{ route('cetak-barcode', array('','','')) }}/"+manifestId+"/manifest/release/"+car,"preview barcode","width=305,height=600,menubar=no,status=no,scrollbars=yes");
         });
         
         $('#btn-upload').click(function() {
@@ -355,6 +478,43 @@
             
         });
         
+        $("#btn-unhold").on("click", function(e){
+            e.preventDefault();
+            if(!confirm('Apakah anda yakin pemeriksaan sudah selesai?')){return false;}
+            
+            var url = '{{ route("lcl-release-unhold") }}';
+
+            $.ajax({
+                type: 'POST',
+                data: 
+                {
+                    'id' : $('#TMANIFEST_PK').val(),
+                    '_token' : '{{ csrf_token() }}'
+                },
+                dataType : 'json',
+                url: url,
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert('Something went wrong, please try again later.');
+                },
+                beforeSend:function()
+                {
+
+                },
+                success:function(json)
+                {
+                    if(json.success) {
+                        $('#btn-toolbar').showAlertAfterElement('alert-success alert-custom', json.message, 5000);
+                    } else {
+                        $('#btn-toolbar').showAlertAfterElement('alert-danger alert-custom', json.message, 5000);
+                    }
+
+                    //Triggers the "Close" button funcionality.
+                    $('#btn-refresh').click();
+                }
+    });
+        });
+    
     });
     
 </script>
@@ -367,7 +527,8 @@
         </div>-->
     </div>
     <div class="box-body">
-        <div class="row" style="margin-bottom: 30px;">
+        @role('bea-cukai')
+        <div class="row">
             <div class="col-md-12"> 
                 {{
                     GridRender::setGridId("lclReleaseGrid")
@@ -379,8 +540,7 @@
                     ->setGridOption('sortname','TMANIFEST_PK')
                     ->setGridOption('rownumbers', true)
                     ->setGridOption('rownumWidth', 50)
-                    ->setGridOption('multiselect', true)
-                    ->setGridOption('height', '300')
+                    ->setGridOption('height', '395')
                     ->setGridOption('rowList',array(20,50,100))
                     ->setGridOption('useColSpanStyle', true)
                     ->setNavigatorOptions('navigator', array('viewtext'=>'view'))
@@ -389,6 +549,7 @@
                     ->setGridEvent('gridComplete', 'gridCompleteEvent')
                     ->setGridEvent('onSelectRow', 'onSelectRowEvent')
                     ->addColumn(array('key'=>true,'index'=>'TMANIFEST_PK','hidden'=>true))
+                    ->addColumn(array('label'=>'Photo','index'=>'photo', 'width'=>120, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
                     ->addColumn(array('label'=>'Status BC','index'=>'status_bc','width'=>100, 'align'=>'center'))
                     ->addColumn(array('label'=>'Segel Merah','index'=>'flag_bc','width'=>80, 'align'=>'center'))
                     ->addColumn(array('label'=>'Validasi','index'=>'VALIDASI','width'=>80, 'align'=>'center'))
@@ -421,13 +582,120 @@
                     ->addColumn(array('label'=>'Tgl. Release','index'=>'tglrelease', 'width'=>120, 'align'=>'center'))
                     ->addColumn(array('label'=>'Jam. Release','index'=>'jamrelease', 'width'=>120,'hidden'=>false, 'align'=>'center'))
                     ->addColumn(array('label'=>'No. POL','index'=>'NOPOL_RELEASE', 'width'=>100,'hidden'=>false, 'align'=>'center'))
-                    
+                    ->addColumn(array('index'=>'location_id', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'Location','index'=>'location_name','width'=>200, 'align'=>'center'))
                     ->addColumn(array('label'=>'No. Pabean','index'=>'no_pabean', 'width'=>150,'hidden'=>true))
                     ->addColumn(array('label'=>'Tgl. Pabean','index'=>'tgl_pabean', 'width'=>150,'hidden'=>true))
                     ->addColumn(array('label'=>'No. SPJM','index'=>'NO_SPJM', 'width'=>150,'hidden'=>true))
                     ->addColumn(array('label'=>'Tgl. SPJM','index'=>'TGL_SPJM', 'width'=>150,'hidden'=>true))
                     
-                                     
+                    ->addColumn(array('label'=>'Kode Kuitansi','index'=>'NO_KUITANSI', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'Shipper','index'=>'SHIPPER','width'=>160,'hidden'=>true))
+                    ->addColumn(array('label'=>'Notify Party','index'=>'NOTIFYPARTY','width'=>160,'hidden'=>true))
+                    
+                    ->addColumn(array('label'=>'No. Rack','index'=>'RACKING', 'width'=>150,'hidden'=>true)) 
+                    ->addColumn(array('label'=>'UID','index'=>'UID', 'width'=>150,'hidden'=>true))          
+                    ->addColumn(array('index'=>'TSHIPPER_FK', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('index'=>'TCONSIGNEE_FK', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'Consignee','index'=>'CONSIGNEE', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'NPWP Consignee','index'=>'ID_CONSIGNEE', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('index'=>'TNOTIFYPARTY_FK', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('index'=>'TPACKING_FK', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'Marking','index'=>'MARKING', 'width'=>150,'hidden'=>true)) 
+                    ->addColumn(array('label'=>'Desc of Goods','index'=>'DESCOFGOODS', 'width'=>150,'hidden'=>true))              
+                    ->addColumn(array('label'=>'Tgl.Behandle','index'=>'tglbehandle', 'width'=>150,'hidden'=>true)) 
+                    ->addColumn(array('label'=>'Surcharge (DG)','index'=>'DG_SURCHARGE', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'Surcharge (Weight)','index'=>'WEIGHT_SURCHARGE', 'width'=>150,'hidden'=>true))
+                    
+                    ->addColumn(array('label'=>'Nama EMKL','index'=>'NAMAEMKL', 'width'=>150,'hidden'=>true)) 
+                    ->addColumn(array('label'=>'Telp. EMKL','index'=>'TELPEMKL', 'width'=>150,'hidden'=>true)) 
+                    ->addColumn(array('label'=>'Telp. PPJK','index'=>'telp_ppjk', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'No. Truck','index'=>'NOPOL', 'width'=>150,'hidden'=>true)) 
+                    ->addColumn(array('label'=>'No. POL Release','index'=>'NOPOL_RELEASE', 'width'=>150,'hidden'=>true)) 
+                    ->addColumn(array('label'=>'Tgl. Surat Jalan','index'=>'TGLSURATJALAN', 'width'=>120,'hidden'=>true))
+                    ->addColumn(array('label'=>'Jam. Surat Jalan','index'=>'JAMSURATJALAN', 'width'=>70,'hidden'=>true))
+                    ->addColumn(array('label'=>'Petugas Surat Jalan','index'=>'UIDSURATJALAN', 'width'=>70,'hidden'=>true))
+                    ->addColumn(array('label'=>'Petugas Release','index'=>'UIDRELEASE', 'width'=>120,'hidden'=>false, 'align'=>'center'))
+                    ->addColumn(array('label'=>'Penagihan','index'=>'PENAGIHAN', 'width'=>70,'hidden'=>true))
+                    ->addColumn(array('label'=>'BCF Consignee','index'=>'bcf_consignee', 'width'=>70,'hidden'=>true))
+                    ->addColumn(array('label'=>'Ref Number','index'=>'REF_NUMBER_OUT', 'width'=>70,'hidden'=>true))
+                    ->addColumn(array('label'=>'Tgl. Fiat Muat','index'=>'tglfiat', 'width'=>120,'hidden'=>true))
+                    ->addColumn(array('label'=>'Jam. Fiat Muat','index'=>'jamfiat', 'width'=>70,'hidden'=>true))
+                    ->addColumn(array('label'=>'Tgl. Entry','index'=>'tglentry', 'width'=>120, 'align'=>'center'))
+                    ->addColumn(array('label'=>'Jam. Entry','index'=>'jamentry', 'width'=>120,'hidden'=>false, 'align'=>'center'))
+                    ->addColumn(array('label'=>'Perubahan HBL','index'=>'perubahan_hbl','width'=>100, 'align'=>'center'))
+                    ->addColumn(array('label'=>'Alasan Perubahan','index'=>'alasan_perubahan','width'=>150,'align'=>'center'))
+                    ->addColumn(array('label'=>'Alasan Segel','index'=>'alasan_segel','width'=>150,'align'=>'center'))
+                    ->addColumn(array('label'=>'Photo Release','index'=>'photo_release', 'width'=>70,'hidden'=>true))
+                    ->addColumn(array('label'=>'Lokasi Tujuan','index'=>'LOKASI_TUJUAN', 'width'=>70,'hidden'=>true))
+                    ->addColumn(array('label'=>'Updated','index'=>'last_update', 'width'=>150, 'search'=>false,'hidden'=>true))
+                    ->renderGrid()
+                }}
+            </div>
+        </div>
+        @else
+        <div class="row" style="margin-bottom: 30px;">
+            <div class="col-md-12"> 
+                {{
+                    GridRender::setGridId("lclReleaseGrid")
+                    ->enableFilterToolbar()
+                    ->setGridOption('mtype', 'POST')
+                    ->setGridOption('url', URL::to('/lcl/manifest/grid-data?module=release&_token='.csrf_token()))
+                    ->setGridOption('rowNum', 20)
+                    ->setGridOption('shrinkToFit', true)
+                    ->setGridOption('sortname','TMANIFEST_PK')
+                    ->setGridOption('rownumbers', true)
+                    ->setGridOption('rownumWidth', 50)
+                    ->setGridOption('multiselect', true)
+                    ->setGridOption('height', '300')
+                    ->setGridOption('rowList',array(20,50,100))
+                    ->setGridOption('useColSpanStyle', true)
+                    ->setNavigatorOptions('navigator', array('viewtext'=>'view'))
+                    ->setNavigatorOptions('view',array('closeOnEscape'=>false))
+                    ->setFilterToolbarOptions(array('autosearch'=>true))
+                    ->setGridEvent('gridComplete', 'gridCompleteEvent')
+                    ->setGridEvent('onSelectRow', 'onSelectRowEvent')
+                    ->addColumn(array('key'=>true,'index'=>'TMANIFEST_PK','hidden'=>true))
+                    ->addColumn(array('label'=>'Photo','index'=>'photo', 'width'=>120, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
+                    ->addColumn(array('label'=>'Status BC','index'=>'status_bc','width'=>100, 'align'=>'center'))
+                    ->addColumn(array('label'=>'Segel Merah','index'=>'flag_bc','width'=>80, 'align'=>'center'))
+                    ->addColumn(array('label'=>'Validasi','index'=>'VALIDASI','width'=>80, 'align'=>'center','hidden'=>false))
+                    ->addColumn(array('label'=>'No. SPK','index'=>'NOJOBORDER', 'width'=>150,'hidden'=>false))
+                    ->addColumn(array('label'=>'No. Container','index'=>'NOCONTAINER', 'width'=>150,'hidden'=>false))
+                    ->addColumn(array('label'=>'Vessel','index'=>'VESSEL','width'=>120,'align'=>'center'))
+                    ->addColumn(array('label'=>'TPS Asal','index'=>'KD_TPS_ASAL','width'=>80,'align'=>'center'))
+                    ->addColumn(array('label'=>'No. MBL','index'=>'NOMBL','width'=>160,'hidden'=>false))
+                    ->addColumn(array('label'=>'Tgl. MBL','index'=>'TGL_MASTER_BL', 'width'=>150,'hidden'=>true, 'align'=>'center'))
+                    ->addColumn(array('label'=>'No. HBL','index'=>'NOHBL','width'=>160))
+                    ->addColumn(array('label'=>'Tgl. HBL','index'=>'TGL_HBL', 'width'=>150,'hidden'=>false, 'align'=>'center'))
+                    ->addColumn(array('label'=>'No. Tally','index'=>'NOTALLY','width'=>160,'hidden'=>true))
+                    
+                    ->addColumn(array('label'=>'Consolidator','index'=>'NAMACONSOLIDATOR','width'=>250))
+                    ->addColumn(array('label'=>'Consignee','index'=>'CONSIGNEE','width'=>250))
+                    ->addColumn(array('label'=>'Weight','index'=>'WEIGHT', 'width'=>120, 'align'=>'center'))               
+                    ->addColumn(array('label'=>'Meas','index'=>'MEAS', 'width'=>120, 'align'=>'center'))
+                    ->addColumn(array('label'=>'Qty','index'=>'QUANTITY', 'width'=>80,'align'=>'center'))
+                    ->addColumn(array('label'=>'Packing','index'=>'NAMAPACKING', 'width'=>120, 'align'=>'center'))
+                    ->addColumn(array('label'=>'Kode Kemas','index'=>'KODE_KEMAS', 'width'=>100,'align'=>'center'))
+                    ->addColumn(array('label'=>'No.PLP','index'=>'NO_PLP', 'width'=>120,'hidden'=>false, 'align'=>'center'))                
+                    ->addColumn(array('label'=>'Tgl.PLP','index'=>'TGL_PLP', 'width'=>120,'hidden'=>false, 'align'=>'center'))
+                    ->addColumn(array('label'=>'No.BC11','index'=>'NO_BC11', 'width'=>120,'hidden'=>false, 'align'=>'center'))
+                    ->addColumn(array('label'=>'Tgl.BC11','index'=>'TGL_BC11', 'width'=>120,'hidden'=>false, 'align'=>'center'))
+                    ->addColumn(array('label'=>'No.POS BC11','index'=>'NO_POS_BC11', 'width'=>120, 'align'=>'center'))
+                    ->addColumn(array('label'=>'No. SPPB','index'=>'NO_SPPB', 'width'=>120,'hidden'=>false, 'align'=>'center'))
+                    ->addColumn(array('label'=>'Tgl. SPPB','index'=>'TGL_SPPB', 'width'=>120,'hidden'=>false, 'align'=>'center'))
+                    ->addColumn(array('label'=>'Kode Dokumen','index'=>'KD_DOK_INOUT', 'width'=>120,'hidden'=>true, 'align'=>'center'))
+                    ->addColumn(array('label'=>'Nama Dokumen','index'=>'KODE_DOKUMEN', 'width'=>150,'hidden'=>false, 'align'=>'center'))  
+                    ->addColumn(array('label'=>'Tgl. Release','index'=>'tglrelease', 'width'=>120, 'align'=>'center'))
+                    ->addColumn(array('label'=>'Jam. Release','index'=>'jamrelease', 'width'=>120,'hidden'=>false, 'align'=>'center'))
+                    ->addColumn(array('label'=>'No. POL','index'=>'NOPOL_RELEASE', 'width'=>100,'hidden'=>false, 'align'=>'center'))
+                    ->addColumn(array('index'=>'location_id', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'Location','index'=>'location_name','width'=>200, 'align'=>'center'))
+                    ->addColumn(array('label'=>'No. Pabean','index'=>'no_pabean', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'Tgl. Pabean','index'=>'tgl_pabean', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'No. SPJM','index'=>'NO_SPJM', 'width'=>150,'hidden'=>true))
+                    ->addColumn(array('label'=>'Tgl. SPJM','index'=>'TGL_SPJM', 'width'=>150,'hidden'=>true))
+                    
                     ->addColumn(array('label'=>'Kode Kuitansi','index'=>'NO_KUITANSI', 'width'=>150,'hidden'=>true))
                     ->addColumn(array('label'=>'Shipper','index'=>'SHIPPER','width'=>160,'hidden'=>true))
                     ->addColumn(array('label'=>'Notify Party','index'=>'NOTIFYPARTY','width'=>160,'hidden'=>true))
@@ -449,6 +717,7 @@
                     
                     ->addColumn(array('label'=>'Nama EMKL','index'=>'NAMAEMKL', 'width'=>150,'hidden'=>true)) 
                     ->addColumn(array('label'=>'Telp. EMKL','index'=>'TELPEMKL', 'width'=>150,'hidden'=>true)) 
+                    ->addColumn(array('label'=>'Telp. PPJK','index'=>'telp_ppjk', 'width'=>150,'hidden'=>true))
                     ->addColumn(array('label'=>'No. Truck','index'=>'NOPOL', 'width'=>150,'hidden'=>true)) 
                     ->addColumn(array('label'=>'No. POL Release','index'=>'NOPOL_RELEASE', 'width'=>150,'hidden'=>true)) 
                     ->addColumn(array('label'=>'Tgl. Surat Jalan','index'=>'TGLSURATJALAN', 'width'=>120,'hidden'=>true))
@@ -490,8 +759,14 @@
                         <button class="btn btn-danger" id="btn-print-barcode"><i class="fa fa-print"></i> Print Barcode</button>
                     </div>
                     <div id="btn-group-5" class="btn-group pull-right">
-                        <button class="btn btn-warning" id="btn-upload"><i class="fa fa-upload"></i> Upload TPS Online</button>
+                        <button class="btn btn-success" id="btn-upload"><i class="fa fa-upload"></i> Upload TPS Online</button>
                     </div>
+                    <div id="btn-group-7" class="btn-group pull-right" style="display: none;">
+                        <button class="btn btn-warning" id="btn-hold"><i class="fa fa-lock"></i> Inspection</button>
+                </div>
+                    <div id="btn-group-8" class="btn-group pull-right" style="display: none;">
+                        <button class="btn btn-info" id="btn-unhold"><i class="fa fa-unlock"></i> Inspection Complete</button>
+            </div>
                 </div>
             </div>
             
@@ -499,7 +774,6 @@
         <form class="form-horizontal" id="release-form" action="{{ route('lcl-delivery-release-index') }}" method="POST">
             <div class="row">
                 <div class="col-md-6">
-                    
                     <input name="_token" type="hidden" value="{{ csrf_token() }}">
                     <input id="TMANIFEST_PK" name="TMANIFEST_PK" type="hidden">
                     <input name="delete_photo" id="delete_photo" value="N" type="hidden">
@@ -585,29 +859,17 @@
                             <input type="text" id="ID_CONSIGNEE" name="ID_CONSIGNEE" class="form-control">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Telp. PPJK</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="telp_ppjk" name="telp_ppjk" class="form-control">
+                </div>
+            </div>
                 </div>
             </div>
             <hr />
             <div class="row">
                 <div class="col-md-6">
-                    
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">No.SPPB/BC.23</label>
-                        <div class="col-sm-8">
-                            <input type="text" id="NO_SPPB" name="NO_SPPB" class="form-control" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Tgl.SPPB/BC.23</label>
-                        <div class="col-sm-8">
-                            <div class="input-group date">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
-                                </div>
-                                <input type="text" id="TGL_SPPB" name="TGL_SPPB" class="form-control pull-right datepicker" required>
-                            </div>
-                        </div>
-                    </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Kode Dokumen</label>
                         <div class="col-sm-8">
@@ -619,11 +881,39 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group hide-kddoc">
                         <div class="col-sm-11" id="btn-sppb">
                             <button type="button" class="btn btn-info pull-right" id="get-sppb-btn"><i class="fa fa-download"></i> Get Data</button>
                         </div>
                     </div>
+                    <div class="form-group hide-kddoc">
+                        <label class="col-sm-3 control-label">No.SPPB/BC.23</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="NO_SPPB" name="NO_SPPB" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group hide-kddoc">
+                        <label class="col-sm-3 control-label">Tgl.SPPB/BC.23</label>
+                        <div class="col-sm-8">
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" id="TGL_SPPB" name="TGL_SPPB" class="form-control pull-right datepicker" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+<!--                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Status BC</label>
+                        <div class="col-sm-8">
+                            <select class="form-control select2" id="status_bc" name="status_bc" style="width: 100%;" tabindex="-1" aria-hidden="true" required disabled>
+                                <option value="">Choose Status</option>
+                                <option value="HOLD">HOLD</option>
+                                <option value="RELEASE">RELEASE</option>
+                            </select>
+                        </div>
+                    </div>-->
                     <div class="form-group select-bcf-consignee" style="display:none;">
                         <label class="col-sm-3 control-label">BCF 1.5 Consignee</label>
                         <div class="col-sm-8">
@@ -636,7 +926,13 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+<!--                    <div class="form-group">
+                        <label class="col-sm-3 control-label">No. Kuitansi</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="NO_KUITANSI" name="NO_KUITANSI" class="form-control" required>
+                        </div>
+                    </div>-->
+                    <div class="form-group hide-kddoc">
                         <label class="col-sm-3 control-label">Ref. Number</label>
                         <div class="col-sm-8">
                             <input type="text" id="REF_NUMBER_OUT" name="REF_NUMBER_OUT" class="form-control" required>
@@ -668,7 +964,7 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input type="text" id="tglrelease" name="tglrelease" class="form-control pull-right datepicker" required value="{{ date('Y-m-d') }}">
+                                <input type="text" id="tglrelease" name="tglrelease" class="form-control pull-right datepicker" required>
                             </div>
                         </div>
                     </div>
@@ -678,7 +974,7 @@
                             <label class="col-sm-3 control-label">Jam Release</label>
                             <div class="col-sm-8">
                                 <div class="input-group">
-                                    <input type="text" id="jamrelease" name="jamrelease" class="form-control timepicker" value="{{ date('H:i:s') }}" required>
+                                    <input type="text" id="jamrelease" name="jamrelease" class="form-control timepicker" required>
                                     <div class="input-group-addon">
                                           <i class="fa fa-clock-o"></i>
                                     </div>
@@ -714,6 +1010,7 @@
                 </div>
             </div>
         </form>  
+        @endrole
     </div>
 </div>
 <div id="photo-modal" class="modal fade" tabindex="-1" role="dialog">
@@ -749,6 +1046,80 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+<div id="view-photo-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="title-photo">Photo</h4>
+            </div>
+            <div class="modal-body"> 
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>RELEASE</h4>
+                        <div id="release-photo"></div>
+                    </div>
+                </div>
+            </div>    
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->    
+<div id="print-barcode-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="title-photo">Print Barcode <span id="barcode_no_hbl"></span></h4>
+            </div>
+            <div class="modal-body"> 
+                <div class="row">
+                    <input name="_token" type="hidden" value="{{ csrf_token() }}">
+                    <input type="hidden" id="id_hbl_barcode" required>   
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Jumlah Mobil</label>
+                        <div class="col-sm-8">
+                            <input type="number" id="jumlah_mobil" name="jumlah_mobil" class="form-control" value="1" />
+                        </div>
+                    </div>
+                </div>
+            </div>    
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" id="print-barcode-single" class="btn btn-primary">Create</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal --> 
+<div id="hold-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Inspection Document BC 2.0</h4>
+            </div>
+            <form class="form-horizontal" method="POST" id="hold-form" action="{{ route('lcl-release-hold') }}">
+                <input name="_token" type="hidden" value="{{ csrf_token() }}">
+                <input type="hidden" id="id_hold" name="id_hold" required>
+                <div class="modal-body"> 
+                    <div class="row">                        
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Description</label>
+                                <div class="col-sm-8">
+                                    <textarea name="inspect_desc" class="form-control" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-warning"><i class="fa fa-lock"></i> Inspection</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 @endsection
 
 @section('custom_css')
@@ -778,6 +1149,12 @@
         
         $('#load_photos').html('');
         $('#delete_photo').val('Y');
+    });
+    
+    $("#btn-hold").on("click", function(e){
+        e.preventDefault();
+        $("#hold-modal").modal('show');
+        return false;
     });
     
     $('.datepicker').datepicker({

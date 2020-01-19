@@ -43,6 +43,23 @@ Route::group(['prefix' => 'fcl', 'namespace' => 'Import'], function(){
         'uses' => 'FclController@dispatcheUpdate'
     ]);
     
+    Route::get('/status-behandle', [
+        'as' => 'fcl-behandle-index',
+        'uses' => 'FclController@statusBehandleIndex'
+    ]);
+    Route::get('/status-behandle/finish', [
+        'as' => 'fcl-behandle-finish',
+        'uses' => 'FclController@statusBehandleFinish'
+    ]);
+    Route::post('/status-behandle/checking', [
+        'as' => 'fcl-change-status-behandle',
+        'uses' => 'FclController@changeStatusBehandle'
+    ]);
+    Route::post('/status-behandle/percepatan', [
+        'as' => 'fcl-percepatan-behandle',
+        'uses' => 'FclController@percepatanBehandle'
+    ]);
+    
     // REPORT
     Route::get('/report/harian', [
         'as' => 'fcl-report-harian',
@@ -72,6 +89,10 @@ Route::group(['prefix' => 'fcl', 'namespace' => 'Import'], function(){
         'as' => 'fcl-report-rekap-sendbilling',
         'uses' => 'FclController@reportRekapSendBilling'
     ]);
+    Route::get('/report/longstay/view-flag-info/{id}', [
+        'as' => 'fcl-view-info-flag',
+        'uses' => 'FclController@viewFlagInfo'
+    ]);
     Route::get('/report/longstay/change-status/{id}', [
         'as' => 'fcl-change-status',
         'uses' => 'FclController@changeStatusBc'
@@ -87,6 +108,28 @@ Route::group(['prefix' => 'fcl', 'namespace' => 'Import'], function(){
     Route::post('/report/longstay/unlock-flag', [
         'as' => 'fcl-unlock-flag',
         'uses' => 'FclController@unlockFlag'
+    ]);
+    
+    // Menu BC
+    Route::get('/bc/hold', [
+        'as' => 'fcl-hold-index',
+        'uses' => 'FclController@holdIndex'
+    ]);
+    Route::get('/bc/segel', [
+        'as' => 'fcl-segel-index',
+        'uses' => 'FclController@segelIndex'
+    ]);
+    Route::get('/bc/segel/report', [
+        'as' => 'fcl-segel-report',
+        'uses' => 'FclController@segelReport'
+    ]);
+    Route::get('/bc/report-container', [
+        'as' => 'fcl-bc-report-container',
+        'uses' => 'FclController@reportContainerIndex'
+    ]);
+    Route::get('/bc/inventory', [
+        'as' => 'fcl-bc-report-inventory',
+        'uses' => 'FclController@reportInventoryIndex'
     ]);
 });
 

@@ -10,6 +10,10 @@ Route::group(['prefix' => 'lcl/delivery', 'namespace' => 'Import'], function(){
         'as' => 'lcl-delivery-behandle-update',
         'uses' => 'LclController@behandleUpdate'
     ]);
+    Route::post('/behandle/ready/{id}', [
+        'as' => 'lcl-delivery-behandle-ready',
+        'uses' => 'LclController@behandleReady'
+    ]);
     // PRINT
     Route::get('/behandle/cetak/{id}', [
         'as' => 'lcl-behandle-cetak',
@@ -72,4 +76,15 @@ Route::group(['prefix' => 'lcl/delivery', 'namespace' => 'Import'], function(){
         'uses' => 'LclController@releaseGetDataSppb'
     ]);
   
+    // INSPECTION DOC
+    Route::post('/release/hold', [
+        'as' => 'lcl-release-hold',
+        'uses' => 'LclController@releaseHold'
+    ]);
+    
+    Route::post('/release/unhold', [
+        'as' => 'lcl-release-unhold',
+        'uses' => 'LclController@releaseUnhold'
+    ]);
+
 });

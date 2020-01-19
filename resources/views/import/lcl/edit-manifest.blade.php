@@ -139,6 +139,10 @@
                 $("#" + cl).find("td").css("color", "#999999");
             }
             
+            @role('pbm')
+                apv = '';
+            @endrole
+            
             if(rowdata.perubahan_hbl == 'Y') {
                 $("#" + cl).find("td").css("background-color", "#3dc6f2");
             }
@@ -157,7 +161,14 @@
     function approveManifest($id)
     {
         var rowdata = $('#lclManifestGrid').getRowData($id);
-        if(rowdata.tglstripping == '' || rowdata.tglstripping == '0000-00-00'){
+//        if(rowdata.tglstripping == '' || rowdata.tglstripping == '0000-00-00'){
+//            alert('HBL ini belum melakukan stripping!');
+//            return false;
+//        }
+        
+        var tglstripping = '{{$container->TGLSTRIPPING}}';
+        
+        if(tglstripping == '' || tglstripping == '0000-00-00'){
             alert('HBL ini belum melakukan stripping!');
             return false;
         }
@@ -197,7 +208,13 @@
     {
         $('#btn-toolbar, #btn-photo').disabledButtonGroup();
         $('#btn-group-4,#btn-group-7').enableButtonGroup();
+        @role('pbm')
+            $('#manifest-form').disabledFormGroup();
+            $('#btn-group-3').disabledButtonGroup();
+        @else
         $('#btn-group-3').enableButtonGroup();
+        @endrole
+        
         $('#btn-group-1').enableButtonGroup();
         $('#btn-group-6').enableButtonGroup();
 
@@ -225,9 +242,15 @@
             $('#id').val("");
             
             //Disables all buttons within the toolbar
+            @role('pbm')
             $('#btn-toolbar, #btn-photo').disabledButtonGroup();
+                $('#manifest-form').disabledFormGroup();
+                $('#btn-group-3,#btn-group-7').disabledButtonGroup();
+            @else
+                $('#btn-toolbar').disabledButtonGroup();
+                $('#btn-group-3,#btn-group-7').enableButtonGroup();
+            @endrole
             $('#btn-group-4').enableButtonGroup();
-            $('#btn-group-3,#btn-group-7').enableButtonGroup();
             $('#btn-group-1').enableButtonGroup();
       });
 
@@ -276,7 +299,9 @@
             $("#alasan_perubahan").val(rowdata.alasan_perubahan).trigger("change");
         }
         
-        $("#location_id").val(rowdata.location_id).trigger("change")
+        var locations = rowdata.location_id;
+        $("#location_id").val(locations.split(",")).trigger("change");
+        $("#packing_tally").val(rowdata.packing_tally).trigger("change");
         
         $("#TGL_HBL").datepicker('setDate', rowdata.TGL_HBL);
         $("#TGL_BC11").val(rowdata.TGL_BC11);
@@ -284,11 +309,23 @@
         $("#NO_BC11").val(rowdata.NO_BC11);
         $("#NO_PLP").val(rowdata.NO_PLP);
         $("#NO_POS_BC11").val(rowdata.NO_POS_BC11);
+        $("#final_qty").val(rowdata.final_qty);
+        $("#packing_tally").val(rowdata.packing_tally);
         
 //        console.log(rowdata);
         $('#btn-toolbar').disabledButtonGroup();
         $('#btn-group-1, #btn-photo').enableButtonGroup();
         $('#btn-group-3').enableButtonGroup();
+        
+        @role('super-admin')
+            $('#manifest-form').enableFormGroup();
+        @else
+            $('#manifest-form').disabledFormGroup();
+            $('#location_id').removeAttr('disabled');
+            $('#NO_POS_BC11').removeAttr('disabled');
+            $('#final_qty').removeAttr('disabled');
+            $('#packing_tally').removeAttr('disabled');
+        @endrole
         
         $('#upload-title').html('Upload Photo for '+rowdata.NOHBL);
         $('#no_hbl').val(rowdata.NOHBL);
@@ -554,7 +591,6 @@
                         ->addColumn(array('index'=>'TCONSIGNEE_FK', 'width'=>150,'hidden'=>true))
                         ->addColumn(array('index'=>'TNOTIFYPARTY_FK', 'width'=>150,'hidden'=>true))
                         ->addColumn(array('index'=>'TPACKING_FK', 'width'=>150,'hidden'=>true))
-                        ->addColumn(array('index'=>'location_id', 'width'=>150,'hidden'=>true))
                         ->addColumn(array('label'=>'Marking','index'=>'MARKING', 'width'=>150,'hidden'=>true)) 
                         ->addColumn(array('label'=>'Desc of Goods','index'=>'DESCOFGOODS', 'width'=>150,'hidden'=>false))              
                         ->addColumn(array('label'=>'Weight','index'=>'WEIGHT', 'width'=>120,'hidden'=>false, 'align'=>'right'))               
@@ -566,11 +602,14 @@
                         ->addColumn(array('label'=>'Tgl.PLP','index'=>'TGL_PLP', 'width'=>150,'hidden'=>true))                
                         ->addColumn(array('label'=>'Surcharge (DG)','index'=>'DG_SURCHARGE', 'width'=>150,'hidden'=>true))
                         ->addColumn(array('label'=>'Surcharge (Weight)','index'=>'WEIGHT_SURCHARGE', 'width'=>150,'hidden'=>true))      
-                        ->addColumn(array('label'=>'Location','index'=>'location_name','width'=>200, 'align'=>'center'))
                         ->addColumn(array('label'=>'Segel Merah','index'=>'flag_bc','width'=>100, 'align'=>'center'))
                         ->addColumn(array('label'=>'Alasan Segel','index'=>'alasan_segel','width'=>150,'align'=>'center'))
-                        ->addColumn(array('label'=>'Perubahan HBL','index'=>'perubahan_hbl','width'=>100, 'align'=>'center'))
-                        ->addColumn(array('label'=>'Alasan Perubahan','index'=>'alasan_perubahan','width'=>150,'align'=>'center'))
+                        ->addColumn(array('label'=>'Qty Tally','index'=>'final_qty', 'width'=>80,'align'=>'center'))
+                        ->addColumn(array('label'=>'Packing Tally','index'=>'packing_tally', 'width'=>80,'align'=>'center'))
+                        ->addColumn(array('label'=>'Perubahan HBL','index'=>'perubahan_hbl','width'=>100, 'align'=>'center','hidden'=>true))
+                        ->addColumn(array('label'=>'Alasan Perubahan','index'=>'alasan_perubahan','width'=>150,'align'=>'center','hidden'=>true))
+                        ->addColumn(array('index'=>'location_id', 'width'=>150,'hidden'=>true))
+                        ->addColumn(array('label'=>'Location','index'=>'location_name','width'=>200, 'align'=>'center'))
                         ->addColumn(array('label'=>'Tgl. Entry','index'=>'tglentry', 'width'=>120))
                         ->addColumn(array('label'=>'Jam. Entry','index'=>'jamentry', 'width'=>70,'hidden'=>true))
                         ->addColumn(array('label'=>'Tgl. Stripping','index'=>'tglstripping', 'width'=>70,'hidden'=>true))
@@ -580,6 +619,19 @@
                         ->renderGrid()
                     }}
                     
+                    @role('pbm')
+                    <div id="btn-toolbar" class="section-header btn-toolbar" role="toolbar" style="margin: 10px 0;">
+                        <div id="btn-group-1" class="btn-group">
+                            <button class="btn btn-default" id="btn-refresh"><i class="fa fa-refresh"></i> Refresh</button>
+                        </div>
+                        <div id="btn-group-2" class="btn-group">
+                            <button class="btn btn-default" id="btn-edit"><i class="fa fa-edit"></i> Edit</button>
+                        </div>
+                        <div id="btn-group-3" class="btn-group toolbar-block">
+                            <button class="btn btn-default" id="btn-save"><i class="fa fa-save"></i> Save</button>
+                        </div>
+                    </div>
+                    @else
                     <div id="btn-toolbar" class="section-header btn-toolbar" role="toolbar" style="margin: 10px 0;">
                         <div id="btn-group-1" class="btn-group">
                             <button class="btn btn-default" id="btn-refresh"><i class="fa fa-refresh"></i> New/Refresh</button>
@@ -605,6 +657,7 @@
                             <button class="btn btn-default" id="btn-approve-all"><i class="fa fa-check"></i> Approve All</button>
                         </div>
                     </div>
+                    @endrole
                 </div>
             </div>
             
@@ -647,9 +700,13 @@
                                     <option value="">Choose Consignee</option>
                                 </select>
                             </div>
+                            @role('pbm')
+                            @else
                             <div class="col-sm-2">
                                 <button type="button" class="btn btn-info" id="add-consignee-btn">Add Consignee</button>
                             </div>
+                            @endrole
+                            
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Notify Party</label>
@@ -668,8 +725,8 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Location</label>
                             <div class="col-sm-8">
-                                <select class="form-control select2" id="location_id" name="location_id" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
-                                    <option value="">Choose Location</option>
+                                <select class="form-control select2" multiple='multiple' id="location_id" name="location_id[]" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                    <!--<option value="">Choose Location</option>-->
                                     @foreach($locations as $location)
                                         <option value="{{ $location->id }}">{{ $location->name.' ('.$location->type.')' }}</option>
                                     @endforeach
@@ -754,6 +811,21 @@
                           </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-sm-3 control-label">QTY Tally</label>
+                            <div class="col-sm-2">
+                                <input type="number" name="final_qty" id="final_qty" class="form-control" required>
+                            </div>
+                            <label class="col-sm-2 control-label">Packing</label>
+                            <div class="col-sm-4">
+                                <select class="form-control select2" name="packing_tally" id="packing_tally" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
+                                    <option value="">Choose Packing</option>
+                                    @foreach($packings as $packing)
+                                        <option value="{{ $packing->name }}">{{ $packing->name.' ('.$packing->code.')' }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>          
+<!--                        <div class="form-group">
                             <label class="col-sm-3 control-label">Surcharge(DG)</label>
                             <div class="col-sm-2">
                                 <select class="form-control select2" id="DG_SURCHARGE" name="DG_SURCHARGE" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
@@ -768,8 +840,8 @@
                                     <option value="Y">Y</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="form-group">
+                        </div>-->
+<!--                        <div class="form-group">
                             <label class="col-sm-3 control-label">Perubahan HBL</label>
                             <div class="col-sm-2">
                                 <select class="form-control select2" id="perubahan_hbl" name="perubahan_hbl" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
@@ -788,10 +860,11 @@
                                     <option value="Lainnya">Lainnya</option>
                                 </select>
                             </div>
+                        </div>-->
                         </div>
                     </div>
-                </div>
             </form>
+            @endrole
         </div>
     </div>
 </div>

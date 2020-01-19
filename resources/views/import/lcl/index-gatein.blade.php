@@ -69,15 +69,19 @@
                 $('#load_photos').html(html);
             }
             
-//            if(!rowdata.TGLMASUK && !rowdata.JAMMASUK) {
                 $('#btn-group-2,#btn-photo').enableButtonGroup();
                 $('#btn-group-5').enableButtonGroup();
                 $('#gatein-form').enableFormGroup();
+            if(!rowdata.TGLMASUK && !rowdata.JAMMASUK) {             
                 $('#UIDMASUK').val('{{ Auth::getUser()->name }}');
-//            }else{
-//                $('#btn-group-2').disabledButtonGroup();
-//                $('#gatein-form').disabledFormGroup();
-//            }
+            }else{
+                @role('super-admin')
+
+                @else
+                    $("#TGLMASUK").attr('disabled','disabled');
+                    $("#JAMMASUK").attr('disabled','disabled');
+                @endrole  
+            }
 
         });
         
@@ -239,6 +243,8 @@
                     ->addColumn(array('label'=>'Vessel','index'=>'VESSEL','width'=>150,'align'=>'center'))
                     ->addColumn(array('label'=>'Tgl. ETA','index'=>'ETA','width'=>120,'align'=>'center'))
                     ->addColumn(array('label'=>'TPS Asal','index'=>'KD_TPS_ASAL','width'=>80,'align'=>'center'))
+                    ->addColumn(array('label'=>'Tgl. Dispatche','index'=>'TGL_DISPATCHE','width'=>120,'align'=>'center'))
+                    ->addColumn(array('label'=>'Jam Dispatche','index'=>'JAM_DISPATCHE','width'=>120,'align'=>'center'))
                     ->addColumn(array('label'=>'Tgl. Masuk','index'=>'TGLMASUK','width'=>120,'align'=>'center'))
                     ->addColumn(array('label'=>'Jam Masuk','index'=>'JAMMASUK','width'=>120,'align'=>'center'))
                     ->addColumn(array('label'=>'Tgl. Keluar TPK','index'=>'TGLKELUAR_TPK','width'=>120,'align'=>'center'))
@@ -502,8 +508,6 @@
                                     <input type="file" name="photos[]" class="form-control" multiple="true" required>
                                 </div>
                             </div>
-
-                            
                         </div>
                     </div>
                 </div>

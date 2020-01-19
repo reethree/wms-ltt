@@ -10,6 +10,10 @@ Route::group(['prefix' => 'fcl/delivery', 'namespace' => 'Import'], function(){
         'as' => 'fcl-delivery-behandle-update',
         'uses' => 'FclController@behandleUpdate'
     ]);
+    Route::post('/behandle/ready/{id}', [
+        'as' => 'fcl-delivery-behandle-ready',
+        'uses' => 'FclController@behandleReady'
+    ]);
     // PRINT
     Route::get('/behandle/cetak/{id}', [
         'as' => 'fcl-behandle-cetak',
@@ -71,4 +75,29 @@ Route::group(['prefix' => 'fcl/delivery', 'namespace' => 'Import'], function(){
         'uses' => 'FclController@releaseGetDataSppb'
     ]);
     
+    // UPLOAD PHOTO
+    Route::post('/release/upload/photo', [
+        'as' => 'fcl-release-upload-photo',
+        'uses' => 'FclController@releaseUploadPhoto'
+    ]);
+    Route::post('/behandle/upload/photo', [
+        'as' => 'fcl-behandle-upload-photo',
+        'uses' => 'FclController@behandleUploadPhoto'
+    ]);
+    
+    // VERIFY CONTAINER
+    Route::get('/release/verify/{id}/{no}', [
+        'as' => 'fcl-release-verify',
+        'uses' => 'FclController@releaseVerify'
+    ]);
+    
+    // INSPECTION DOC
+    Route::post('/release/hold', [
+        'as' => 'fcl-release-hold',
+        'uses' => 'FclController@releaseHold'
+    ]);
+    Route::post('/release/unhold', [
+        'as' => 'fcl-release-unhold',
+        'uses' => 'FclController@releaseUnhold'
+    ]);
 });
