@@ -1,4 +1,4 @@
-@extends('print-with-header')
+@extends('print-with-noheader')
 
 @section('title')
     {{ 'Delivery Surat Jalan' }}
