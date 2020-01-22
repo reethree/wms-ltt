@@ -58,7 +58,7 @@
     <body class="sidebar-mini skin-red-light" cz-shortcut-listen="true" style="height: auto; min-height: 100%;">
         <div class="wrapper" style="height: auto; min-height: 100%;">
             
-            @include('partials.menu-ltt')
+            @include('partials.menu-ltt-bc')
 
             <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper" style="min-height: 960px;">
