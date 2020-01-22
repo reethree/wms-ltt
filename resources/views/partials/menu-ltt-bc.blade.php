@@ -390,11 +390,11 @@
             <li><a href="{{ route('vessel-index') }}">Vessel</a></li>
           </ul>
         </li>
-        <li class="treeview">
+<!--        <li class="treeview">
                       <a href="{{route('payment-bni-index')}}">
                           <i class="fa fa-money"></i> BNI E-Collection
                       </a>
-                  </li>
+                  </li>-->
                   <li class="treeview">
           <a href="#">
             <i class="fa fa-th"></i> <span>Import LCL</span>
