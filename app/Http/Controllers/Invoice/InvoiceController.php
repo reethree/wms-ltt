@@ -320,6 +320,23 @@ class InvoiceController extends Controller
         return back()->with('error', 'Data tidak ditemukan.')->withInput();
     }
     
+    public function invoiceApprovePayment(Request $request)
+    {
+        $mainfest = \App\Models\Manifest::find($request->id);
+        
+        if($mainfest) {
+            $mainfest->payment = $request->action;
+            $mainfest->uid_payment = \Auth::getUser()->name;
+            if($mainfest->save()){
+                return json_encode(array('success' => true, 'message' => 'Change Invoice status has been Success.'));
+            }
+        }else{
+            return json_encode(array('success' => false, 'message' => 'Manifest not found.'));
+        }
+
+        return json_encode(array('success' => false, 'message' => 'Something went wrong, please try again later.'));
+    }
+
     public function tarifIndex()
     {
         if ( !$this->access->can('show.tarif.index') ) {

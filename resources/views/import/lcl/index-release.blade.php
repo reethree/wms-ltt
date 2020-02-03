@@ -16,6 +16,9 @@
             var cl = ids[i];
             
             rowdata = $('#lclReleaseGrid').getRowData(cl);
+//            if(rowdata.payment == 'Y') {
+//                $("#" + cl).find("td").css("color", "#FFF");
+//            }
             if(rowdata.VALIDASI == 'Y') {
                 $("#" + cl).find("td").css("color", "#666");
             }
@@ -76,9 +79,9 @@
         $('#view-photo-modal').modal('show');
     }
     
-    function onSelectRowEvent()
+    function onSelectRowEvent(rowid)
     {
-        $('#btn-group-1,#btn-group-6').enableButtonGroup();
+        $('#btn-group-1').enableButtonGroup();
     }
     
     $(document).ready(function()
@@ -218,6 +221,7 @@
             $('#id_hold').val(rowdata.TMANIFEST_PK);
             $('#load_photos').html('');
             $('#delete_photo').val('N');
+            $('#uid_payment').val(rowdata.uid_payment);
             
             if(rowdata.photo_release){
                 var html = '';
@@ -228,10 +232,18 @@
                 });
                 $('#load_photos').html(html);
             }
+            
+            if(rowdata.payment == 'Y'){
+                $('#payment').val('PAID');
                 $('#btn-group-2,#btn-sppb,#btn-photo').enableButtonGroup();
                 $('#release-form').enableFormGroup();
                 $('#btn-group-4').enableButtonGroup();
                 $('#btn-group-5').enableButtonGroup();
+                $('#btn-group-6').enableButtonGroup();
+            }else{
+                $('#payment').val('UNPAID');
+                $('#btn-toolbar').showAlertAfterElement('alert-danger alert-custom', 'Silahkan melakukan Approval invoice terlebih dahulu.', 5000);
+            }
             
             if(rowdata.KD_DOK_INOUT == 1){
                 @role('super-admin')
@@ -376,12 +388,11 @@
             $('#release-form').disabledFormGroup();
             $('#btn-toolbar,#btn-sppb, #btn-photo').disabledButtonGroup();
             $('#btn-group-3').enableButtonGroup();
+            $(".hide-kddoc,#btn-group-7,#btn-group-8").hide();
             
             $('#release-form')[0].reset();
             $('.select2').val(null).trigger("change");
             $('#TMANIFEST_PK').val("");
-            
-            $("#btn-group-7,#btn-group-8").hide();
         });
         
         $('#btn-print-sj').click(function() {
@@ -552,7 +563,9 @@
                     ->addColumn(array('label'=>'Photo','index'=>'photo', 'width'=>120, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
                     ->addColumn(array('label'=>'Status BC','index'=>'status_bc','width'=>100, 'align'=>'center'))
                     ->addColumn(array('label'=>'Segel Merah','index'=>'flag_bc','width'=>80, 'align'=>'center'))
-                    ->addColumn(array('label'=>'Validasi','index'=>'VALIDASI','width'=>80, 'align'=>'center'))
+                    ->addColumn(array('label'=>'Validasi','index'=>'VALIDASI','width'=>80, 'align'=>'center','hidden'=>false))
+                    ->addColumn(array('label'=>'Payment','index'=>'payment', 'width'=>60,'align'=>'center','hidden'=>true))
+                    ->addColumn(array('label'=>'UID Payment','index'=>'uid_payment', 'width'=>60,'align'=>'center','hidden'=>true))
                     ->addColumn(array('label'=>'No. SPK','index'=>'NOJOBORDER', 'width'=>150,'hidden'=>false))
                     ->addColumn(array('label'=>'No. Container','index'=>'NOCONTAINER', 'width'=>150,'hidden'=>false))
                     ->addColumn(array('label'=>'Vessel','index'=>'VESSEL','width'=>120,'align'=>'center'))
@@ -660,6 +673,8 @@
                     ->addColumn(array('label'=>'Status BC','index'=>'status_bc','width'=>100, 'align'=>'center'))
                     ->addColumn(array('label'=>'Segel Merah','index'=>'flag_bc','width'=>80, 'align'=>'center'))
                     ->addColumn(array('label'=>'Validasi','index'=>'VALIDASI','width'=>80, 'align'=>'center','hidden'=>false))
+                    ->addColumn(array('label'=>'Payment','index'=>'payment', 'width'=>60,'align'=>'center','hidden'=>true))
+                    ->addColumn(array('label'=>'UID Payment','index'=>'uid_payment', 'width'=>60,'align'=>'center','hidden'=>true))
                     ->addColumn(array('label'=>'No. SPK','index'=>'NOJOBORDER', 'width'=>150,'hidden'=>false))
                     ->addColumn(array('label'=>'No. Container','index'=>'NOCONTAINER', 'width'=>150,'hidden'=>false))
                     ->addColumn(array('label'=>'Vessel','index'=>'VESSEL','width'=>120,'align'=>'center'))
@@ -799,6 +814,18 @@
                         <label class="col-sm-3 control-label">No. Tally</label>
                         <div class="col-sm-8">
                             <input type="text" id="NOTALLY" name="NOTALLY" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Payment Status</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="payment" name="payment" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Approve By</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="uid_payment" name="uid_payment" class="form-control" readonly>
                         </div>
                     </div>
 <!--                    <div class="form-group">

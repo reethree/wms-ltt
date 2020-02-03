@@ -37,14 +37,62 @@
     {
         var ids = jQuery("#lclInvoicesGrid").jqGrid('getDataIDs'),
             edt = '',
-            del = ''; 
+            del = '',
+            pay = ''; 
         for(var i=0;i < ids.length;i++){ 
             var cl = ids[i];
-            
+            rowdata = $('#lclInvoicesGrid').getRowData(cl);
+            @role('super-admin')
+                if(rowdata.payment == 'N') {
+                    pay = '<button style="margin:5px;" class="btn btn-success btn-xs" data-id="'+cl+'" onclick="if (confirm(\'Apakah anda yakin invoice ini sudah di bayar? ?\')){ approvePayment('+rowdata.manifest_id+',\'Y\'); }else{return false;};"><i class="fa fa-check"></i> Approve</button> Unpaid';
+                } else {
+                    pay = '<button style="margin:5px;" class="btn btn-danger btn-xs" data-id="'+cl+'" onclick="if (confirm(\'Apakah anda yakin akan membatalkan pembayaran invoice ini?\')){ approvePayment('+rowdata.manifest_id+',\'N\'); }else{return false;};"><i class="fa fa-check"></i> Cancel</button> Paid';
+                    $("#" + cl).find("td").css("background", "#008D4D").css("color", "#FFF");
+                }
+            @else
+                if(rowdata.payment == 'N') {
+                    pay = 'Unpaid';
+                }else{
+                    pay = 'Paid';
+                }
+            @endrole
+        
             edt = '<a href="{{ route("invoice-edit",'') }}/'+cl+'"><i class="fa fa-pencil"></i></a> ';
             del = '<a href="{{ route("invoice-delete",'') }}/'+cl+'" onclick="if (confirm(\'Are You Sure ?\')){return true; }else{return false; };"><i class="fa fa-close"></i></a>';
-            jQuery("#lclInvoicesGrid").jqGrid('setRowData',ids[i],{action:edt+' '+del}); 
+            jQuery("#lclInvoicesGrid").jqGrid('setRowData',ids[i],{action:edt+' '+del, payment: pay}); 
         } 
+    }
+    
+    function approvePayment($id,$action)
+    {
+        var rowdata = $('#lclInvoicesGrid').getRowData($id);
+        $.ajax({
+            type: 'POST',
+            data: 
+            {
+                'id' : $id,
+                'action' : $action,
+                '_token' : '{{ csrf_token() }}'
+            },
+            dataType : 'json',
+            url: '{{route("invoice-approve-payment")}}',
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert('Something went wrong, please try again later.');
+            },
+            beforeSend:function(){},
+            success:function(json)
+            {
+                if(json.success) {
+                      $('#alert-message').showAlertAfterElement('alert-success alert-custom', json.message, 5000);
+                } else {
+                      $('#alert-message').showAlertAfterElement('alert-danger alert-custom', json.message, 5000);
+                }
+
+                //Triggers the "Refresh" button funcionality.
+                $('#lclInvoicesGrid').jqGrid().trigger("reloadGrid");
+            }
+        });
     }
     
     function onSelectRowEvent()
@@ -82,6 +130,7 @@
         </div>
     </div>
     <div class="box-body table-responsive">
+        <div id="alert-message"></div>
         <div class="row" style="margin-bottom: 30px;margin-right: 0;">
             <div class="col-md-6">
                 <div class="col-xs-12">Search By Date</div>
@@ -132,7 +181,7 @@
             ->setGridEvent('onSelectRow', 'onSelectRowEvent')
             ->addColumn(array('label'=>'Action','index'=>'action', 'width'=>80, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
             ->addColumn(array('key'=>true,'index'=>'id','hidden'=>true))
-            
+            ->addColumn(array('index'=>'manifest_id','align'=>'center','hidden'=>true ))
 //            ->addColumn(array('label'=>'No. Joborder','index'=>'NOJOBORDER','width'=>160))
 //            ->addColumn(array('label'=>'No. MBL','index'=>'NOMBL','width'=>160))
 //            ->addColumn(array('label'=>'Tgl. MBL','index'=>'TGL_MASTER_BL','width'=>150,'align'=>'center'))
@@ -142,7 +191,8 @@
 //            ->addColumn(array('label'=>'Tgl. PLP','index'=>'TTGL_PLP','width'=>150,'align'=>'center'))
 //            ->addColumn(array('label'=>'ETA','index'=>'ETA', 'width'=>150,'align'=>'center'))
 //            ->addColumn(array('label'=>'ETD','index'=>'ETD', 'width'=>150,'align'=>'center'))
-            ->addColumn(array('label'=>'Renew','index'=>'renew','width'=>80,'align'=>'center'))
+            ->addColumn(array('label'=>'Payment','index'=>'payment','align'=>'center','hidden'=>false ))
+            ->addColumn(array('label'=>'Renew','index'=>'renew','width'=>60,'align'=>'center'))
             ->addColumn(array('label'=>'Type','index'=>'template_type','width'=>100,'align'=>'center'))
             ->addColumn(array('label'=>'No. Invoice','index'=>'number','width'=>150,'align'=>'center'))
             ->addColumn(array('label'=>'Consolidator','index'=>'NAMACONSOLIDATOR','width'=>250))

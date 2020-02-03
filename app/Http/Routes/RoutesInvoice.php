@@ -31,6 +31,10 @@ Route::group(['prefix' => 'invoice', 'namespace' => 'Invoice'], function(){
         'as' => 'invoice-renew',
         'uses'=> 'InvoiceController@invoiceRenew'
     ]);
+    Route::post('/approve-payment', [
+        'as' => 'invoice-approve-payment',
+        'uses'=> 'InvoiceController@invoiceApprovePayment'
+    ]);
     
     // RELEASE INVOICE
     Route::get('/release', [
