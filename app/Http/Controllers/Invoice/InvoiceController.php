@@ -184,42 +184,38 @@ class InvoiceController extends Controller
                 $invoice_item->item_type = 'tmp';
                 $item_qty = 1;
                 $item_price = $item->price;
-
+                if($lastqty > 0){$daysold = $lastqty;}
+                
                 if($item->type == 'Storage Flat'){
                     $item_qty = $days;
                 }elseif($item->type == 'Storage Masa'){
                     // Perhitungan Masa
-                    if(($daysold+$days) > $item->day_end && $item->day_end != 0){
+                    if($item->day_end == 0){
+                        $item_qty = $days-$lastqty;
+                    }elseif($daysold >= $item->day_end){
                         continue;
-                    }else{
-                        if($item->day_end > 0){
-                            $terpakai = ($daysold-$item->day_start)+1; 
-                            $tersedia = $item->day_end;
-                            if(($terpakai+$days) <= $tersedia){
-                                $item_qty = $days;
-                            }else{
-                                $lebihhari = ($terpakai+$days)-$item->day_end;
-                                $item_qty = $lebihhari;
-                            }
-                        }else{                            
-                            if(($daysold+$days) > $item->day_start){
-                                $item_qty = $days-$lastqty;
-                            }else{
-                                $item_qty = (($daysold+$days) - $item->day_start)+1;
-                            }
-                            
-                            if($item_qty <= 0){
-                                continue;
-                            }
+                    }else{                       
+                        $maxuses = $item->day_end-$daysold;
+                        if($days >= $maxuses) {
+                            $item_qty = $maxuses;
+                        }else{
+                            $item_qty = $days;
                         }
-                        
+                        $lastqty = $item_qty;
+                    }
+//                    if(($daysold+$days) > $item->day_end && $item->day_end != 0){
+//                        continue;
+//                    }else{
 //                        if($item->day_end > 0){
-//                            if(($daysold+$days) >= $item->day_end){
-//                                $item_qty = (($item->day_end-$item->day_start)+1)-(($daysold-$item->day_start)+1);
+//                            $terpakai = ($daysold-$item->day_start)+1; 
+//                            $tersedia = $item->day_end;
+//                            if(($terpakai+$days) <= $tersedia){
+//                                $item_qty = $days;
 //                            }else{
-//                                $item_qty = (($item->day_end-$item->day_start)+1)-(($daysold-$item->day_start)+($days));
+//                                $lebihhari = ($terpakai+$days)-$item->day_end;
+//                                $item_qty = $lebihhari;
 //                            }
-//                        }else{
+//                        }else{                            
 //                            if(($daysold+$days) > $item->day_start){
 //                                $item_qty = $days-$lastqty;
 //                            }else{
@@ -230,8 +226,26 @@ class InvoiceController extends Controller
 //                                continue;
 //                            }
 //                        }
-                    }
-                    $lastqty = $item_qty;
+//                        
+////                        if($item->day_end > 0){
+////                            if(($daysold+$days) >= $item->day_end){
+////                                $item_qty = (($item->day_end-$item->day_start)+1)-(($daysold-$item->day_start)+1);
+////                            }else{
+////                                $item_qty = (($item->day_end-$item->day_start)+1)-(($daysold-$item->day_start)+($days));
+////                            }
+////                        }else{
+////                            if(($daysold+$days) > $item->day_start){
+////                                $item_qty = $days-$lastqty;
+////                            }else{
+////                                $item_qty = (($daysold+$days) - $item->day_start)+1;
+////                            }
+////                            
+////                            if($item_qty <= 0){
+////                                continue;
+////                            }
+////                        }
+//                    }
+//                    $lastqty = $item_qty;
                 }else{
                     continue;
                 }

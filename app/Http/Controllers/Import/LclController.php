@@ -1534,6 +1534,11 @@ class LclController extends Controller
         $items_w = \DB::table('billing_template_item')->where(array('billing_template_id' => $template->id, 'template_type' => 'Warehouse', 'active' => 'Y'))->get();
         $items_r = \DB::table('billing_template_item')->where(array('billing_template_id' => $template->id, 'template_type' => 'Forwarder', 'active' => 'Y'))->get();
         
+//        $lastnum = \App\Models\Invoice::select('number')->orderBy('number', 'DESC')->first();
+//        $invoice_no = $lastnum+1;
+        $manifest->no_invoice = $request->no_invoice;
+        $manifest->save();
+        
         if(count($items_w) > 0):
             $invoice = new \App\Models\Invoice;
             $invoice->manifest_id = $manifest->TMANIFEST_PK;
