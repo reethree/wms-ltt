@@ -9,11 +9,10 @@ use Illuminate\Support\Facades\View;
 
 class BarcodeController extends Controller
 {
-    
     public function __construct() {
         // CHECK STATUS BEHANDLE
-        $lcl_sb = \App\Models\Manifest::where('status_behandle','Ready')->count();
-        $fcl_sb = \App\Models\Containercy::where('status_behandle','Ready')->count();
+        $lcl_sb = \App\Models\Manifest::whereIn('status_behandle',array('Ready','Siap Periksa'))->count();
+        $fcl_sb = \App\Models\Containercy::whereIn('status_behandle',array('Ready','Siap Periksa'))->count();
         
         View::share('notif_behandle', array('lcl' => $lcl_sb, 'fcl' => $fcl_sb, 'total' => $lcl_sb+$fcl_sb));
     }
