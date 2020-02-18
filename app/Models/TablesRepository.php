@@ -393,7 +393,7 @@ class TablesRepository extends EloquentRepositoryAbstract {
 //                            ->whereNotNull('tglstripping');
                             
                             ->whereNotNull('tglmasuk')
-                            ->whereNotNull('tglstripping')
+//                            ->whereNotNull('tglstripping')
                             ->whereNull('tglrelease');
                     break;
                 }

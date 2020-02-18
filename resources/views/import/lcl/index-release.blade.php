@@ -233,17 +233,26 @@
                 $('#load_photos').html(html);
             }
             
-            if(rowdata.payment == 'Y'){
-                $('#payment').val('PAID');
+            @role('super-admin')
                 $('#btn-group-2,#btn-sppb,#btn-photo').enableButtonGroup();
                 $('#release-form').enableFormGroup();
                 $('#btn-group-4').enableButtonGroup();
                 $('#btn-group-5').enableButtonGroup();
                 $('#btn-group-6').enableButtonGroup();
-            }else{
-                $('#payment').val('UNPAID');
-                $('#btn-toolbar').showAlertAfterElement('alert-danger alert-custom', 'Silahkan melakukan Approval invoice terlebih dahulu.', 5000);
-            }
+            @else
+                if(rowdata.payment == 'Y'){
+                    $('#payment').val('PAID');
+                    $('#btn-group-2,#btn-sppb,#btn-photo').enableButtonGroup();
+                    $('#release-form').enableFormGroup();
+                    $('#btn-group-4').enableButtonGroup();
+                    $('#btn-group-5').enableButtonGroup();
+                    $('#btn-group-6').enableButtonGroup();
+                }else{
+                    $('#payment').val('UNPAID');
+                    $('#btn-toolbar').showAlertAfterElement('alert-danger alert-custom', 'Silahkan melakukan Approval invoice terlebih dahulu.', 5000);
+                }
+            @endrole
+
             
             if(rowdata.KD_DOK_INOUT == 1){
                 @role('super-admin')
