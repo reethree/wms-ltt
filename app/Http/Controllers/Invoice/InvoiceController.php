@@ -133,6 +133,7 @@ class InvoiceController extends Controller
         $invoice->template_type = $data_invoice->template_type;
         $invoice->number = $request->no_invoice;
         $invoice->officer = $request->officer;
+        $invoice->tgl_keluar = $request->renew_date;
         $invoice->tgl_cetak = $request->tgl_cetak;
         $invoice->renew = 'Y';
         $invoice->renew_date = date('Y-m-d', strtotime($request->renew_date));
@@ -155,12 +156,13 @@ class InvoiceController extends Controller
         //Lama
         $daybyold = ($template->day_by == 'OB') ? $manifest->tglmasuk : $manifest->ETA;
         $date1old = date_create($daybyold);
-        $date2old = date_create(date('Y-m-d',strtotime($manifest->tglrelease. '+1 days')));
+//        $date2old = date_create(date('Y-m-d',strtotime($manifest->tglrelease. '+1 days')));
+        $date2old = date_create(date('Y-m-d',strtotime($data_invoice->tgl_keluar. '+1 days')));
         $diffold = date_diff($date1old, $date2old);
         $daysold = $diffold->format("%a");
         
         //Baru
-        $dayby = $manifest->tglrelease;
+        $dayby = $data_invoice->tgl_keluar;
         $date1 = date_create($dayby);
         $date2 = date_create(date('Y-m-d', strtotime($request->renew_date)));
         $diff = date_diff($date1, $date2);
