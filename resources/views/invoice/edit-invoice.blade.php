@@ -94,7 +94,8 @@
               <tr>
                   <td><b>Tgl. Keluar</b></td>
                   <td>&nbsp;&nbsp;:&nbsp;&nbsp;</td>
-                  <td>{{ date('d/m/Y ', strtotime($manifest->tglrelease)) }}</td>
+                  <!--<td>{{ date('d/m/Y ', strtotime($manifest->tglrelease)) }}</td>-->
+                  <td>{{ date('d/m/Y ', strtotime($invoice->tgl_keluar)) }}</td>
               </tr>
               @if($invoice->renew == 'Y')
               <tr>

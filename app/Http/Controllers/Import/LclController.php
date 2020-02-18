@@ -1546,6 +1546,7 @@ class LclController extends Controller
             $invoice->template_type = 'Warehouse';
             $invoice->number = $request->no_invoice;
             $invoice->officer = $request->officer;
+            $invoice->tgl_keluar = $request->tgl_keluar;
             $invoice->tgl_cetak = $request->tgl_cetak;
             $invoice->bill_to = $request->bill_to;
 
@@ -1574,7 +1575,8 @@ class LclController extends Controller
             // Perhitungan Hari
             $dayby = ($template->day_by == 'OB') ? $manifest->tglmasuk : $manifest->ETA;
             $date1 = date_create($dayby);
-            $date2 = date_create(date('Y-m-d',strtotime($manifest->tglrelease. '+1 days')));
+//            $date2 = date_create(date('Y-m-d',strtotime($manifest->tglrelease. '+1 days')));
+            $date2 = date_create(date('Y-m-d',strtotime($request->tgl_keluar. '+1 days')));
             $diff = date_diff($date1, $date2);
             $days = $diff->format("%a");
 
