@@ -240,8 +240,10 @@
                 $('#btn-group-5').enableButtonGroup();
                 $('#btn-group-6').enableButtonGroup();
             @else
-                var consolidatorid = [23,39];
-                if(consolidatorid.indexOf(rowdata.TCONSIGNEE_FK) != -1){
+                var consolidatorid = ['23','39'];
+//                console.log(consolidatorid.indexOf(rowdata.TCONSOLIDATOR_FK));
+//                console.log(rowdata.TCONSOLIDATOR_FK);
+                if(consolidatorid.indexOf(rowdata.TCONSOLIDATOR_FK) != -1){
                     $('#btn-group-2,#btn-sppb,#btn-photo').enableButtonGroup();
                     $('#release-form').enableFormGroup();
                     $('#btn-group-4').enableButtonGroup();
