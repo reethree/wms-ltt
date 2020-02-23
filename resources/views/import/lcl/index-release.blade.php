@@ -240,17 +240,26 @@
                 $('#btn-group-5').enableButtonGroup();
                 $('#btn-group-6').enableButtonGroup();
             @else
-                if(rowdata.payment == 'Y'){
-                    $('#payment').val('PAID');
+                if(in_array(rowdata.TCONSIGNEE_FK,array(23,39))){
                     $('#btn-group-2,#btn-sppb,#btn-photo').enableButtonGroup();
                     $('#release-form').enableFormGroup();
                     $('#btn-group-4').enableButtonGroup();
                     $('#btn-group-5').enableButtonGroup();
                     $('#btn-group-6').enableButtonGroup();
                 }else{
-                    $('#payment').val('UNPAID');
-                    $('#btn-toolbar').showAlertAfterElement('alert-danger alert-custom', 'Silahkan melakukan Approval invoice terlebih dahulu.', 5000);
+                    if(rowdata.payment == 'Y'){
+                        $('#payment').val('PAID');
+                        $('#btn-group-2,#btn-sppb,#btn-photo').enableButtonGroup();
+                        $('#release-form').enableFormGroup();
+                        $('#btn-group-4').enableButtonGroup();
+                        $('#btn-group-5').enableButtonGroup();
+                        $('#btn-group-6').enableButtonGroup();
+                    }else{
+                        $('#payment').val('UNPAID');
+                        $('#btn-toolbar').showAlertAfterElement('alert-danger alert-custom', 'Silahkan melakukan Approval invoice terlebih dahulu.', 5000);
+                    }
                 }
+                
             @endrole
 
             
@@ -584,7 +593,7 @@
                     ->addColumn(array('label'=>'No. HBL','index'=>'NOHBL','width'=>160))
                     ->addColumn(array('label'=>'Tgl. HBL','index'=>'TGL_HBL', 'width'=>150,'hidden'=>false, 'align'=>'center'))
                     ->addColumn(array('label'=>'No. Tally','index'=>'NOTALLY','width'=>160,'hidden'=>true))
-                    
+                    ->addColumn(array('index'=>'TCONSOLIDATOR_FK','width'=>60,'hidden'=>true))
                     ->addColumn(array('label'=>'Consolidator','index'=>'NAMACONSOLIDATOR','width'=>250))
                     ->addColumn(array('label'=>'Consignee','index'=>'CONSIGNEE','width'=>250))
                     ->addColumn(array('label'=>'Weight','index'=>'WEIGHT', 'width'=>120, 'align'=>'center'))               
@@ -693,7 +702,7 @@
                     ->addColumn(array('label'=>'No. HBL','index'=>'NOHBL','width'=>160))
                     ->addColumn(array('label'=>'Tgl. HBL','index'=>'TGL_HBL', 'width'=>150,'hidden'=>false, 'align'=>'center'))
                     ->addColumn(array('label'=>'No. Tally','index'=>'NOTALLY','width'=>160,'hidden'=>true))
-                    
+                    ->addColumn(array('index'=>'TCONSOLIDATOR_FK','width'=>60,'hidden'=>true))
                     ->addColumn(array('label'=>'Consolidator','index'=>'NAMACONSOLIDATOR','width'=>250))
                     ->addColumn(array('label'=>'Consignee','index'=>'CONSIGNEE','width'=>250))
                     ->addColumn(array('label'=>'Weight','index'=>'WEIGHT', 'width'=>120, 'align'=>'center'))               
