@@ -332,6 +332,33 @@ class PenerimaanController extends Controller
         return view('tpsonline.edit-ob')->with($data);
     }
     
+    public function spjmEdit($id)
+    {
+        if ( !$this->access->can('show.tps.spjm.edit') ) {
+            return view('errors.no-access');
+        }
+        
+        // Create Roles Access
+        $this->insertRoleAccess(array('name' => 'Edit TPS SPJM', 'slug' => 'show.tps.spjm.edit', 'description' => ''));
+        
+        $data['page_title'] = "Edit SPJM";
+        $data['page_description'] = "";
+        $data['breadcrumbs'] = [
+            [
+                'action' => route('tps-spjm-index'),
+                'title' => 'TPS SPJM'
+            ],
+            [
+                'action' => '',
+                'title' => 'Edit'
+            ]
+        ];
+        
+        $data['spjm'] = \App\Models\TpsSpjm::find($id);
+        
+        return view('tpsonline.edit-spjm')->with($data);
+    }
+    
     public function sppbPibEdit($id)
     {
         if ( !$this->access->can('show.tps.sppbPib.edit') ) {
@@ -384,6 +411,33 @@ class PenerimaanController extends Controller
         $data['sppb'] = \App\Models\TpsSppbBc::find($id);
         
         return view('tpsonline.edit-sppb-bc')->with($data);
+    }
+    
+    public function dokManualEdit($id)
+    {
+        if ( !$this->access->can('show.tps.dokmanual.edit') ) {
+            return view('errors.no-access');
+        }
+        
+        // Create Roles Access
+        $this->insertRoleAccess(array('name' => 'Edit TPS DOKUMEN MANUAL', 'slug' => 'show.tps.dokmanual.edit', 'description' => ''));
+        
+        $data['page_title'] = "Edit Dokumen Manual";
+        $data['page_description'] = "";
+        $data['breadcrumbs'] = [
+            [
+                'action' => route('tps-dokManual-index'),
+                'title' => 'TPS DOKUMEN MANUAL'
+            ],
+            [
+                'action' => '',
+                'title' => 'Edit'
+            ]
+        ];
+        
+        $data['dokmanual'] = \App\Models\TpsDokManual::find($id);
+        
+        return view('tpsonline.edit-dok-manual')->with($data);
     }
     
     /**
@@ -764,5 +818,95 @@ class PenerimaanController extends Controller
         }
         
         return json_encode(array('success' => true, 'message' => 'Something went wrong, please try again later.'));
+    }
+    
+    public function responPlpCreateJoborderLcl(Request $request, $id)
+    {
+        
+        $plpId = $id; 
+        $plp = \App\Models\TpsResponPlp::where('tps_responplptujuanxml_pk', $plpId)->first();
+        
+        if($plp){
+            
+//            $plpDetail = \App\Models\TpsResponPlpDetail::where('tps_responplptujuanxml_fk', $plpId)->groupBy('NO_POS_BC11')->get();
+//
+//            foreach($plpDetail as $detail):
+//                
+//                $nopos = substr($detail->NO_POS_BC11,0,4);
+                $checkJoborder = \App\Models\Joborder::where(array('TNO_PLP' => $plp->NO_PLP, 'TTGL_PLP' => $plp->TGL_PLP))->count();
+////                
+                if($checkJoborder == 0){
+                
+                    $data = array();
+                    $spk_last_id = \App\Models\Joborder::select('TJOBORDER_PK as id')->orderBy('TJOBORDER_PK', 'DESC')->first(); 
+                    $regID = str_pad(intval((isset($spk_last_id->id) ? $spk_last_id->id : 0)+1), 4, '0', STR_PAD_LEFT);
+                    
+                    $data['NOMBL'] = $request->NOMBL;
+                    $data['TGL_MASTER_BL'] = (!empty($request->TGL_MASTER_BL) ? date('Y-m-d', strtotime($request->TGL_MASTER_BL)) : null);
+                    $data['NOJOBORDER'] = 'PRJPL'.$regID.'/'.date('y');
+                    $data['TNO_BC11'] = $plp->NO_BC11;
+                    $data['TTGL_BC11'] = (!empty($plp->TGL_BC11)) ? date('Y-m-d', strtotime($plp->TGL_BC11)) : null;
+//                    $data['NO_POS_BC11'] = $nopos;
+                    $data['TNO_PLP'] = $plp->NO_PLP;
+                    $data['TTGL_PLP'] = (!empty($plp->TGL_PLP)) ? date('Y-m-d', strtotime($plp->TGL_PLP)) : null;
+                    $data['GUDANG_TUJUAN'] = $plp->GUDANG_TUJUAN;
+                    $data['KODE_GUDANG'] = $plp->KD_TPS;
+                    $data['VESSEL'] = $plp->NM_ANGKUT;
+                    $data['CALLSIGN'] = $plp->CALL_SIGN;
+                    $data['VOY'] = $plp->NO_VOY_FLIGHT;
+                    $data['UID'] = \Auth::getUser()->name;
+                    $data['TGLENTRY'] = date('Y-m-d');
+                    $data['ETA'] = (!empty($plp->TGL_TIBA)) ? date('Y-m-d', strtotime($plp->TGL_TIBA)) : null;
+                    $data['ETD'] = null;
+                    
+                    $namalokasisandar = \App\Models\Lokasisandar::select('TLOKASISANDAR_PK','NAMALOKASISANDAR','KD_TPS_ASAL')->where('KD_TPS_ASAL',$plp->KD_TPS_ASAL)->first();
+                    if($namalokasisandar){
+                        $data['TLOKASISANDAR_FK'] = $namalokasisandar->TLOKASISANDAR_PK;
+                        $data['NAMALOKASISANDAR'] = $namalokasisandar->NAMALOKASISANDAR;
+                        $data['KD_TPS_ASAL'] = $namalokasisandar->KD_TPS_ASAL;
+}
+
+                    $insert_id = \App\Models\Joborder::insertGetId($data);
+                    if($insert_id){
+                        $joborder = \App\Models\Joborder::findOrFail($insert_id);
+            
+                        $data = array();
+
+                        $data['TJOBORDER_FK'] = $joborder->TJOBORDER_PK;
+                        $data['NoJob'] = $joborder->NOJOBORDER;
+                        $data['NO_BC11'] = $joborder->TNO_BC11;
+                        $data['TGL_BC11'] = $joborder->TTGL_BC11;
+                        $data['NO_PLP'] = $joborder->TNO_PLP;
+                        $data['TGL_PLP'] = $joborder->TTGL_PLP;
+//                        $data['TCONSOLIDATOR_FK'] = $joborder->TCONSOLIDATOR_FK;
+//                        $data['NAMACONSOLIDATOR'] = $joborder->NAMACONSOLIDATOR;
+                        $data['TLOKASISANDAR_FK'] = $joborder->TLOKASISANDAR_FK;
+                        $data['ETA'] = $joborder->ETA;
+                        $data['ETD'] = $joborder->ETD;
+                        $data['VESSEL'] = $joborder->VESSEL;
+                        $data['VOY'] = $joborder->VOY;
+//                        $data['TPELABUHAN_FK'] = $joborder->TPELABUHAN_FK;
+//                        $data['NAMAPELABUHAN'] = $joborder->NAMAPELABUHAN;
+//                        $data['PEL_MUAT'] = $joborder->PEL_MUAT;
+//                        $data['PEL_BONGKAR'] = $joborder->PEL_BONGKAR;
+//                        $data['PEL_TRANSIT'] = $joborder->PEL_TRANSIT;
+                        $data['NOMBL'] = $joborder->NOMBL;
+                        $data['TGL_MASTER_BL'] = $joborder->TGL_MASTER_BL;
+                        $data['KD_TPS_ASAL'] = $joborder->KD_TPS_ASAL;
+                        $data['KD_TPS_TUJUAN'] = $joborder->GUDANG_TUJUAN;
+                        $data['CALL_SIGN'] = $joborder->CALLSIGN;
+
+                        $container_insert_id = \App\Models\Container::insertGetId($data);
+                        
+                        return back()->with('success', 'No. PLP '.$plp->NO_PLP.', Register berhasih dibuat.');
+                    }
+ 
+                }else{
+                    
+                    return back()->with('error', 'No. PLP '.$plp->NO_PLP.', sudah ada di data Register.');
+                }
+        }
+        
+        return back()->with('error', 'Something went wrong, please try again later.');
     }
 }

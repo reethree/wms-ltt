@@ -93,7 +93,21 @@ class TpsTablesRepository extends EloquentRepositoryAbstract {
                         ->where($request['by'], '>=', $start_date)
                         ->where($request['by'], '<=', $end_date);
             }else{
+                if(isset($request['type']) && isset($request['spjmid'])){
                 
+                    $type = $request['type'];
+                    
+                    if($type == 'cont') {
+                        $Model = \DB::table('tps_spjmcontxml')
+                            ->where('TPS_SPJMXML_FK', $request['spjmid']);
+                    }else{
+                        $Model = \DB::table('tps_spjmkmsxml')
+                            ->where('TPS_SPJMXML_FK', $request['spjmid']);
+            }   
+            
+                }else{
+
+                }
             }   
             
         }elseif($Model->getMorphClass() == 'App\Models\TpsDokManual'){   
@@ -109,8 +123,22 @@ class TpsTablesRepository extends EloquentRepositoryAbstract {
                         ->where($request['by'], '>=', $start_date)
                         ->where($request['by'], '<=', $end_date);
             }else{
+                    if(isset($request['type']) && isset($request['dokid'])){
                 
+                        $type = $request['type'];
+
+                        if($type == 'cont') {
+                            $Model = \DB::table('tps_dokmanualcontxml')
+                                ->where('TPS_DOKMANUALXML_FK', $request['dokid']);
+                        }else{
+                            $Model = \DB::table('tps_dokmanualkmsxml')
+                                ->where('TPS_DOKMANUALXML_FK', $request['dokid']);
             }
+            
+                    }else{
+
+                }
+            }  
             
         }elseif($Model->getMorphClass() == 'App\Models\TpsSppbPib'){   
             if(isset($request['startdate']) && isset($request['enddate'])){

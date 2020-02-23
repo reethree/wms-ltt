@@ -147,7 +147,7 @@
                       <li><a href="{{ route('tps-obLcl-index') }}">Data OB LCL</a></li>
                       <li><a href="{{ route('tps-obFcl-index') }}">Data OB FCL</a></li>
                       <li><a href="{{ route('tps-spjm-index') }}">Data SPJM</a></li>
-                      <!--<li><a href="{{ route('tps-dokManual-index') }}">Data Dok Manual</a></li>-->
+                      <li><a href="{{ route('tps-dokManual-index') }}">Data Dok Manual</a></li>
                       <li><a href="{{ route('tps-sppbPib-index') }}">Data SPPB</a></li>
                       <li><a href="{{ route('tps-sppbBc-index') }}">Data SPPB BC23</a></li>
                       <li><a href="{{ route('tps-infoNomorBc-index') }}">Info Nomor BC11</a></li>
@@ -526,7 +526,7 @@
                 <li><a href="{{ route('tps-obLcl-index') }}">Data OB LCL</a></li>
                 <li><a href="{{ route('tps-obFcl-index') }}">Data OB FCL</a></li>
                 <li><a href="{{ route('tps-spjm-index') }}">Data SPJM</a></li>
-                          <!--<li><a href="{{ route('tps-dokManual-index') }}">Data Dok Manual</a></li>-->
+                <li><a href="{{ route('tps-dokManual-index') }}">Data Dok Manual</a></li>
                 <li><a href="{{ route('tps-sppbPib-index') }}">Data SPPB</a></li>
                 <li><a href="{{ route('tps-sppbBc-index') }}">Data SPPB BC23</a></li>
                 <li><a href="{{ route('tps-infoNomorBc-index') }}">Info Nomor BC11</a></li>
