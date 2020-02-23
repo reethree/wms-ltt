@@ -240,13 +240,13 @@
                 $('#btn-group-5').enableButtonGroup();
                 $('#btn-group-6').enableButtonGroup();
             @else
-                if(in_array(rowdata.TCONSIGNEE_FK,array(23,39))){
+                @if(in_array(rowdata.TCONSIGNEE_FK,array(23,39))){
                     $('#btn-group-2,#btn-sppb,#btn-photo').enableButtonGroup();
                     $('#release-form').enableFormGroup();
                     $('#btn-group-4').enableButtonGroup();
                     $('#btn-group-5').enableButtonGroup();
                     $('#btn-group-6').enableButtonGroup();
-                }else{
+                @else
                     if(rowdata.payment == 'Y'){
                         $('#payment').val('PAID');
                         $('#btn-group-2,#btn-sppb,#btn-photo').enableButtonGroup();
@@ -258,7 +258,7 @@
                         $('#payment').val('UNPAID');
                         $('#btn-toolbar').showAlertAfterElement('alert-danger alert-custom', 'Silahkan melakukan Approval invoice terlebih dahulu.', 5000);
                     }
-                }
+                @endif
                 
             @endrole
 
