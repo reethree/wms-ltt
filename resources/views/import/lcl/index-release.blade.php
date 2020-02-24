@@ -222,6 +222,11 @@
             $('#load_photos').html('');
             $('#delete_photo').val('N');
             $('#uid_payment').val(rowdata.uid_payment);
+            if(rowdata.payment == 'Y'){
+                $('#payment').val('PAID');
+            }else{
+                $('#payment').val('UNPAID');
+            }
             
             if(rowdata.photo_release){
                 var html = '';
@@ -840,13 +845,13 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Payment Status</label>
                         <div class="col-sm-8">
-                            <input type="text" id="payment" name="payment" class="form-control" readonly>
+                            <input type="text" id="payment" class="form-control" readonly>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Approve By</label>
                         <div class="col-sm-8">
-                            <input type="text" id="uid_payment" name="uid_payment" class="form-control" readonly>
+                            <input type="text" id="uid_payment" class="form-control" readonly>
                         </div>
                     </div>
 <!--                    <div class="form-group">
