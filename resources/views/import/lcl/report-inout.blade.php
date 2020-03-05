@@ -182,6 +182,8 @@
             ->addColumn(array('key'=>true,'index'=>'TMANIFEST_PK','hidden'=>true))
             ->addColumn(array('label'=>'Action','index'=>'action', 'width'=>120, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
 //            ->addColumn(array('label'=>'Status','index'=>'VALIDASI','width'=>80, 'align'=>'center'))
+            ->addColumn(array('label'=>'Status BC','index'=>'status_bc', 'width'=>80,'align'=>'center','hidden'=>true))
+            ->addColumn(array('label'=>'Segel Merah','index'=>'flag_bc', 'width'=>80,'align'=>'center','hidden'=>true))
             ->addColumn(array('label'=>'No. Joborder','index'=>'NOJOBORDER', 'width'=>150))
             ->addColumn(array('label'=>'Nama Angkut','index'=>'VESSEL','width'=>160))
             ->addColumn(array('label'=>'VOY','index'=>'VOY','width'=>100,'align'=>'center'))
