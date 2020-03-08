@@ -5,14 +5,25 @@
 @stop
 
 @section('content')
+        
     <style>
+    table, table tr, table tr td{
+        font-size: 10px;
+    }
+    table {
+        margin-bottom: 10px;
+    }
         @media print {
+        body {
+            background: #FFF;
+            color: #000;
+        }
             @page {
                 size: auto;   /* auto is the initial value */
-                margin-top: 48px;
-                margin-bottom: 48px;/* this affects the margin in the printer settings */
-                background: #FFF;
-                color: #000;
+/*            margin-top: 114px;
+            margin-bottom: 90px;
+            margin-left: 38px;
+            margin-right: 75px;*/
                 font-weight: bold;
             }
             .print-btn {
@@ -21,60 +32,76 @@
         }
     </style>
     <a href="#" class="print-btn" type="button" onclick="window.print();">PRINT</a>    
-    <div id="details" class="clearfix" style="font-weight: bold;">
-        <div id="title" style="font-size: 30px;font-weight: bold;text-decoration: underline;">TALLY SHEET</div>
+    <div id="details" class="clearfix">
+        <div id="title" style="font-size: 12px;font-weight: bold;">TALLY SHEET STRIPPING</div>
         <table border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <td>
-                    <table border="0" cellspacing="0" cellpadding="0" style="font-size: 12px;font-weight: bold;">
-                        <!-- <tr>
+                    <table border="0" cellspacing="0" cellpadding="0" style="font-size: 12px;">
+                        <tr>
                             <td>Consolidator</td>
                             <td class="padding-10 text-center">:</td>
                             <td>{{ $container->NAMACONSOLIDATOR }}</td>
-                        </tr> -->
+                        </tr>
                         <tr>
                             <td style="width:100px;">NO. TRUCK</td>
                             <td class="padding-10 text-center">:</td>
                             <td>{{ $container->NOPOL }}</td>
                         </tr>
                         <tr>
-                            <td>NO. CONTAINER</td>
+                            <td>No. Container</td>
                             <td class="padding-10 text-center">:</td>
                             <td>{{ $container->NOCONTAINER }}/{{ $container->SIZE }}</td>
                         </tr>
                         <tr>
-                            <td>EX. KAPAL</td>
+                            <td>Kapal</td>
                             <td class="padding-10 text-center">:</td>
                             <td>{{ $container->VESSEL }}</td>
                         </tr>
                         <tr>
-                            <td>TGL. TIBA</td>
-                            <td class="padding-10 text-center">:</td>
-                            <td>{{ date("d-m-Y", strtotime($container->ETA)) }}</td>
-                        </tr>
-                        <tr>
-                            <td>No. B/L</td>
-                            <td class="padding-10 text-center">:</td>
-                            <td>{{ $container->NOMBL }}</td>
-                        </tr>
-                        <tr>
-                            <td>GUDANG</td>
-                            <td class="padding-10 text-center">:</td>
-                            <td>LTT</td>
-                        </tr>
-                    </table> 
-                </td>
-                <td>
-                    <table border="0" cellspacing="0" cellpadding="0" style="font-size: 12px;font-weight: bold;">
-                        <tr>
-                            <td style="width:50px;">VOY</td>
+                            <td>Voy</td>
                             <td class="padding-10 text-center">:</td>
                             <td>{{ $container->VOY }}</td>
                         </tr>
                         <tr>
-                            <td>SEAL</td>
+                            <td>Tgl.Tiba</td>
                             <td class="padding-10 text-center">:</td>
-                            <td>{{ $container->NO_SEAL }}</td>
+                            <td>{{ date("d/m/Y", strtotime($container->ETA)) }}</td>
+                        </tr>
+                        
+                    </table> 
+                </td>
+                <td>
+                    <table border="0" cellspacing="0" cellpadding="0" style="font-size: 12px;">
+                        <tr>
+                            <td>No. Order</td>
+                            <td class="padding-10 text-center">:</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Tangal</td>
+                            <td class="padding-10 text-center">:</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Mulai Stripping</td>
+                            <td class="padding-10 text-center">:</td>
+                            <td>
+                                @if($container->STARTSTRIPPING === NULL || $container->STARTSTRIPPING == '0000-00-00 00:00:00')
+                                @else
+                                    {{ date('d/m/Y H:i', strtotime($container->STARTSTRIPPING)) }}
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Selesai Stripping</td>
+                            <td class="padding-10 text-center">:</td>
+                            <td>
+                                @if($container->ENDSTRIPPING === NULL || $container->ENDSTRIPPING == '0000-00-00 00:00:00')
+                                @else
+                                    {{ date('d/m/Y H:i', strtotime($container->ENDSTRIPPING)) }}
+                                @endif
+                            </td>
                         </tr>
                     </table>
                 </td>
@@ -82,57 +109,44 @@
             
         </table>
     </div>
-    <div class="clearfix"></div>
-    <table border="1" cellspacing="0" cellpadding="0" style="font-weight: bold;">
+    <table border="1" cellspacing="0" cellpadding="0">
         <thead>
             <tr>
                 <th>NO</th>
+                <th>BL</th>
                 <th>CONSIGNEE</th>
-                <th>MERK<br />JENIS BARANG</th>
-                <!-- <th>PCKGs</th> -->
-                <th>TALLY</th>
-                <th>TOTAL</th>
-                <!-- <th>WEIGHT<br/>MEAS</th> -->
-                <!-- <th>NO TALLY<br/>NO HBL</th> -->
-                <th>REMARK</th>
+                <th>QTY</th>
+                <th>KODE<br/>KEMAS</th>
+                <th>TALLY<br />COUNTING</th>
+                <!--<th>QTY<br />TALLY</th>-->    
+                <th>REMARKS</th>
             </tr>
         </thead>
         <tbody>
-            <?php $i =1; ?>
+            <?php $i = 1;?>
             @foreach($manifests as $manifest)
             <tr>
-                <td class="text-center" style="border: 1px solid;">{{ $i }}</td>
-                <td style="border: 1px solid;width: 150px;">{{ $manifest->CONSIGNEE }}</td>
-                <td style="border: 1px solid;">{{ $manifest->MARKING }}</td>
-                <!-- <td class="text-center">{{ $manifest->QUANTITY.' '.$manifest->NAMAPACKING }}</td> -->
-                <td style="width: 150px;border: 1px solid;">&nbsp;</td>
-                <td class="text-center" style="border: 1px solid;">&nbsp;</td>
-                <!-- <td>{{ $manifest->WEIGHT }}<br/>{{ $manifest->MEAS }}</td> -->
-                <!-- <td>{{ $manifest->NOTALLY }}<br/>{{ $manifest->NOHBL }}</td> -->
-                <td style="width: 100px;border: 1px solid;">&nbsp;</td>
+                <td style="width: 20px;height: 70px;" class="text-center">{{ $i }}</td>
+                <td style="width: 80px;">{{ $manifest->NOHBL }}</td>
+                <td style="width: 80px;">{{ $manifest->CONSIGNEE }}</td>
+                <td style="width: 60px;" class="text-center">{{ $manifest->QUANTITY }}<br />{{ $manifest->WEIGHT }}<br />{{ $manifest->MEAS }}</td>
+                <td style="width: 60px;"class="text-center">{{ $manifest->packing }}<br />Kgs<br />Cbm</td>
+                <td></td>
+                <!--<td style="width: 80px;" class="text-center">{{ $manifest->final_qty }} {{ $manifest->packing_tally }}</td>-->
+                <td></td>
             </tr>
-            <?php $i++; ?>
+            <?php $i++;?>
             @endforeach         
         </tbody>
     </table>
-    <table border="0" cellspacing="0" cellpadding="0" style="font-weight: bold;">
+    <table border="0" cellspacing="0" cellpadding="0">
         <tbody>
             <tr>
-                <td class="text-center">Mengetahui,<br />Ka. Gudang</td>
-                <td class="text-center">Mengetahui,<br />Surveyor</td>
-                <td class="text-center">Mengetahui,<br />Bea & Cukai</td>
-                <td class="text-center">
-                    Tg. Priok, {{date('d F Y')}}<br />
-                    Petugas Tally<br />
-                    <p>PT. LAUTAN TIRTA TRANSPORTAMA</p>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center" style="padding-top: 80px;">(..........................)</td>
-                <td class="text-center" style="padding-top: 80px;">(..........................)</td>
-                <td class="text-center" style="padding-top: 80px;">(..........................)</td>
-                <td class="text-center" style="padding-top: 80px;">(..........................)</td>
+                <td class="text-center" style="padding-top: 80px;"><b>(..................................)<br />Tallyman / PIC</b></td>
+                <td class="text-center" style="padding-top: 80px;"><b>(..................................)<br />Leader LCL</b></td>
+                <td class="text-center" style="padding-top: 80px;"><b>(..................................)<br />Supervisor</b></td>
             </tr>
         </tbody>
     </table>
+    
 @stop
