@@ -17,7 +17,8 @@
     {
         var ids = jQuery("#fclContainerReportGrid").jqGrid('getDataIDs'),
             lt = '',
-            vi = '';   
+            vi = '',
+            info = '';   
             
         for(var i=0;i < ids.length;i++){ 
             var cl = ids[i];
@@ -179,15 +180,15 @@
             ->enableFilterToolbar()
             ->setGridOption('mtype', 'POST')
             ->setGridOption('url', URL::to('/container/grid-data-cy?report=1&_token='.csrf_token()))
-            ->setGridOption('rowNum', 20)
+            ->setGridOption('rowNum', 50)
             ->setGridOption('shrinkToFit', true)
             ->setGridOption('sortname','TCONTAINER_PK')
             ->setGridOption('sortorder','DESC')
             ->setGridOption('rownumbers', true)
-            ->setGridOption('rownumWidth', 50)
             ->setGridOption('height', '400')
+            ->setGridOption('rownumWidth', 50)
             ->setGridOption('multiselect', true)
-            ->setGridOption('rowList',array(20,50,100))
+            ->setGridOption('rowList',array(50,100,200))
             ->setGridOption('useColSpanStyle', true)
             ->setNavigatorOptions('navigator', array('viewtext'=>'view'))
             ->setNavigatorOptions('view',array('closeOnEscape'=>false))
@@ -418,49 +419,48 @@
     </div>
 </div>
 
-<div id="create-report-modal" class="modal fade" tabindex="-1" role="dialog">
+<div id="view-photo-modal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title">Please Choose Report Date</h4>
+              <h4 class="modal-title">Photo</h4>
             </div>
-            <form id="create-invoice-form" class="form-horizontal" action="{{ route("fcl-report-rekap-sendemail") }}" method="POST" enctype="multipart/form-data">
-                <div class="modal-body"> 
-                    <div class="row">
-                        <div class="col-md-12">
-                            <input name="_token" type="hidden" value="{{ csrf_token() }}" />
-                            <input name="id" type="hidden" id="container_id_selected" />
-                            <input name="shippingline_id" type="hidden" id="shippingline_id" />
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Subject Email</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" name="subject" value="Data GATE OUT FCL Tanggal {{date('d F Y', strtotime("-1 Day"))}}" required />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Tgl. Laporan</label>
-                                <div class="col-sm-8">
-                                    <div class="input-group date">
-                                        <div class="input-group-addon">
-                                            <i class="fa fa-calendar"></i>
-                                        </div>
-                                        <input type="text" name="tgl_laporan" class="form-control pull-right datepicker" value="{{date('Y-m-d')}}" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <div class="modal-body"> 
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>AUTOGATE</h3>
+                        <div id="gateinout-photo"></div>
+                        <h3>CONTAINER</h3>
+                        <div id="container-photo"></div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                  <button type="submit" class="btn btn-primary">Send Report</button>
-                </div>
-            </form>
+            </div>    
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<div id="view-info-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Informasi Segel (<span id='nobl_info'></span>)</h4>
+            </div>
+            <div class="modal-body"> 
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4><b>Segel (Lock)</b></h4>
+                        <div id="lock-info"></div>
+                        <hr />
+                        <h4><b>Lepas Segel (Unlock)</b></h4>
+                        <div id="unlock-info"></div>
+                    </div>
+                </div>
+            </div>    
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 @endsection
 
 @section('custom_css')
