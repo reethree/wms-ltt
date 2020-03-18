@@ -144,7 +144,7 @@
             <tr>
                 <td class="text-center" style="padding-top: 80px;"><b>(..................................)<br />Tallyman / PIC</b></td>
                 <td class="text-center" style="padding-top: 80px;"><b>(..................................)<br />Leader LCL</b></td>
-                <td class="text-center" style="padding-top: 80px;"><b>(..................................)<br />Supervisor</b></td>
+                <td class="text-center" style="padding-top: 80px;"><b>(..................................)<br />Bea Cukai</b></td>
             </tr>
         </tbody>
     </table>
