@@ -50,7 +50,7 @@
                         <tr>
                             <td>Truck No. Pol</td>
                             <td class="padding-10 text-center">:</td>
-                            <td>{{ $container->NOPOL }}</td>
+                            <td>{{ $container->NOPOL_OUT }}</td>
                         </tr>
 
                     </table>
