@@ -140,10 +140,10 @@
         </tbody>
     </table>
     <table border="0" cellspacing="0" cellpadding="0">
-        <tbody>
+        <tbody> 
             <tr>
                 <td class="text-center" style="padding-top: 80px;"><b>(..................................)<br />Tallyman / PIC</b></td>
-                <td class="text-center" style="padding-top: 80px;"><b>(..................................)<br />Leader LCL</b></td>
+                <td class="text-center" style="padding-top: 80px;"><b>(..................................)<br />Leader / Supervisor LCL</b></td>
                 <td class="text-center" style="padding-top: 80px;"><b>(..................................)<br />Bea Cukai</b></td>
             </tr>
         </tbody>
