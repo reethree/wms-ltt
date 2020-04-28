@@ -9,11 +9,11 @@
         border: 1px solid #aeaeae;
     }
 </style>
-    Welcome, {{ Auth::getUser()->name }}
+    <!--Welcome, {{ Auth::getUser()->name }}-->
 
-<!--    <div class="row">
+    <div class="row">
         <div class="col-lg-3 col-xs-6">
-             small box 
+            <!-- small box -->
             <div class="small-box bg-aqua">
                 <div class="inner">
                     <h3>{{ number_format($sor->total,'2',',','.') }}<sup style="font-size: 20px">%</sup></h3>
@@ -28,9 +28,9 @@
                 </a>
             </div>
         </div>
-         ./col 
+        <!-- ./col -->
         <div class="col-lg-3 col-xs-6">
-           small box 
+          <!-- small box -->
             <div class="small-box bg-green">
                 <div class="inner">
                     <h3>{{ $yor->total }}<sup style="font-size: 20px">%</sup></h3>
@@ -45,7 +45,7 @@
                 </a>
             </div>
         </div>
-         ./col 
+        <!-- ./col -->
         <div class="col-lg-3 col-xs-6">
             <div class="small-box bg-yellow">
                 <div class="inner">
@@ -76,7 +76,7 @@
                 </a>
             </div>
         </div>
-         ./col 
+        <!-- ./col -->
     </div>
     
     <div class="row">
@@ -85,19 +85,19 @@
                 <tbody>
                     <tr>
                         <th>TPS ASAL</th>
-                        <th>JML CONT (PLP)</th>
+                        <!--<th>JML CONT (PLP)</th>-->
                         <th>FCL GATE IN BULAN {{strtoupper(date('F Y'))}}</th>
                     </tr>
                     @foreach($countbytps as $key=>$value)
                     <tr>
                         <td>{{ $key }}</td>
-                        <td align="center">{{ $value[0] }}</td>
+                        <!--<td align="center">{{ $value[0] }}</td>-->
                         <td align="center">{{ $value[1] }}</td>
                     </tr>
                     @endforeach
                     <tr>
                         <th>TOTAL</th>
-                        <td align="center"><strong>{{ $totcounttpsp }}</strong></td>
+                        <!--<td align="center"><strong>{{ $totcounttpsp }}</strong></td>-->
                         <td align="center"><strong>{{ $totcounttpsg }}</strong></td>
                     </tr>
                 </tbody>
@@ -108,19 +108,19 @@
                 <tbody>
                     <tr>
                         <th>TPS ASAL</th>
-                        <th>JML CONT (PLP)</th>
+                        <!--<th>JML CONT (PLP)</th>-->
                         <th>LCL GATE IN BULAN {{strtoupper(date('F Y'))}}</th>
                     </tr>
                     @foreach($countbytpslcl as $key=>$value)
                     <tr>
                         <td>{{ $key }}</td>
-                        <td align="center">{{ $value[0] }}</td>
+                        <!--<td align="center">{{ $value[0] }}</td>-->
                         <td align="center">{{ $value[1] }}</td>
                     </tr>
                     @endforeach
                     <tr>
                         <th>TOTAL</th>
-                        <td align="center"><strong>{{ $totcounttpsp }}</strong></td>
+                        <!--<td align="center"><strong>{{ $totcounttpsp }}</strong></td>-->
                         <td align="center"><strong>{{ $totcounttpsglcl }}</strong></td>
                     </tr>
                 </tbody>
@@ -160,7 +160,7 @@
                 </tbody>
             </table>
         </div>
-    </div>-->
+    </div>
 
 @endsection
 
