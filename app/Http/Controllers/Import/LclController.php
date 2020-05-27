@@ -2118,7 +2118,8 @@ class LclController extends Controller
         if($sppb){
             $arraysppb = explode('/', $sppb->NO_SPPB);
             $datasppb = array(
-                'NO_SPPB' => $arraysppb[0],
+//                'NO_SPPB' => $arraysppb[0],
+                'NO_SPPB' => $sppb->NO_SPPB,
                 'TGL_SPPB' => date('Y-m-d', strtotime($sppb->TGL_SPPB)),
                 'NPWP' => $sppb->NPWP_IMP
             );

@@ -147,7 +147,9 @@
                                     <select class="form-control select2" id="kode_dok" name="kode_dok" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
                                         <option value="">Choose Document</option>
                                         @foreach($kode_doks as $kode)
-                                            <option value="{{ $kode->kode }}">({{$kode->kode}}) {{ $kode->name }}</option>
+                                            @if(!in_array($kode->kode,array(1,2)))
+                                                <option value="{{ $kode->kode }}">({{$kode->kode}}) {{ $kode->name }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>
