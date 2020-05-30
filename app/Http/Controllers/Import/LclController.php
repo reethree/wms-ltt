@@ -2649,6 +2649,38 @@ class LclController extends Controller
         }
     }
     
+    public function buangmtyUploadPhoto(Request $request)
+    {
+        $picture = array();
+        if ($request->hasFile('photos')) {
+            $files = $request->file('photos');
+            $destinationPath = base_path() . '/public/uploads/photos/container/lcl/'.$request->no_cont;
+            $i = 1;
+            foreach($files as $file){
+//                $filename = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                
+                $filename = date('dmyHis').'_'.str_slug($request->no_cont).'_'.$i.'.'.$extension;
+                $picture[] = $filename;
+                $file->move($destinationPath, $filename);
+                $i++;
+            }
+            // update to Database
+            $container = DBContainer::find($request->id_cont);
+            $oldJson = json_decode($container->photo_empty);
+            $newJson = array_collapse([$oldJson,$picture]);
+            $container->photo_empty = json_encode($newJson);
+            if($container->save()){
+                return back()->with('success', 'Photo for Container '. $request->no_cont .' has been uploaded.');
+            }else{
+                return back()->with('error', 'Photo uploaded, but not save in Database.');
+            }
+            
+        } else {
+            return back()->with('error', 'Something wrong!!! Can\'t upload photo, please try again.');
+        }
+    }
+    
     public function changeStatusBc($id)
     {
         $manifest = DBManifest::find($id);
