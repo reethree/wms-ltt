@@ -641,6 +641,14 @@ class LclController extends Controller
         
         if($update){
             
+            $cont = DBContainer::find($id);
+            if(!empty($cont->NO_PLP) && !empty($cont->NO_BC11)){
+                if(!empty($cont->TGLMASUK) && $cont->TGLMASUK != '1970-01-01'){
+                    $cont->status_coari = 'Ready';
+                    $cont->save();
+                }
+            }
+
             $dataManifest['tglmasuk'] = $data['TGLMASUK'];
             $dataManifest['Jammasuk'] = $data['JAMMASUK'];  
             $dataManifest['NOPOL_MASUK'] = $data['NOPOL']; 
@@ -811,12 +819,28 @@ class LclController extends Controller
     public function buangmtyUpdate(Request $request, $id)
     {
         $data = $request->json()->all(); 
-        unset($data['TCONTAINER_PK'], $data['_token']);
+        $delete_photo = $data['delete_photo'];
+        unset($data['TCONTAINER_PK'], $data['delete_photo'], $data['_token']);
+        
+        if(empty($data['TGLBUANGMTY']) || $data['TGLBUANGMTY'] == '0000-00-00'){
+            $data['TGLBUANGMTY'] = NULL;
+            $data['JAMBUANGMTY'] = NULL;
+        }
+        
+        if($delete_photo == 'Y'){
+            $data['photo_empty'] = '';
+        }
         
         $update = DBContainer::where('TCONTAINER_PK', $id)
             ->update($data);
         
         if($update){
+            
+            $cont = DBContainer::find($id);
+            if(!empty($cont->TGLBUANGMTY) && $cont->TGLBUANGMTY != '1970-01-01'){
+                $cont->status_codeco = 'Ready';
+                $cont->save();
+            }
             
             $dataManifest['tglbuangmty'] = $data['TGLBUANGMTY'];
             $dataManifest['jambuangmty'] = $data['JAMBUANGMTY'];  

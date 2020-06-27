@@ -220,6 +220,7 @@
             $('#id_hold').val(rowdata.TCONTAINER_PK);
             $('#load_photos').html('');
             $('#delete_photo').val('N');
+            $("#status_codeco").val(rowdata.status_codeco);
             
             if(rowdata.photo_release_extra){
                 var html = '';
@@ -554,6 +555,7 @@
                     ->addColumn(array('label'=>'Tgl. Entry','index'=>'TGLENTRY', 'width'=>150, 'search'=>false,'align'=>'center'))
                     ->addColumn(array('label'=>'Jam. Entry','index'=>'JAMENTRY', 'width'=>150, 'search'=>false, 'hidden'=>true))
                     ->addColumn(array('label'=>'Updated','index'=>'last_update', 'width'=>150, 'search'=>false,'hidden'=>true))
+                    ->addColumn(array('label'=>'Status Codeco','index'=>'status_codeco', 'width'=>70,'hidden'=>true))
                     ->renderGrid()
                 }}
                 
@@ -622,6 +624,12 @@
                         <label class="col-sm-2 control-label">TPS Asal</label>
                         <div class="col-sm-3">
                             <input type="text" id="KD_TPS_ASAL" name="KD_TPS_ASAL" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Status Codeco</label>
+                        <div class="col-sm-5">
+                            <input type="text" id="status_codeco" class="form-control" readonly>
                         </div>
                     </div>
 <!--                    <div class="form-group">

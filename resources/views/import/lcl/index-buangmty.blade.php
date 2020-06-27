@@ -55,6 +55,7 @@
             $('#id_cont').val(rowdata.TCONTAINER_PK);
             $('#load_photos').html('');
             $('#delete_photo').val('N');
+            $("#status_codeco").val(rowdata.status_codeco);
             
             if(rowdata.photo_empty){
                 var html = '';
@@ -264,6 +265,7 @@
         //            ->addColumn(array('label'=>'UID','index'=>'UID', 'width'=>150))
                     ->addColumn(array('label'=>'Tgl. Entry','index'=>'TGLENTRY','align'=>'center', 'width'=>150))
                     ->addColumn(array('label'=>'Updated','index'=>'last_update','align'=>'center', 'width'=>150, 'search'=>false))
+                    ->addColumn(array('label'=>'Status Codeco','index'=>'status_codeco', 'width'=>70,'hidden'=>true))
         //            ->addColumn(array('label'=>'Action','index'=>'action', 'width'=>80, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
                     ->renderGrid()
                 }}
@@ -319,10 +321,16 @@
                         <label class="col-sm-3 control-label">Size</label>
                         <div class="col-sm-3">
                             <input type="text" id="SIZE" name="SIZE" class="form-control" readonly>
-                </div>
+                        </div>
                         <label class="col-sm-2 control-label">TPS Asal</label>
                         <div class="col-sm-3">
                             <input type="text" id="KD_TPS_ASAL" name="KD_TPS_ASAL" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Status Codeco</label>
+                        <div class="col-sm-5">
+                            <input type="text" id="status_codeco" class="form-control" readonly>
                         </div>
                     </div>
                 </div>

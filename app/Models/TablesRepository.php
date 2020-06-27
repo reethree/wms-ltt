@@ -47,13 +47,15 @@ class TablesRepository extends EloquentRepositoryAbstract {
                             ->whereNotNull('NO_BC11')
                             ->whereNotNull('TGL_BC11')
                             ->whereNotNull('NO_PLP')
-                            ->whereNotNull('TGL_PLP');
+                            ->whereNotNull('TGL_PLP')
+                            ->whereNull('TGLKELUAR');
                     break;
                     case 'stripping':
                         $Model = \DB::table('tcontainer')
 //                            ->leftjoin('tdepomty', 'tcontainer.TUJUAN_MTY', '=', 'tdepomty.TDEPOMTY_PK')
                             ->whereNotNull('TGLMASUK')
-                            ->whereNotNull('JAMMASUK');
+                            ->whereNotNull('JAMMASUK')
+                            ->whereNull('TGLKELUAR');
                     break;
                     case 'buangmty':
                         $Model = \DB::table('tcontainer')
@@ -212,7 +214,8 @@ class TablesRepository extends EloquentRepositoryAbstract {
                             ->whereNotNull('NO_BC11')
                             ->whereNotNull('TGL_BC11')
                             ->whereNotNull('NO_PLP')
-                            ->whereNotNull('TGL_PLP');
+                            ->whereNotNull('TGL_PLP')
+                            ->whereNull('TGLRELEASE');
                     break;
                 }
                 

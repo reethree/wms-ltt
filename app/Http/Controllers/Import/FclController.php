@@ -598,12 +598,18 @@ class FclController extends Controller
         
         if($update){
             $cont = DBContainer::find($id);
+            if(!empty($cont->NO_PLP) && !empty($cont->NO_BC11)){
+                if(!empty($cont->TGLMASUK) && $cont->TGLMASUK != '1970-01-01'){
+                    $cont->status_coari = 'Ready';
+                }
+            }
+            
             if($cont->yor_update == 0){
 //                $yor = $this->updateYor('gatein', $teus->TEUS);
                 $this->updateYorByTeus();
-                $cont->yor_update = 1;
-                $cont->save();
+                $cont->yor_update = 1;                
             }
+            $cont->save();
             
 //            $dataManifest['tglmasuk'] = $data['tglmasuk'];
 //            $dataManifest['Jammasuk'] = $data['JAMMASUK'];  
@@ -834,6 +840,11 @@ class FclController extends Controller
         
         if($update){
             $cont = DBContainer::find($id);
+            
+            if(!empty($cont->TGLRELEASE) && $cont->TGLRELEASE != '1970-01-01'){
+                $cont->status_codeco = 'Ready';
+            }
+                
             if($cont->yor_update == 1){
 //                $yor = $this->updateYor('release', $container->TEUS);
                 $this->updateYorByTeus();
