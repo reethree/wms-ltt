@@ -45,6 +45,7 @@ class TpsScheduleController extends BaseController
     
     public function createXmlCoariCont()
     {
+        return 'masuk';
         $f_cont = DBContainerCy::where('status_coari', 'Ready')->get();
         $l_cont = DBContainer::where('status_coari', 'Ready')->get();
         
