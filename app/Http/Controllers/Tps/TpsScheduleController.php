@@ -429,16 +429,6 @@ class TpsScheduleController extends BaseController
         if(count($dataHeader) > 0){
             
             $dataDetail = \App\Models\TpsCoariContDetail::where('TPSCOARICONTXML_FK', $dataHeader->TPSCOARICONTXML_PK)->first();
-        
-//            if($dataDetail->STATUS_TPS == 2){
-//                $reff_number = $this->getReffNumber();
-//                $dataDetail->REF_NUMBER = $reff_number;
-//                $dataDetail->FLAG_REVISI = (empty($dataDetail->FLAG_REVISI) ? 0 : $dataDetail->FLAG_REVISI) + 1;
-//                $dataDetail->TGL_REVISI = date('Y-m-d H:i:s');
-//                $dataDetail->STATUS_TPS = 1;
-//
-//                $dataDetail->save();
-//            }
 
             $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><DOCUMENT></DOCUMENT>');
 
