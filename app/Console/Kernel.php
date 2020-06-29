@@ -49,20 +49,20 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             $controller = new TpsScheduleController();
             $controller->createXmlCoariCont();
-        })->everyMinute()->appendOutputTo(storage_path('logs/createcoarixml.log'));
-//        $schedule->call(function () {
-//            $controller = new TpsScheduleController();
-//            $controller->createXmlCodecoCont();
-//        })->everyMinute()->appendOutputTo(storage_path('logs/createcodecoxml.log'));
-//        
-//        // Send TPS Online COARI & CODECO CONTAINER Every 5 Minutes
-//        $schedule->call(function () {
-//            $controller = new TpsScheduleController();
-//            $controller->sendXmlCoariCont();
-//        })->everyFiveMinutes()->appendOutputTo(storage_path('logs/sentcoarixml.log'));
-//        $schedule->call(function () {
-//            $controller = new TpsScheduleController();
-//            $controller->sendXmlCodecoCont();
-//        })->everyFiveMinutes()->appendOutputTo(storage_path('logs/sentcodecoxml.log'));
+        })->everyTenMinutes()->appendOutputTo(storage_path('logs/createcoarixml.log'));
+        $schedule->call(function () {
+            $controller = new TpsScheduleController();
+            $controller->createXmlCodecoCont();
+        })->everyTenMinutes()->appendOutputTo(storage_path('logs/createcodecoxml.log'));
+        
+        // Send TPS Online COARI & CODECO CONTAINER Every 5 Minutes
+        $schedule->call(function () {
+            $controller = new TpsScheduleController();
+            $controller->sendXmlCoariCont();
+        })->everyFiveMinutes()->appendOutputTo(storage_path('logs/sentcoarixml.log'));
+        $schedule->call(function () {
+            $controller = new TpsScheduleController();
+            $controller->sendXmlCodecoCont();
+        })->everyFiveMinutes()->appendOutputTo(storage_path('logs/sentcodecoxml.log'));
     }
 }

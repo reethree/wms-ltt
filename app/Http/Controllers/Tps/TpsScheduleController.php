@@ -48,7 +48,7 @@ class TpsScheduleController extends BaseController
         $f_cont = DBContainerCy::where('status_coari', 'Ready')->get();
         $l_cont = DBContainer::where('status_coari', 'Ready')->get();
         
-        if($f_cont){
+        if(count($f_cont) > 0){
             foreach ($f_cont as $cont_f):
                 
                 // Reff Number
@@ -100,7 +100,7 @@ class TpsScheduleController extends BaseController
                         $coaricontdetail->PEL_TRANSIT = $cont_f->PEL_TRANSIT;
                         $coaricontdetail->PEL_BONGKAR = $cont_f->PEL_BONGKAR;
                         $coaricontdetail->GUDANG_TUJUAN = 'TRMA';
-                        $coaricontdetail->UID = \Auth::getUser()->name;
+                        $coaricontdetail->UID = 'Cronjob';
                         $coaricontdetail->NOURUT = 1;
                         $coaricontdetail->RESPONSE = '';
                         $coaricontdetail->STATUS_TPS = 1;
@@ -136,7 +136,7 @@ class TpsScheduleController extends BaseController
             endforeach;
         }
         
-        if($l_cont){
+        if(count($l_cont) > 0){
             foreach ($l_cont as $cont_l):
                 
                 // Reff Number
@@ -187,7 +187,7 @@ class TpsScheduleController extends BaseController
                         $coaricontdetail->PEL_TRANSIT = $cont_l->PEL_TRANSIT;
                         $coaricontdetail->PEL_BONGKAR = $cont_l->PEL_BONGKAR;
                         $coaricontdetail->GUDANG_TUJUAN = 'TRMA';
-                        $coaricontdetail->UID = \Auth::getUser()->name;
+                        $coaricontdetail->UID = 'Cronjob';
                         $coaricontdetail->NOURUT = 1;
                         $coaricontdetail->RESPONSE = '';
                         $coaricontdetail->STATUS_TPS = 1;
@@ -283,7 +283,7 @@ class TpsScheduleController extends BaseController
                         $codecocontdetail->PEL_TRANSIT = $cont_f->PEL_TRANSIT;
                         $codecocontdetail->PEL_BONGKAR = $cont_f->PEL_BONGKAR;
                         $codecocontdetail->GUDANG_TUJUAN = 'TRMA';
-                        $codecocontdetail->UID = \Auth::getUser()->name;
+                        $codecocontdetail->UID = 'Cronjob';
                         $codecocontdetail->NOURUT = 1;
                         $codecocontdetail->RESPONSE = '';
                         $codecocontdetail->STATUS_TPS = 1;
@@ -374,7 +374,7 @@ class TpsScheduleController extends BaseController
                         $codecocontdetail->PEL_TRANSIT = $cont_l->PEL_TRANSIT;
                         $codecocontdetail->PEL_BONGKAR = $cont_l->PEL_BONGKAR;
                         $codecocontdetail->GUDANG_TUJUAN = 'TRMA';
-                        $codecocontdetail->UID = \Auth::getUser()->name;
+                        $codecocontdetail->UID = 'Cronjob';
                         $codecocontdetail->NOURUT = 1;
                         $codecocontdetail->RESPONSE = '';
                         $codecocontdetail->STATUS_TPS = '';
