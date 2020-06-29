@@ -518,7 +518,7 @@ class TpsScheduleController extends BaseController
 
                 if ($dataDetail->save()){
 
-                    $dataHeader->STATUS_REFF = 'SENT';
+                    $dataHeader->STATUS_REF = 'SENT';
                     $dataHeader->save();
                     
                     // Update Container Reff
@@ -629,7 +629,7 @@ class TpsScheduleController extends BaseController
 
                 if ($dataDetail->save()){
 
-                    $dataHeader->STATUS_REFF = 'SENT';
+                    $dataHeader->STATUS_REF = 'SENT';
                     $dataHeader->save();
                     
                     // Update Container Reff
