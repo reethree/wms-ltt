@@ -45,11 +45,10 @@ class TpsScheduleController extends BaseController
     
     public function createXmlCoariCont()
     {
-        return 'masuk';
         $f_cont = DBContainerCy::where('status_coari', 'Ready')->get();
         $l_cont = DBContainer::where('status_coari', 'Ready')->get();
         
-        if(count($f_cont) > 0){
+        if($f_cont){
             foreach ($f_cont as $cont_f):
                 
                 // Reff Number
@@ -137,7 +136,7 @@ class TpsScheduleController extends BaseController
             endforeach;
         }
         
-        if(count($l_cont) > 0){
+        if($l_cont){
             foreach ($l_cont as $cont_l):
                 
                 // Reff Number
