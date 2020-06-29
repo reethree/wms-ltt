@@ -49,20 +49,20 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             $controller = new TpsScheduleController();
             $controller->createXmlCoariCont();
-        })->appendOutputTo(storage_path('logs/createcoarixml.log'))->everyMinute();
+        })->everyMinute()->appendOutputTo(storage_path('logs/createcoarixml.log'));
         $schedule->call(function () {
             $controller = new TpsScheduleController();
             $controller->createXmlCodecoCont();
-        })->appendOutputTo(storage_path('logs/createcodecoxml.log'))->everyMinute();
+        })->everyMinute()->appendOutputTo(storage_path('logs/createcodecoxml.log'));
         
         // Send TPS Online COARI & CODECO CONTAINER Every 5 Minutes
         $schedule->call(function () {
             $controller = new TpsScheduleController();
             $controller->sendXmlCoariCont();
-        })->appendOutputTo(storage_path('logs/sentcoarixml.log'))->everyFiveMinutes();
+        })->everyFiveMinutes()->appendOutputTo(storage_path('logs/sentcoarixml.log'));
         $schedule->call(function () {
             $controller = new TpsScheduleController();
             $controller->sendXmlCodecoCont();
-        })->appendOutputTo(storage_path('logs/sentcodecoxml.log'))->everyFiveMinutes();
+        })->everyFiveMinutes()->appendOutputTo(storage_path('logs/sentcodecoxml.log'));
     }
 }
