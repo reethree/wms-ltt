@@ -52,7 +52,7 @@ class TpsScheduleController extends BaseController
             foreach ($f_cont as $cont_f):
                 
                 // Reff Number
-                $reff_number = $this->_getReffNumber();  
+                $reff_number = $this->_getReffNumber('Cronjob');  
 
                 if($reff_number){
                     $coaricont = new \App\Models\TpsCoariCont;
@@ -140,7 +140,7 @@ class TpsScheduleController extends BaseController
             foreach ($l_cont as $cont_l):
                 
                 // Reff Number
-                $reff_number = $this->_getReffNumber();   
+                $reff_number = $this->_getReffNumber('Cronjob');   
                 if($reff_number){
                     $coaricont = new \App\Models\TpsCoariCont;
                     $coaricont->REF_NUMBER = $reff_number;
@@ -233,7 +233,7 @@ class TpsScheduleController extends BaseController
             
             foreach ($f_cont as $cont_f):
             
-                $reff_number = $this->_getReffNumber();   
+                $reff_number = $this->_getReffNumber('Cronjob');   
                 if($reff_number){
 
                     $codecocont = new \App\Models\TpsCodecoContFcl();
@@ -324,7 +324,7 @@ class TpsScheduleController extends BaseController
             
             foreach ($l_cont as $cont_l):
             
-                $reff_number = $this->_getReffNumber();   
+                $reff_number = $this->_getReffNumber('Cronjob');   
                 if($reff_number){
 
                     $codecocont = new \App\Models\TpsCodecoContFcl();
@@ -671,7 +671,7 @@ class TpsScheduleController extends BaseController
         $new_ref = 'TRMA'.date('ymd').str_pad(intval($reff_id+1), 4, '0', STR_PAD_LEFT);
         
         $insert = \DB::table('tpsurutxml')->insert(
-            ['REF_NUMBER' => $new_ref, 'TGL_ENTRY' => date('Y-m-d'), 'UID' => (empty($uid) ? \Auth::getUser()->name : $uid), 'TAHUN' => date('Y')]
+            ['REF_NUMBER' => $new_ref, 'TGL_ENTRY' => date('Y-m-d'), 'UID' => $uid, 'TAHUN' => date('Y')]
         );
         
         if($insert){
