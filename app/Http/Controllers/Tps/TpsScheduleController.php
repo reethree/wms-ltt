@@ -27,8 +27,6 @@ class TpsScheduleController extends BaseController
     protected $response;
 
     public function __construct() {
-        
-        parent::__construct();
 
         $this->wsdl = 'https://tpsonline.beacukai.go.id/tps/service.asmx?WSDL';
         $this->user = 'TRMA';
