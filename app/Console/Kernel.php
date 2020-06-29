@@ -59,10 +59,10 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             $controller = new TpsScheduleController();
             $controller->sendXmlCoariCont();
-        })->everyFiveMinutes()->appendOutputTo(storage_path('logs/sentcoarixml.log'));
+        })->everyMinute()->appendOutputTo(storage_path('logs/sentcoarixml.log'));
         $schedule->call(function () {
             $controller = new TpsScheduleController();
             $controller->sendXmlCodecoCont();
-        })->everyFiveMinutes()->appendOutputTo(storage_path('logs/sentcodecoxml.log'));
+        })->everyMinute()->appendOutputTo(storage_path('logs/sentcodecoxml.log'));
     }
 }
