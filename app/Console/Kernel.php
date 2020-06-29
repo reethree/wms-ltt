@@ -41,9 +41,9 @@ class Kernel extends ConsoleKernel
         ->yearly();
         */
         
-//        $schedule->command('inspire')
-//                 ->timezone('Asia/Jakarta')
-//                  ->everyMinute();
+        $schedule->command('inspire')
+                 ->timezone('Asia/Jakarta')
+                  ->everyMinute();
         
         // Create XML COARI & CODECO CONTAINER Every 10 Minutes
         $schedule->call(function () {
