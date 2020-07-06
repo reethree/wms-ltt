@@ -248,6 +248,13 @@ class BarcodeController extends Controller
                                 \App\Models\Manifest::where('TCONTAINER_FK', $model->TCONTAINER_PK)->update(array('tglmasuk' => $model->TGLMASUK, 'jammasuk' => $model->JAMMASUK));
                             }
                             
+                            if(!empty($model->NO_PLP) && !empty($model->NO_BC11)){
+                                if(!empty($model->TGLMASUK) && $model->TGLMASUK != '1970-01-01'){
+                                    $model->status_coari = 'Ready';
+                                    $model->save();
+                                }
+                            }
+                            
                             // Upload Coari Container TPS Online
                             // Check Coari Exist
 //                            if($ref_number){
@@ -309,6 +316,9 @@ class BarcodeController extends Controller
                                 $model->photo_release_out = $filename;
                             }
                             if($model->save()){
+                                if(!empty($model->TGLRELEASE) && $model->TGLRELEASE != '1970-01-01'){
+                                    $model->status_codeco = 'Ready';
+                                }
                                 return $model->NOCONTAINER.' '.$data_barcode->ref_type.' '.$data_barcode->ref_action.' Updated';
                             }else{
                                 return 'Something wrong!!! Cannot store to database';
@@ -331,6 +341,10 @@ class BarcodeController extends Controller
                             $model->photo_empty_out = $filename;
                         }
                         if($model->save()){
+                            if(!empty($model->TGLBUANGMTY) && $model->TGLBUANGMTY != '1970-01-01'){
+                                $model->status_codeco = 'Ready';
+                                $model->save();
+                            }
                             return $model->NOCONTAINER.' '.$data_barcode->ref_type.' '.$data_barcode->ref_action.' Updated';
                         }else{
                             return 'Something wrong!!! Cannot store to database';
