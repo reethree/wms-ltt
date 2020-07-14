@@ -16,6 +16,7 @@ use App\Models\TpsCoariCont as DBCoariCont;
 use App\Models\TpsCoariContDetail as DBCoariContDetail;
 use App\Models\TpsCodecoContFcl as DBCodecoCont; 
 use App\Models\TpsCodecoContFclDetail as DBCoariCodecoDetail;
+use App\Models\Manifest as DBManifest;
 
 
 class TpsScheduleController extends BaseController
@@ -419,7 +420,87 @@ class TpsScheduleController extends BaseController
 
     public function createXmlCodecoKms()
     {
+//        $manifest_id = $request->id; 
+//        $manifest = DBManifest::where('TMANIFEST_PK', $manifest_id)->first();
         
+        $manifests = DBManifest::where('status_codeco', 'Ready')->get();
+        
+        if(count($manifests) > 0){
+            foreach ($manifests as $manifest):
+                // Reff Number
+                $reff_number = $this->_getReffNumber('Cronjob');   
+                if($reff_number){
+                    $codecokms = new \App\Models\TpsCodecoKms;
+                    $codecokms->NOJOBORDER = $manifest->NOJOBORDER;
+                    $codecokms->REF_NUMBER = $reff_number;
+                    $codecokms->TGL_ENTRY = date('Y-m-d');
+                    $codecokms->JAM_ENTRY = date('H:i:s');
+                    $codecokms->UID = 'Cronjob';
+                    $codecokms->STATUS_REF = 'NEW';
+
+                    if($codecokms->save()){
+                        $codecokmsdetail = new \App\Models\TpsCodecoKmsDetail;
+                        $codecokmsdetail->TPSCODECOKMSXML_FK = $codecokms->TPSCODECOKMSXML_PK;
+                        $codecokmsdetail->REF_NUMBER = $reff_number;
+                        $codecokmsdetail->NOTALLY = $manifest->NOTALLY;
+                        $codecokmsdetail->KD_DOK = 6;
+                        $codecokmsdetail->KD_TPS = 'TRMA';
+                        $codecokmsdetail->NM_ANGKUT = $manifest->VESSEL;
+                        $codecokmsdetail->NO_VOY_FLIGHT = $manifest->VOY;
+                        $codecokmsdetail->CALL_SIGN = $manifest->CALL_SIGN;
+                        $codecokmsdetail->TGL_TIBA = (!empty($manifest->ETA) ? date('Ymd', strtotime($manifest->ETA)) : '');
+                        $codecokmsdetail->KD_GUDANG = 'TRMA';
+                        $codecokmsdetail->NO_BL_AWB = $manifest->NOHBL;
+                        $codecokmsdetail->TGL_BL_AWB = (!empty($manifest->TGL_HBL) ? date('Ymd', strtotime($manifest->TGL_HBL)) : '');
+                        $codecokmsdetail->NO_MASTER_BL_AWB = $manifest->NOMBL;
+                        $codecokmsdetail->TGL_MASTER_BL_AWB = (!empty($manifest->TGL_MASTER_BL) ? date('Ymd', strtotime($manifest->TGL_MASTER_BL)) : '');
+                        $codecokmsdetail->ID_CONSIGNEE = str_replace(array('.','-'), array(''),$manifest->ID_CONSIGNEE);
+                        $codecokmsdetail->CONSIGNEE = str_replace('&', '', $manifest->CONSIGNEE);
+                        $codecokmsdetail->BRUTO = $manifest->WEIGHT;
+                        $codecokmsdetail->NO_BC11 = $manifest->NO_BC11;
+                        $codecokmsdetail->TGL_BC11 = (!empty($manifest->TGL_BC11) ? date('Ymd', strtotime($manifest->TGL_BC11)) : '');
+                        $codecokmsdetail->NO_POS_BC11 = $manifest->NO_POS_BC11;
+                        $codecokmsdetail->CONT_ASAL = $manifest->NOCONTAINER;
+                        $codecokmsdetail->SERI_KEMAS = 1;
+                        $codecokmsdetail->KD_KEMAS = $manifest->KODE_KEMAS;
+                        $codecokmsdetail->JML_KEMAS = (!empty($manifest->QUANTITY) ? $manifest->QUANTITY : 0);
+                        $codecokmsdetail->KD_TIMBUN = 'GD';
+                        $codecokmsdetail->KD_DOK_INOUT = $manifest->KD_DOK_INOUT;
+                        $codecokmsdetail->NO_DOK_INOUT = (!empty($manifest->NO_SPPB) ? $manifest->NO_SPPB : '');
+                        $codecokmsdetail->TGL_DOK_INOUT = (!empty($manifest->TGL_SPPB) ? date('Ymd', strtotime($manifest->TGL_SPPB)) : '');
+                        $codecokmsdetail->WK_INOUT = date('Ymd', strtotime($manifest->tglrelease)).date('His', strtotime($manifest->jamrelease));
+                        $codecokmsdetail->KD_SAR_ANGKUT_INOUT = 1;
+                        $codecokmsdetail->NO_POL = $manifest->NOPOL_RELEASE;
+                        $codecokmsdetail->PEL_MUAT = $manifest->PEL_MUAT;
+                        $codecokmsdetail->PEL_TRANSIT = $manifest->PEL_TRANSIT;
+                        $codecokmsdetail->PEL_BONGKAR = $manifest->PEL_BONGKAR;
+                        $codecokmsdetail->GUDANG_TUJUAN = 'TRMA';
+                        $codecokmsdetail->UID = 'Cronjob';
+                        $codecokmsdetail->RESPONSE = '';
+                        $codecokmsdetail->STATUS_TPS = 1;
+                        $codecokmsdetail->NOURUT = 1;
+                        $codecokmsdetail->KODE_KANTOR = '040300';
+                        $codecokmsdetail->NO_DAFTAR_PABEAN = '';
+                        $codecokmsdetail->TGL_DAFTAR_PABEAN = '';
+                        $codecokmsdetail->NO_SEGEL_BC = '';
+                        $codecokmsdetail->TGL_SEGEL_BC = '';
+                        $codecokmsdetail->NO_IJIN_TPS = '';
+                        $codecokmsdetail->TGL_IJIN_TPS = '';
+                        $codecokmsdetail->RESPONSE_IPC = '';
+                        $codecokmsdetail->STATUS_TPS_IPC = '';
+                        $codecokmsdetail->KD_TPS_ASAL = $manifest->KD_TPS_ASAL;
+                        $codecokmsdetail->TGL_ENTRY = date('Y-m-d');
+                        $codecokmsdetail->JAM_ENTRY = date('H:i:s');
+
+                        if($codecokmsdetail->save()){
+
+                            DBManifest::where('TMANIFEST_PK', $manifest->TMANIFEST_PK)->update(['REF_NUMBER_OUT' => $reff_number, 'status_codeco' => 'XML Created']);
+
+                        }
+                    }
+                }
+            endforeach;
+        }
     }
     
     public function sendXmlCoariCont()

@@ -214,6 +214,7 @@
             $('#TGL_SPPB').val(rowdata.TGL_SPPB);
             $('#bcf_consignee').val(rowdata.bcf_consignee).trigger('change');
             $('#telp_ppjk').val(rowdata.telp_ppjk);
+            $("#status_codeco").val(rowdata.status_codeco);
                         
             $('#upload-title').html('Upload Photo for '+rowdata.NOHBL);
             $('#no_hbl').val(rowdata.NOHBL);
@@ -669,6 +670,7 @@
                     ->addColumn(array('label'=>'Photo Release','index'=>'photo_release', 'width'=>70,'hidden'=>true))
                     ->addColumn(array('label'=>'Lokasi Tujuan','index'=>'LOKASI_TUJUAN', 'width'=>70,'hidden'=>true))
                     ->addColumn(array('label'=>'Updated','index'=>'last_update', 'width'=>150, 'search'=>false,'hidden'=>true))
+                    ->addColumn(array('label'=>'Status Codeco','index'=>'status_codeco', 'width'=>70,'hidden'=>true))
                     ->renderGrid()
                 }}
             </div>
@@ -854,6 +856,12 @@
                         <label class="col-sm-3 control-label">Approve By</label>
                         <div class="col-sm-8">
                             <input type="text" id="uid_payment" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Status Codeco</label>
+                        <div class="col-sm-5">
+                            <input type="text" id="status_codeco" class="form-control" readonly>
                         </div>
                     </div>
 <!--                    <div class="form-group">

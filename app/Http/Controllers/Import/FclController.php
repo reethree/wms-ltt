@@ -849,8 +849,9 @@ class FclController extends Controller
 //                $yor = $this->updateYor('release', $container->TEUS);
                 $this->updateYorByTeus();
                 $cont->yor_update = 2;
-                $cont->save();
             }
+            
+            $cont->save();
             
             return json_encode(array('success' => true, 'message' => 'Release successfully updated!'));
         }

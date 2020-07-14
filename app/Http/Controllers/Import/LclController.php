@@ -1003,7 +1003,12 @@ class LclController extends Controller
         
         if($update){
 //            $sor = $this->updateSor('release', $meas->MEAS);
-
+            $cargo = DBManifest::find($id);
+            if(!empty($cargo->tglrelease) && $cargo->tglrelease != '1970-01-01'){
+                $cargo->status_codeco = 'Ready';
+                $cargo->save();
+            }
+            
             return json_encode(array('success' => true, 'message' => 'Release successfully updated!'));
         }
         

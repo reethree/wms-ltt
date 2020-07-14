@@ -293,6 +293,9 @@ class BarcodeController extends Controller
                                 }
 
                                 if($model->save()){
+                                    if(!empty($model->tglrelease) && $model->jamrelease != '1970-01-01'){
+                                        $model->status_codeco = 'Ready';
+                                    }
                                     return $model->NOHBL.' '.$data_barcode->ref_type.' '.$data_barcode->ref_action.' Updated';
                                 }else{
                                     return 'Something wrong!!! Cannot store to database';
