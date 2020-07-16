@@ -726,6 +726,125 @@ class TpsScheduleController extends BaseController
         }
     }
     
+    public function sendXmlCodecoKms()
+    {
+        $dataHeader = \App\Models\TpsCodecoKms::where(array('UID'=>'Cronjob','STATUS_REF'=>'NEW'))->first();
+        
+        if(count($dataHeader) > 0){
+            $dataDetail = \App\Models\TpsCodecoKmsDetail::where('TPSCODECOKMSXML_FK', $dataHeader->TPSCODECOKMSXML_PK)->first();
+            $dataDetails = \App\Models\TpsCodecoKmsDetail::where('TPSCODECOKMSXML_FK', $dataHeader->TPSCODECOKMSXML_PK)->get();
+            
+            $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><DOCUMENT></DOCUMENT>');       
+        
+            $xmldata = $xml->addAttribute('xmlns', 'cocokms.xsd');
+            $xmldata = $xml->addchild('COCOKMS');
+            $header = $xmldata->addchild('HEADER');
+            $detail = $xmldata->addchild('DETIL');
+
+            $header->addChild('KD_DOK', $dataDetail->KD_DOK);
+            $header->addChild('KD_TPS', $dataDetail->KD_TPS);
+            $header->addChild('NM_ANGKUT', $dataDetail->NM_ANGKUT);
+            $header->addChild('NO_VOY_FLIGHT', $dataDetail->NO_VOY_FLIGHT);
+            $header->addChild('CALL_SIGN', $dataDetail->CALL_SIGN);
+            $header->addChild('TGL_TIBA', $dataDetail->TGL_TIBA);
+            $header->addChild('KD_GUDANG', $dataDetail->KD_GUDANG);
+            $header->addChild('REF_NUMBER', $dataHeader->REF_NUMBER);
+
+            foreach ($dataDetails as $dataDetailkms):
+                $kms = $detail->addChild('KMS');
+
+                $kms->addChild('NO_BL_AWB', $dataDetailkms->NO_BL_AWB);
+                $kms->addChild('TGL_BL_AWB', $dataDetailkms->TGL_BL_AWB); 
+                $kms->addChild('NO_MASTER_BL_AWB', $dataDetailkms->NO_MASTER_BL_AWB); 
+                $kms->addChild('TGL_MASTER_BL_AWB', $dataDetailkms->TGL_MASTER_BL_AWB); 
+                $kms->addChild('ID_CONSIGNEE', ($dataDetailkms->ID_CONSIGNEE != 000000000000000) ? $dataDetailkms->ID_CONSIGNEE : '');
+                $kms->addChild('CONSIGNEE', htmlspecialchars($dataDetailkms->CONSIGNEE));
+                $kms->addChild('BRUTO', $dataDetailkms->BRUTO);
+                $kms->addChild('NO_BC11', $dataDetailkms->NO_BC11);
+                $kms->addChild('TGL_BC11', $dataDetailkms->TGL_BC11 );
+                $kms->addChild('NO_POS_BC11', $dataDetailkms->NO_POS_BC11 );
+                $kms->addChild('CONT_ASAL', $dataDetailkms->CONT_ASAL );
+                $kms->addChild('SERI_KEMAS', $dataDetailkms->SERI_KEMAS );
+                $kms->addChild('KD_KEMAS', $dataDetailkms->KD_KEMAS );
+                $kms->addChild('JML_KEMAS', $dataDetailkms->JML_KEMAS );
+                $kms->addChild('KD_TIMBUN', $dataDetailkms->KD_TIMBUN );
+                $kms->addChild('KD_DOK_INOUT', $dataDetailkms->KD_DOK_INOUT );
+                $kms->addChild('NO_DOK_INOUT', $dataDetailkms->NO_DOK_INOUT );
+                $kms->addChild('TGL_DOK_INOUT', $dataDetailkms->TGL_DOK_INOUT );
+                $kms->addChild('WK_INOUT', $dataDetailkms->WK_INOUT );
+                $kms->addChild('KD_SAR_ANGKUT_INOUT', $dataDetailkms->KD_SAR_ANGKUT_INOUT );
+                $kms->addChild('NO_POL', $dataDetailkms->NO_POL);
+                $kms->addChild('PEL_MUAT', $dataDetailkms->PEL_MUAT );
+                $kms->addChild('PEL_TRANSIT', $dataDetailkms->PEL_TRANSIT );
+                $kms->addChild('PEL_BONGKAR', $dataDetailkms->PEL_BONGKAR );
+                $kms->addChild('GUDANG_TUJUAN', $dataDetailkms->GUDANG_TUJUAN );
+                $kms->addChild('KODE_KANTOR', $dataDetailkms->KODE_KANTOR );
+                $kms->addChild('NO_DAFTAR_PABEAN', $dataDetailkms->NO_DAFTAR_PABEAN );
+                $kms->addChild('TGL_DAFTAR_PABEAN', $dataDetailkms->TGL_DAFTAR_PABEAN );
+                $kms->addChild('NO_SEGEL_BC', $dataDetailkms->NO_SEGEL_BC);
+                $kms->addChild('TGL_SEGEL_BC', $dataDetailkms->TGL_SEGEL_BC );
+                $kms->addChild('NO_IJIN_TPS', $dataDetailkms->NO_IJIN_TPS );
+                $kms->addChild('TGL_IJIN_TPS', $dataDetailkms->TGL_IJIN_TPS);
+
+            endforeach;
+
+            $response = \Response::make($xml->asXML(), 200);
+
+            $response->header('Cache-Control', 'public');
+            $response->header('Content-Description', 'File Transfer');
+            $response->header('Content-Disposition', 'attachment; filename=xml/CodecoKemasan'. date('ymd'). $dataDetail->NO_DOK_INOUT .'.xml');
+            $response->header('Content-Transfer-Encoding', 'binary');
+            $response->header('Content-Type', 'text/xml');
+
+            \SoapWrapper::add(function ($service) {
+                $service
+                    ->name('CoarriCodeco_Kemasan')
+                    ->wsdl($this->wsdl)
+                    ->trace(true)                                                                                                                                                 
+                    ->cache(WSDL_CACHE_NONE)                                        
+                    ->options([
+                        'stream_context' => stream_context_create([
+                            'ssl' => array(
+                                'verify_peer' => false,
+                                'verify_peer_name' => false,
+                                'allow_self_signed' => true
+                            )
+                        ])
+                    ]);                                                        
+            });
+
+            $data = [
+                'Username' => $this->user, 
+                'Password' => $this->password,
+                'fStream' => $xml->asXML()
+            ];
+
+            // Using the added service
+            \SoapWrapper::service('CoarriCodeco_Kemasan', function ($service) use ($data) {        
+                $this->response = $service->call('CoarriCodeco_Kemasan', [$data])->CoarriCodeco_KemasanResult;      
+            });
+
+            if($this->response){
+                $update = \App\Models\TpsCodecoKmsDetail::where('TPSCODECOKMSXML_FK', $dataHeader->TPSCODECOKMSXML_PK)->update(['STATUS_TPS' => 2, 'RESPONSE' => $this->response]);       
+
+                if ($update){
+                    $dataHeader->STATUS_REF = 'SENT';
+                    $dataHeader->save();
+                }
+                $dataDetail->STATUS_TPS = 2;
+                $dataDetail->RESPONSE = $this->response;
+
+                if ($dataDetail->save()){
+
+                    DBManifest::where(array('NOHBL' => $dataDetail->NO_BL_AWB, 'REF_NUMBER_OUT' => $dataDetail->REF_NUMBER))->update(['status_codeco' => 'XML Sent']);
+                    
+                }
+            }
+
+            var_dump($this->response);
+        } 
+    }
+    
     private function _getReffNumber($uid = '')
     {
         $reff = \DB::table('tpsurutxml')->select('REF_NUMBER as id')

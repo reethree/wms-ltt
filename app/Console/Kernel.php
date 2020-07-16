@@ -68,5 +68,9 @@ class Kernel extends ConsoleKernel
             $controller = new TpsScheduleController();
             $controller->sendXmlCodecoCont();
         })->everyMinute();
+        $schedule->call(function () {
+            $controller = new TpsScheduleController();
+            $controller->sendXmlCodecoKms();
+        })->everyMinute();
     }
 }
