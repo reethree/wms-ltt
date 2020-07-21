@@ -56,6 +56,10 @@ class Kernel extends ConsoleKernel
         })->everyTenMinutes();
         $schedule->call(function () {
             $controller = new TpsScheduleController();
+            $controller->createXmlCoariKms();
+        })->everyTenMinutes();
+        $schedule->call(function () {
+            $controller = new TpsScheduleController();
             $controller->createXmlCodecoKms();
         })->everyTenMinutes();
         
@@ -67,6 +71,10 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             $controller = new TpsScheduleController();
             $controller->sendXmlCodecoCont();
+        })->everyMinute();
+        $schedule->call(function () {
+            $controller = new TpsScheduleController();
+            $controller->sendXmlCoariKms();
         })->everyMinute();
         $schedule->call(function () {
             $controller = new TpsScheduleController();

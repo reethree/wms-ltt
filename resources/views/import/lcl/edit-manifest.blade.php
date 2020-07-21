@@ -95,9 +95,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label">No.Container/Size/No.Segel</label>
+                        <label class="col-sm-4 control-label">No.Container</label>
                         <div class="col-sm-8">
                             <input type="text" readonly="" name="NOCONTAINER" class="form-control" value="{{ $container->NOCONTAINER.' / '.$container->SIZE.' / '.$container->NO_SEAL }}" required="">
                         </div>
@@ -111,7 +111,14 @@
                         </div>
                     </div>
                 </div>
-                
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Status Coari</label>
+                        <div class="col-sm-8">
+                            <input type="text" readonly="" name="status_coari_cargo" class="form-control" value="{{ $container->status_coari_cargo }}" required="">
+                        </div>
+                    </div>
+                </div>
             </div>
             
         </div>
