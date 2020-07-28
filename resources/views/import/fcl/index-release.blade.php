@@ -258,7 +258,9 @@
                 
             }else{
                 @role('super-admin')
-
+                    $('#TGLRELEASE').removeAttr('disabled');
+                    $('#JAMRELEASE').removeAttr('disabled');
+                    $('#NOPOL_OUT').removeAttr('disabled');
                 @else
                     $('#TGLRELEASE').attr('disabled','disabled');
                     $('#JAMRELEASE').attr('disabled','disabled');
