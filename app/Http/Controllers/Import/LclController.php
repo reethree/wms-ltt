@@ -2138,10 +2138,18 @@ class LclController extends Controller
             $sppb = \App\Models\TpsSppbBc::where(array('NO_BL_AWB' => $manifest->NOHBL))
                     ->orWhere('NO_MASTER_BL_AWB', $manifest->NOHBL)
                     ->first();
-        }else{
+        }elseif($kd_dok == 41){
             $sppb = \App\Models\TpsDokPabean::select('NO_DOK_INOUT as NO_SPPB','TGL_DOK_INOUT as TGL_SPPB','NPWP_IMP')
                     ->where(array('KD_DOK_INOUT' => $kd_dok, 'NO_BL_AWB' => $manifest->NOHBL))
                     ->first();
+        }else{
+            $sppb = \App\Models\TpsDokManual::select('NO_DOK_INOUT as NO_SPPB','TGL_DOK_INOUT as TGL_SPPB','ID_CONSIGNEE as NPWP_IMP')
+                    ->where(array('KD_DOK_INOUT' => $kd_dok, 'NO_BL_AWB' => $manifest->NOHBL))
+                    ->first();
+            if($sppb){
+                $tgl_sppb = explode('/', $sppb->TGL_SPPB);
+                $sppb->TGL_SPPB = $tgl_sppb[2].'-'.$tgl_sppb[1].'-'.$tgl_sppb[0];
+            }
         }
         
         if($sppb){
