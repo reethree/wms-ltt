@@ -102,22 +102,29 @@
             }else{
                 $(".hide-kddoc").hide();
             }
-            if($this == 1){
-                @role('super-admin')
-                    
-                @else
-                    $('#NO_SPPB').attr('disabled','disabled');
-                    $('#TGL_SPPB').attr('disabled','disabled');
-                @endrole
-            }else{
-                if($this == ''){
-                    $('#NO_SPPB').attr('disabled','disabled');
-                    $('#TGL_SPPB').attr('disabled','disabled');
-                }else{
-                    $('#NO_SPPB').removeAttr('disabled');
-                    $('#TGL_SPPB').removeAttr('disabled');
-                }
-            }
+//            if($this == 1){
+//                @role('super-admin')
+//                    
+//                @else
+//                    $('#NO_SPPB').attr('disabled','disabled');
+//                    $('#TGL_SPPB').attr('disabled','disabled');
+//                @endrole
+//            }else{
+//                if($this == ''){
+//                    $('#NO_SPPB').attr('disabled','disabled');
+//                    $('#TGL_SPPB').attr('disabled','disabled');
+//                }else{
+//                    $('#NO_SPPB').removeAttr('disabled');
+//                    $('#TGL_SPPB').removeAttr('disabled');
+//                }
+//            }
+            @role('super-admin')
+                $('#NO_SPPB').removeAttr('disabled');
+                $('#TGL_SPPB').removeAttr('disabled');
+            @else
+                $('#NO_SPPB').attr('disabled','disabled');
+                $('#TGL_SPPB').attr('disabled','disabled');
+            @endrole
         });
         
         $('#get-sppb-btn').click(function(){
@@ -237,14 +244,15 @@
                 $('#btn-group-4').enableButtonGroup();
                 $('#btn-group-5').enableButtonGroup();
 
-            if(rowdata.KD_DOK_INOUT == 1){
+//            if(rowdata.KD_DOK_INOUT == 1){
                 @role('super-admin')
-                    
+                    $('#NO_SPPB').removeAttr('disabled');
+                    $('#TGL_SPPB').removeAttr('disabled');
                 @else
                     $('#NO_SPPB').attr('disabled','disabled');
                     $('#TGL_SPPB').attr('disabled','disabled');
                 @endrole
-            }
+//            }
             
             if(!rowdata.TGLRELEASE && !rowdata.JAMRELEASE) {
                 

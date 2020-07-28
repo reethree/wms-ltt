@@ -939,7 +939,7 @@ class LclController extends Controller
     {
         $data = $request->json()->all(); 
         $delete_photo = $data['delete_photo'];
-        unset($data['TMANIFEST_PK'], $data['delete_photo'], $data['_token']);
+        unset($data['TMANIFEST_PK'], $data['delete_photo'], $data['payment'], $data['_token']);
         
         $manifest = DBManifest::find($id);
         
