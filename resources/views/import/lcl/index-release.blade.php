@@ -303,9 +303,16 @@
             }
   
             if(rowdata.status_bc == 'HOLD'){
-                $('#tglrelease').attr('disabled','disabled');
-                $('#jamrelease').attr('disabled','disabled');
-                $('#NOPOL_RELEASE').attr('disabled','disabled');
+                @role('super-admin')
+                    $('#tglrelease').removeAttr('disabled');
+                    $('#jamrelease').removeAttr('disabled');
+                    $('#NOPOL_RELEASE').removeAttr('disabled');
+                @else
+                    $('#tglrelease').attr('disabled','disabled');
+                    $('#jamrelease').attr('disabled','disabled');
+                    $('#NOPOL_RELEASE').attr('disabled','disabled');
+                @endrole
+                
             }else{
 //                $('#tglrelease').removeAttr('disabled');
 //                $('#jamrelease').removeAttr('disabled');
