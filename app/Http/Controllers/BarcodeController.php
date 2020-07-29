@@ -110,15 +110,18 @@ class BarcodeController extends Controller
             foreach ($ids as $ref_id):
                 // Check data
                 $ref_number = '';
+                $ref_status = 'active';
                 if($type == 'manifest'){
                     $refdata = \App\Models\Manifest::find($ref_id);
                     $ref_number = $refdata->NOHBL;
+                    $ref_status = ($refdata->status_bc == 'HOLD') ? 'hold' : 'active';
                 }elseif($type == 'lcl'){
                     $refdata = \App\Models\Container::find($ref_id);
                     $ref_number = $refdata->NOCONTAINER;
                 }elseif($type == 'fcl'){
                     $refdata = \App\Models\Containercy::find($ref_id);
                     $ref_number = $refdata->NOCONTAINER;
+                    $ref_status = ($refdata->status_bc == 'HOLD') ? 'hold' : 'active';
                     if($action == 'get'){
                         $expired = date('Y-m-d', strtotime('+3 day'));
                     }
@@ -129,7 +132,7 @@ class BarcodeController extends Controller
 //                    continue;
                     $barcode = \App\Models\Barcode::find($check->id);
                     $barcode->expired = $expired;
-                    $barcode->status = 'active';
+                        $barcode->status = $ref_status;
                     $barcode->uid = \Auth::getUser()->name;
                     $barcode->save();
                 }else{
@@ -140,7 +143,7 @@ class BarcodeController extends Controller
                     $barcode->ref_number = $ref_number;
                     $barcode->barcode = str_random(20);
                     $barcode->expired = $expired;
-                    $barcode->status = 'active';
+                        $barcode->status = $ref_status;
                     $barcode->uid = \Auth::getUser()->name;
                     $barcode->save();
                 }  
@@ -218,10 +221,12 @@ class BarcodeController extends Controller
                 case 'Fcl':
                     $model = \App\Models\Containercy::find($data_barcode->ref_id);
                     $ref_number = $model->REF_NUMBER;
+                    $ref_number_out = $model->REF_NUMBER_OUT;
                     break;
                 case 'Lcl':
                     $model = \App\Models\Container::find($data_barcode->ref_id);
                     $ref_number = $model->REF_NUMBER_IN;
+                    $ref_number_out = $model->REF_NUMBER_OUT;
                     break;
                 case 'Manifest':
                     $model = \App\Models\Manifest::find($data_barcode->ref_id);
@@ -273,8 +278,11 @@ class BarcodeController extends Controller
                 }elseif($data_barcode->ref_action == 'release'){
 //                    if($data_barcode->time_out != NULL){
                         // RELEASE
+                    if($model->status_bc == 'HOLD' || $model->flag_bc == 'Y'):
+                        return 'Status BC is HOLD or FLAGING, please unlock!!!';
+                    endif;
+                    
                         if($data_barcode->ref_type == 'Manifest'){
-                            if($model->status_bc != 'HOLD'):
                                 if($data_barcode->time_out){
                                     $model->tglrelease = date('Y-m-d', strtotime($data_barcode->time_out));
                                     $model->jamrelease = date('H:i:s', strtotime($data_barcode->time_out));
@@ -291,7 +299,6 @@ class BarcodeController extends Controller
                                 }else{
                                     $model->photo_release_out = $filename;
                                 }
-
                                 if($model->save()){
                                     if(!empty($model->tglrelease) && $model->jamrelease != '1970-01-01'){
                                         $model->status_codeco = 'Ready';
@@ -300,10 +307,8 @@ class BarcodeController extends Controller
                                 }else{
                                     return 'Something wrong!!! Cannot store to database';
                                 }
-                            else:
-                                return 'Status BC Manifest is HOLD!!!';
-                            endif;
                         }else{
+
                             if($data_barcode->time_out){
                                 $model->TGLRELEASE = date('Y-m-d', strtotime($data_barcode->time_out));
                                 $model->JAMRELEASE = date('H:i:s', strtotime($data_barcode->time_out));
