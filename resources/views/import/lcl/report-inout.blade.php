@@ -164,6 +164,7 @@
         {{
             GridRender::setGridId("lclInoutReportGrid")
             ->enableFilterToolbar()
+            ->setGridOption('filename', 'LCL_ReportSTOCK_'.Auth::getUser()->name)
             ->setGridOption('mtype', 'POST')
             ->setGridOption('url', URL::to('/lcl/manifest/grid-data?report=1&_token='.csrf_token()))
             ->setGridOption('rowNum', 20)

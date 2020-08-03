@@ -154,6 +154,7 @@
         {{
             GridRender::setGridId("fcllongstayGrid")
             ->enableFilterToolbar()
+            ->setGridOption('filename', 'FCL_ReportINV_'.Auth::getUser()->name)
             ->setGridOption('mtype', 'POST')
             ->setGridOption('url', URL::to('/container/grid-data-cy?module=longstay&report=1&_token='.csrf_token()))
             ->setGridOption('rowNum', 20)
@@ -164,6 +165,7 @@
             ->setGridOption('rownumWidth', 50)
             ->setGridOption('height', '395')
             ->setGridOption('rowList',array(20,50,100))
+            ->setGridOption('idPrefix','tessstttt')
             ->setGridOption('useColSpanStyle', true)
             ->setNavigatorOptions('navigator', array('viewtext'=>'view'))
             ->setNavigatorOptions('view',array('closeOnEscape'=>false))
