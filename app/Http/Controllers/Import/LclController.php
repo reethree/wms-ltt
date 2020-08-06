@@ -2168,6 +2168,45 @@ class LclController extends Controller
         return json_encode(array('success' => false, 'message' => 'Something went wrong, please try again later.'));
     }
     
+    public function behandleGetDataSpjm(Request $request)
+    {
+        $manifest_id = $request->id;  
+        $manifest = DBManifest::find($manifest_id);
+        
+        if($manifest){
+            
+            $tgl_bc11 = date('d/m/Y', strtotime($manifest->TGL_BC11));
+            $spjm = \DB::table('tps_spjmkmsxml')->select('tps_spjmxml.NO_PIB as NO_SPJM','tps_spjmxml.TGL_PIB as TGL_SPJM')
+                    ->leftJoin('tps_spjmxml', 'tps_spjmkmsxml.TPS_SPJMXML_FK','=','tps_spjmxml.TPS_SPJMXML_PK')
+                    ->where(array(
+                        'tps_spjmkmsxml.JNS_KMS' => $manifest->KODE_KEMAS, 
+                        'tps_spjmkmsxml.JML_KMS' => $manifest->QUANTITY,
+                        'tps_spjmxml.NO_BC11' => $manifest->NO_BC11, 
+                        'tps_spjmxml.TGL_BC11' => $tgl_bc11))
+                    ->first();
+//            if($spjmcont){
+                
+                if($spjm){
+                    
+                    $tgl_spjm = explode('/', $spjm->TGL_SPJM);
+                    $spjm->TGL_SPJM = $tgl_spjm[2].'-'.$tgl_spjm[1].'-'.$tgl_spjm[0];
+                    $dataspjm = array(
+                        'NO_SPJM' => $spjm->NO_SPJM,
+                        'TGL_SPJM' => date('Y-m-d', strtotime($spjm->TGL_SPJM))
+                    );
+                    return json_encode(array('success' => true, 'message' => 'Get Data SPJM has been success.', 'data' => $dataspjm));
+                    
+                }else{
+                    return json_encode(array('success' => false, 'message' => 'Data SPJM Tidak ditemukan.'));
+                }
+//            }else{
+//                return json_encode(array('success' => false, 'message' => 'Data Container Tidak ditemukan.'));
+//            }
+        }
+        
+        return json_encode(array('success' => false, 'message' => 'Something went wrong, please try again later.'));
+    }
+    
     public function uploadTxtFile(Request $request)
     {
         if ($request->hasFile('filetxt')) {

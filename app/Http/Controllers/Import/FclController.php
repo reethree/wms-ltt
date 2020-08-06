@@ -1706,6 +1706,45 @@ class FclController extends Controller
         return json_encode(array('success' => false, 'message' => 'Something went wrong, please try again later.'));
     }
     
+    public function behandleGetDataSpjm(Request $request)
+    {
+        $container_id = $request->id;  
+        $container = DBContainer::find($container_id);
+        
+        if($container){
+            
+            $tgl_bc11 = date('d/m/Y', strtotime($container->TGL_BC11));
+            $spjm = \DB::table('tps_spjmcontxml')->select('tps_spjmxml.NO_PIB as NO_SPJM','tps_spjmxml.TGL_PIB as TGL_SPJM')
+                    ->leftJoin('tps_spjmxml', 'tps_spjmcontxml.TPS_SPJMXML_FK','=','tps_spjmxml.TPS_SPJMXML_PK')
+                    ->where(array(
+                        'tps_spjmcontxml.NO_CONT' => $container->NOCONTAINER, 
+                        'tps_spjmcontxml.SIZE' => $container->SIZE, 
+                        'tps_spjmxml.NO_BC11' => $container->NO_BC11, 
+                        'tps_spjmxml.TGL_BC11' => $tgl_bc11))
+                    ->first();
+//            if($spjmcont){
+                            
+                if($spjm){
+                    
+                    $tgl_spjm = explode('/', $spjm->TGL_SPJM);
+                    $spjm->TGL_SPJM = $tgl_spjm[2].'-'.$tgl_spjm[1].'-'.$tgl_spjm[0];
+                    $dataspjm = array(
+                        'NO_SPJM' => $spjm->NO_SPJM,
+                        'TGL_SPJM' => date('Y-m-d', strtotime($spjm->TGL_SPJM))
+                    );
+                    return json_encode(array('success' => true, 'message' => 'Get Data SPJM has been success.', 'data' => $dataspjm));
+                    
+                }else{
+                    return json_encode(array('success' => false, 'message' => 'Data SPJM Tidak ditemukan.'));
+                }
+//            }else{
+//                return json_encode(array('success' => false, 'message' => 'Data Container Tidak ditemukan.'));
+//            }
+        }
+        
+        return json_encode(array('success' => false, 'message' => 'Something went wrong, please try again later.'));
+    }
+    
     public function gateinUploadPhoto(Request $request)
     {
         $picture = array();
