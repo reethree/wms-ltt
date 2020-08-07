@@ -111,17 +111,22 @@ class BarcodeController extends Controller
                 // Check data
                 $ref_number = '';
                 $ref_status = 'active';
+                
                 if($type == 'manifest'){
                     $refdata = \App\Models\Manifest::find($ref_id);
                     $ref_number = $refdata->NOHBL;
-                    $ref_status = ($refdata->status_bc == 'HOLD') ? 'hold' : 'active';
+                    if($refdata->flag_bc == 'Y' || $refdata->status_bc == 'HOLD'){
+                        $ref_status = 'hold';
+                    }
                 }elseif($type == 'lcl'){
                     $refdata = \App\Models\Container::find($ref_id);
                     $ref_number = $refdata->NOCONTAINER;
                 }elseif($type == 'fcl'){
                     $refdata = \App\Models\Containercy::find($ref_id);
                     $ref_number = $refdata->NOCONTAINER;
-                    $ref_status = ($refdata->status_bc == 'HOLD') ? 'hold' : 'active';
+                    if($refdata->flag_bc == 'Y' || $refdata->status_bc == 'HOLD'){
+                        $ref_status = 'hold';
+                    }
                     if($action == 'get'){
                         $expired = date('Y-m-d', strtotime('+3 day'));
                     }
@@ -132,7 +137,7 @@ class BarcodeController extends Controller
 //                    continue;
                     $barcode = \App\Models\Barcode::find($check->id);
                     $barcode->expired = $expired;
-                        $barcode->status = $ref_status;
+                    $barcode->status = $ref_status;
                     $barcode->uid = \Auth::getUser()->name;
                     $barcode->save();
                 }else{
