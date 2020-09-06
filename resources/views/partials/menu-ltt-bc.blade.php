@@ -443,6 +443,7 @@
                 <li><a href="{{ route('lcl-report-container') }}">Report Container</a></li>
                 <li><a href="{{ route('lcl-report-inout') }}">Report Stock</a></li>    
                 <li><a href="{{ route('lcl-report-longstay') }}">Inventory</a></li>
+                <li><a href="{{ route('lcl-report-harian') }}">Daily Report</a></li>
               </ul>
             </li>
           </ul>
@@ -490,6 +491,7 @@
               <ul class="treeview-menu">
                 <li><a href="{{ route('fcl-report-rekap') }}">Report Container</a></li>
                 <li><a href="{{ route('fcl-report-longstay') }}">Inventory</a></li>
+                <li><a href="{{ route('fcl-report-harian') }}">Daily Report</a></li>
               </ul>
             </li>
           </ul>

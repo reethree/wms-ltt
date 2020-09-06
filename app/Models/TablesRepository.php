@@ -220,8 +220,18 @@ class TablesRepository extends EloquentRepositoryAbstract {
                 }
                 
             }elseif(isset($request['report'])){
-                $Model = \DB::table('tcontainercy')
-                        ->select(\DB::raw('*, timestampdiff(DAY, now(), TGLMASUK) as timeSinceUpdate'));
+                if(isset($request['date'])){
+                    if($request['type'] == 'in'){
+                        $Model = \DB::table('tcontainercy')
+                            ->where('TGLMASUK', $request['date']);
+                    }elseif($request['type'] == 'out'){
+                        $Model = \DB::table('tcontainercy')
+                            ->where('TGLRELEASE', $request['date']);
+                    } 
+                }else{
+                    $Model = \DB::table('tcontainercy')
+                            ->select(\DB::raw('*, timestampdiff(DAY, now(), TGLMASUK) as timeSinceUpdate'));
+                }
             }else{
                 
             }
@@ -412,11 +422,21 @@ class TablesRepository extends EloquentRepositoryAbstract {
                         ->where($request['by'], '<=',$end_date);
                 
             }elseif(isset($request['report'])){
-                $Model = \DB::table('tmanifest')
-//                        ->leftjoin('billing_invoice', 'billing_invoice.manifest_id','=','tmanifest.TMANIFEST_PK')
-                        ->select(\DB::raw('*, timestampdiff(DAY, now(), tglmasuk) as timeSinceUpdate'))
-                        ->whereNotNull('tglmasuk')
-                        ->whereNotNull('tglstripping');   
+                if(isset($request['date'])){
+                    if($request['type'] == 'in'){
+                        $Model = \DB::table('tmanifest')
+                            ->where('tglstripping', $request['date']);
+                    }elseif($request['type'] == 'out'){
+                        $Model = \DB::table('tmanifest')
+                            ->where('tglrelease', $request['date']);
+                    } 
+                }else{
+                    $Model = \DB::table('tmanifest')
+    //                        ->leftjoin('billing_invoice', 'billing_invoice.manifest_id','=','tmanifest.TMANIFEST_PK')
+                            ->select(\DB::raw('*, timestampdiff(DAY, now(), tglmasuk) as timeSinceUpdate'))
+                            ->whereNotNull('tglmasuk')
+                            ->whereNotNull('tglstripping');   
+                }
             }else{
                 
             }
