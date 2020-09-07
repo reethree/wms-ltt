@@ -32,7 +32,7 @@
                     </div>
                 </form>
                 <div class="col-xs-7">
-                    <button class="btn btn-info pull-right" id="btn-print"><i class="fa fa-print"></i> Cetak Laporan</button>
+                    <button class="btn btn-info pull-right" id="btn-print-in"><i class="fa fa-print"></i> Cetak Laporan Pemasukan</button>
                 </div>
             </div>
         </div>
@@ -79,6 +79,11 @@
             ->renderGrid()
         }}
         <br /><hr /><br />
+        <div class="row" style="margin-bottom: 30px;margin-right: 0;">
+            <div class="col-md-12">
+                <button class="btn btn-info pull-right" id="btn-print-out"><i class="fa fa-print"></i> Cetak Laporan Pengeluaran</button>
+            </div>
+        </div>
         {{
             GridRender::setGridId("fclContainerOutGrid")
             ->enableFilterToolbar()
@@ -172,9 +177,14 @@
         zIndex: 99
     });
     
-    $('#btn-print').click(function() {
+    $('#btn-print-in').click(function() {
         var date = $('#date').val();
-        window.open("{{ route('fcl-report-harian-cetak', '') }}/"+date,"preview wo fiat muat","width=1200,height=600,menubar=no,status=no,scrollbars=yes");
+        window.open("{{ route('fcl-report-harian-cetak',array('','')) }}/"+date+"/in","preview wo fiat muat","width=1200,height=600,menubar=no,status=no,scrollbars=yes");
+    });
+    
+    $('#btn-print-out').click(function() {
+        var date = $('#date').val();
+        window.open("{{ route('fcl-report-harian-cetak',array('','')) }}/"+date+"/out","preview wo fiat muat","width=1200,height=600,menubar=no,status=no,scrollbars=yes");
     });
 </script>
 

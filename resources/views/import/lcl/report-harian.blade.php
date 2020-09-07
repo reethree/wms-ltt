@@ -32,7 +32,7 @@
                     </div>
                 </form>
                 <div class="col-xs-7">
-                    <button class="btn btn-info pull-right" id="btn-print"><i class="fa fa-print"></i> Cetak Laporan</button>
+                    <button class="btn btn-info pull-right" id="btn-print-in"><i class="fa fa-print"></i> Cetak Laporan Pemasukan</button>
                 </div>
             </div>
         </div>
@@ -91,7 +91,11 @@
             </div>
         </div>
         <hr /><br />
-        
+        <div class="row" style="margin-bottom: 30px;margin-right: 0;">
+            <div class="col-md-12">
+                <button class="btn btn-info pull-right" id="btn-print-out"><i class="fa fa-print"></i> Cetak Laporan Pengeluaran</button>
+            </div>
+        </div>
         {{
             GridRender::setGridId("lclDailyReportOutGrid")
             ->enableFilterToolbar()
@@ -187,9 +191,14 @@
         zIndex: 99
     });
     
-    $('#btn-print').click(function() {
+    $('#btn-print-in').click(function() {
         var date = $('#date').val();
-        window.open("{{ route('lcl-report-harian-cetak', '') }}/"+date,"preview wo fiat muat","width=1200,height=600,menubar=no,status=no,scrollbars=yes");
+        window.open("{{ route('lcl-report-harian-cetak', array('','')) }}/"+date+"/in","preview wo fiat muat","width=1200,height=600,menubar=no,status=no,scrollbars=yes");
+    });
+    
+    $('#btn-print-out').click(function() {
+        var date = $('#date').val();
+        window.open("{{ route('lcl-report-harian-cetak', array('','')) }}/"+date+"/out","preview wo fiat muat","width=1200,height=600,menubar=no,status=no,scrollbars=yes");
     });
 </script>
 

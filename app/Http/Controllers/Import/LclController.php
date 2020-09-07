@@ -1346,7 +1346,7 @@ class LclController extends Controller
         return view('import.lcl.report-harian')->with($data);
     }
     
-    public function reportHarianCetak($date)
+    public function reportHarianCetak($date, $type)
     {
         // Data Pemasukan
         $data['in'] = DBManifest::where('tglstripping', $date)->get();
@@ -1387,6 +1387,7 @@ class LclController extends Controller
         $data['countbydoc'] = array('BC 2.0' => $bc20, 'BC 2.3' => $bc23, 'BC 1.2' => $bc12, 'BC 1.5' => $bc15, 'BC 1.1' => $bc11, 'BCF 2.6' => $bcf26);
         
         $data['date'] = $date;
+        $data['type'] = $type;
         
         return view('print.lcl-report-harian')->with($data);
     }
