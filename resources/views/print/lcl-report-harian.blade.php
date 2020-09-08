@@ -163,23 +163,23 @@
                       @foreach($out as $keluar)
                       <tr>
                           <td style="text-align: center;border-top: none;border-bottom: none;">{{ $i }}</td>
-                          <td style="text-align: left;border-top: none;border-bottom: none;">{{ $masuk->NOCONTAINER }}</td>
-                          <td style="text-align: left;border-top: none;border-bottom: none;">{{ $masuk->VESSEL }}</td>
-                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ date('d-M-y',strtotime($masuk->ETA)) }}</td>
-                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ date('d-M-y',strtotime($masuk->tglmasuk)) }}</td>
-                          <td style="text-align: left;border-top: none;border-bottom: none;">{{ $masuk->CONSIGNEE }}</td>
-                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ $masuk->QUANTITY }}</td>
-                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ $masuk->NAMAPACKING }}</td>
-                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ $masuk->WEIGHT }}</td>
-                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ $masuk->MEAS }}</td>
-                          <td style="text-align: left;border-top: none;border-bottom: none;">{{ $masuk->NOHBL }}</td>
+                          <td style="text-align: left;border-top: none;border-bottom: none;">{{ $keluar->NOCONTAINER }}</td>
+                          <td style="text-align: left;border-top: none;border-bottom: none;">{{ $keluar->VESSEL }}</td>
+                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ date('d-M-y',strtotime($keluar->ETA)) }}</td>
+                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ date('d-M-y',strtotime($keluar->tglmasuk)) }}</td>
+                          <td style="text-align: left;border-top: none;border-bottom: none;">{{ $keluar->CONSIGNEE }}</td>
+                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ $keluar->QUANTITY }}</td>
+                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ $keluar->NAMAPACKING }}</td>
+                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ $keluar->WEIGHT }}</td>
+                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ $keluar->MEAS }}</td>
+                          <td style="text-align: left;border-top: none;border-bottom: none;">{{ $keluar->NOHBL }}</td>
                           <td style="text-align: center;border-top: none;border-bottom: none;">{{ $keluar->KODE_DOKUMEN }}</td>
                           <td style="text-align: center;border-top: none;border-bottom: none;">{{ $keluar->NO_SPPB }}</td>
                           <td style="text-align: center;border-top: none;border-bottom: none;">{{ date('d-M-y',strtotime($keluar->TGL_SPPB)) }}</td>                      
-                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ $masuk->KD_TPS_ASAL }}</td>
-                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ $masuk->NO_BC11 }}</td>
-                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ date('d-M-y',strtotime($masuk->TGL_BC11)) }}</td>
-                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ $masuk->NO_POS_BC11 }}</td>
+                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ $keluar->KD_TPS_ASAL }}</td>
+                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ $keluar->NO_BC11 }}</td>
+                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ date('d-M-y',strtotime($keluar->TGL_BC11)) }}</td>
+                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ $keluar->NO_POS_BC11 }}</td>
                       </tr>
                       <?php $i++;?>
                       @endforeach
