@@ -1,4 +1,4 @@
-@extends('print-with-noheader')
+@extends('print-with-header')
 
 @section('title')
     {{ 'Laporan Harian FCL' }}
@@ -253,8 +253,8 @@
                     <td style="text-align: center;">Jakarta, {{ date('d F Y', strtotime($date)) }}</td>
                 </tr>
                 <tr>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
+                    <td style="text-align: center;">Bea Cukai TPS PT Lautan Tirta Transportama</td>
+                    <td style="text-align: center;">TPS PT Lautan Tirta Transportama</td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
@@ -270,7 +270,7 @@
                 </tr>
                 <tr>
                     <td style="text-align: center;"><b>..................................</b></td>
-                    <td style="text-align: center;"><b>..................................</b></td>
+                    <td style="text-align: center;"><b>Sri Eka Septiana</b></td>
                 </tr>
             </table>
         </div>
