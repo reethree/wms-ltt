@@ -245,6 +245,7 @@
                                     <li><a href="{{ route('lcl-bc-report-container') }}">Report Container</a></li>
                                     <li><a href="{{ route('lcl-bc-report-stock') }}">Report Stock</a></li>
                                     <li><a href="{{ route('lcl-bc-report-inventory') }}">Inventory</a></li>
+                                    <li><a href="{{ route('lcl-report-harian') }}">Daily Report</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -291,6 +292,7 @@
                                 <ul class="treeview-menu">
                                     <li><a href="{{ route('fcl-bc-report-container') }}">Report Container</a></li>
                                     <li><a href="{{ route('fcl-bc-report-inventory') }}">Inventory</a></li>
+                                    <li><a href="{{ route('fcl-report-harian') }}">Daily Report</a></li>
                                 </ul>
                             </li>
                         </ul>
