@@ -191,6 +191,19 @@
 
                 </ul>
               </li>
+              <li class="treeview">
+                <a href="#">
+                  <i class="fa fa-globe"></i>
+                  <span>NLE</span>
+                  <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                        <ul class="treeview-menu">
+                            <li><a href="{{ route('nle-sp2-index') }}">Data Container</a></li>
+                            <li><a href="{{ route('nle-sp2-doc') }}">Document SP2</a></li>
+                        </ul>
+                </li>
             <li class="treeview">
                 <a href="{{route('barcode-index')}}">
                     <i class="fa fa-barcode"></i> Gate Pass (Autogate)
@@ -574,6 +587,19 @@
             </li>
             
           </ul>
+        </li>
+        <li class="treeview">
+            <a href="#">
+              <i class="fa fa-globe"></i>
+              <span>NLE</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="{{ route('nle-sp2-index') }}">Data Container</a></li>
+                <li><a href="{{ route('nle-sp2-doc') }}">Document SP2</a></li>
+            </ul>
         </li>
         <li class="treeview">
             <a href="{{route('barcode-index')}}">
