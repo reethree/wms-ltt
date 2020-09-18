@@ -162,6 +162,7 @@
             ->addColumn(array('label'=>'Status','index'=>'status','width'=>120,'align'=>'center','hidden'=>false))
             ->addColumn(array('label'=>'Finish','index'=>'is_finished','width'=>80,'align'=>'center','hidden'=>false))
             ->addColumn(array('label'=>'Party','index'=>'party','width'=>80,'align'=>'center','hidden'=>false))
+            ->addColumn(array('label'=>'Response','index'=>'response','width'=>160,'align'=>'center','hidden'=>false))
             ->addColumn(array('label'=>'Container','index'=>'container','width'=>160,'align'=>'center','hidden'=>true))
             ->addColumn(array('label'=>'Container','index'=>'data_container','width'=>160,'align'=>'center','hidden'=>true))
             ->renderGrid()

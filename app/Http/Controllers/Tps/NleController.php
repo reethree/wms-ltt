@@ -158,7 +158,7 @@ class NleController extends Controller
         
         $datapost = array(
             "kd_document_type" => $doc->kd_document_type,
-            "npwp_cargo_owner" => $doc->npwp_cargo_owner,
+            "npwpCargoOwner" => $doc->npwp_cargo_owner,
             "nm_cargoowner" => $doc->nm_cargoowner,
             "document_no" => $doc->document_no,
             "document_date" => $doc->document_date,
@@ -178,7 +178,7 @@ class NleController extends Controller
             "party" => $doc->party,
             "container" => @unserialize($doc->container)
         );
-
+        
         $payload =  json_encode($datapost);
 
         $header[] = 'Content-Type: application/json';
@@ -193,7 +193,7 @@ class NleController extends Controller
 //	$header[] = "Connection: keep-alive";
 
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $this->prod_url);
+	curl_setopt($ch, CURLOPT_URL, $this->dev_url);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
@@ -206,8 +206,17 @@ class NleController extends Controller
         
         curl_close($ch);
         
-        print_r($dataResults);
+//        print_r($dataResults);
+//        
+//        $results = json_decode($dataResults);
         
-        $results = json_decode($dataResults);
+        if($dataResults){
+            $doc->response = $dataResults;
+            $doc->save();
+            return back()->with('success', 'Dokumen SP2 berhasih dikirim.');
+        }
+        
+        return back()->with('error', 'Something went wrong, please try again later.');
+
     }
 }
