@@ -423,7 +423,7 @@ class BarcodeController extends Controller
 
         $data['barcodes'] = $data_barcode;
 
-//        return view('print.barcode', $data);
+        return view('print.barcode', $data);
         $pdf = \PDF::loadView('print.barcode', $data); 
         return $pdf->stream('Gatepass-'.$id.'.pdf');
     }
