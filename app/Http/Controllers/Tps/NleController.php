@@ -178,19 +178,22 @@ class NleController extends Controller
             "party" => $doc->party,
             "container" => @unserialize($doc->container)
         );
-        
+
         $payload =  json_encode($datapost);
 
         $header[] = 'Content-Type: application/json';
+        $header[] = 'Access-Control-Allow-Origin: *';
+        $header[] = 'Accept: */*';
         $header[] = 'Content-Length: ' . strlen($payload);
         $header[] = "beacukai-api-key: " . $this->key;
-//	$header[] = "Accept-Encoding: gzip, deflate";
+	$header[] = "Accept-Encoding: gzip, deflate, br";
+//      $header[] = "Content-Encoding: gzip, deflate, br";
 //	$header[] = "Accept-Language: en-US,en;q=0.8,id;q=0.6";
 //      $header[] = "Cache-Control: max-age=0";
 //	$header[] = "Connection: keep-alive";
 
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $this->dev_url);
+	curl_setopt($ch, CURLOPT_URL, $this->prod_url);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
