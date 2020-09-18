@@ -190,7 +190,7 @@ class NleController extends Controller
 //	$header[] = "Connection: keep-alive";
 
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $this->$dev_url);
+	curl_setopt($ch, CURLOPT_URL, $this->dev_url);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
