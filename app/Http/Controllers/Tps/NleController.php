@@ -99,7 +99,7 @@ class NleController extends Controller
             $data['bl_no'] = $contheader->NO_BL_AWB;
             $data['bl_date'] = $contheader->TGL_BL_AWB;  
             $data['id_platform'] = $this->platform_id;
-            $data['terminal'] = "Tanjung Priok Jakarta";
+            $data['terminal'] = $contheader->KD_TPS_ASAL;
             $data['status'] = "Finish";
             $data['is_finished'] = 1;
             $data['party'] = count($datacont);
