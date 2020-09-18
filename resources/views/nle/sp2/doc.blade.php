@@ -142,7 +142,7 @@
             ->setGridEvent('subGridRowExpanded', 'onSubGridRowExpanded')
             ->addColumn(array('label'=>'Action','index'=>'action', 'width'=>80, 'search'=>false, 'sortable'=>false, 'align'=>'center'))
             ->addColumn(array('key'=>true,'index'=>'id','hidden'=>true))
-
+            ->addColumn(array('label'=>'Server','index'=>'url_name','width'=>100,'align'=>'center','hidden'=>false))
             ->addColumn(array('label'=>'NPWP','index'=>'npwp_cargo_owner','width'=>160,'align'=>'center','hidden'=>false))
             ->addColumn(array('label'=>'Nama','index'=>'nm_cargoowner','width'=>250,'align'=>'center','hidden'=>false))
             ->addColumn(array('label'=>'Kode Dokumen<br />1=2.0|2=2.3|3=1.6','index'=>'kd_document_type','width'=>160,'align'=>'center','hidden'=>false))

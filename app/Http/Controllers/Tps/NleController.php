@@ -55,8 +55,9 @@ class NleController extends Controller
         $data = $request->all(); 
         $ids = explode(',', $data['id']);        
         $consignee_id = $data['consignee_id'];
+        $server = $data['server'];
         
-        unset($data['id'], $data['consignee_id'], $data['_token']);
+        unset($data['id'], $data['consignee_id'], $data['server'], $data['_token']);
         
         $containers = \App\Models\Containercy::whereIn('TCONTAINER_PK', $ids)->orderBy('TCONTAINER_PK', 'ASC')->get();
         
@@ -104,6 +105,18 @@ class NleController extends Controller
             $data['is_finished'] = 1;
             $data['party'] = count($datacont);
             $data['container'] = @serialize($datacont);
+            $data['uid'] = \Auth::getUser()->name;
+            
+            if($server == 'dev'){
+                $url = $this->dev_url;
+                $url_name = 'Development';
+            }elseif($server == 'prod'){
+                $url = $this->prod_url;
+                $url_name = 'Production';
+            }
+            
+            $data['url'] = $url;
+            $data['url_name'] = $url_name;
 
             // Insert Data
             $insert = \App\Models\NleSp2::insert($data);
@@ -193,7 +206,7 @@ class NleController extends Controller
 //	$header[] = "Connection: keep-alive";
 
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $this->dev_url);
+	curl_setopt($ch, CURLOPT_URL, $doc->url);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
@@ -205,10 +218,6 @@ class NleController extends Controller
         $dataResults = curl_exec($ch);
         
         curl_close($ch);
-        
-//        print_r($dataResults);
-//        
-//        $results = json_decode($dataResults);
         
         if($dataResults){
             $doc->response = $dataResults;

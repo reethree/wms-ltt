@@ -132,6 +132,15 @@
                             <input name="id" type="hidden" id="container_id_selected" />
                             <input name="consignee_id" type="hidden" id="consignee_id" />
                             <div class="form-group">
+                                <label class="col-sm-3 control-label">NLE Server</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control select2" id="server" name="server" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                                        <option value="dev" selected="">Development</option>
+                                        <option value="prod">Production</option>                     
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-sm-3 control-label">Consignee</label>
                                 <div class="col-sm-6">
                                     <input type="text" class="form-control" name="nm_cargoowner" id="consignee" readonly="" />
