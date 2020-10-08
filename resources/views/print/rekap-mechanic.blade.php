@@ -1,7 +1,7 @@
 @extends('print-with-noheader')
 
 @section('title')
-    {{ 'Rekap Mechanic '.$rekap->number }}
+    {{ 'Rekap Invoice '.$rekap->number }}
 @stop
 
 @section('content')
@@ -46,7 +46,7 @@
             </table>
         </div>
         <div style="text-align: center;">
-            <h2 style="margin-bottom: 0;">REKAP MECHANIC</h2>
+            <h2 style="margin-bottom: 0;">REKAP INVOICE</h2>
             <!--<p style="margin-top: 0;font-size: 14px;">{{$rekap->number.'/LTT/GDYS/'.$bulan.'/'.date('Y')}}</p>-->
             <p style="margin-top: 0;font-size: 14px;">{{$rekap->number}}</p>
         </div>

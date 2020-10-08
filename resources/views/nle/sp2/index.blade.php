@@ -25,7 +25,7 @@
             }
             
             var containerId = cellValues.join(",");
-            if(!containerId) {alert('Please Select Row');return false;}
+            if(!containerId) {alert('Please Select Row FCL Data');return false;}
             
             $('#create-sp2-modal').modal('show');
             
@@ -33,6 +33,24 @@
             $('#consignee').val($grid.jqGrid("getCell", selIds[0], "CONSIGNEE"));
             $('#npwp').val($grid.jqGrid("getCell", selIds[0], "ID_CONSIGNEE"));
             $('#container_id_selected').val(containerId);
+            $('#type').val('fcl');
+            
+        });
+        
+        $('#btn-sp2-lcl').on("click", function(){
+
+            var id = $('#lclManifestOutGrid').jqGrid('getGridParam', 'selrow');
+            var rowdata = $('#lclManifestOutGrid').getRowData(id);
+            
+            if(!id) {alert('Please Select Row LCL Data');return false;}
+            
+            $('#create-sp2-modal').modal('show');
+            
+            $('#consignee_id').val(rowdata.TCONSIGNEE_FK);
+            $('#consignee').val(rowdata.CONSIGNEE);
+            $('#npwp').val(rowdata.ID_CONSIGNEE);
+            $('#manifest_id').val(id);
+            $('#type').val('lcl');
             
         });
         
@@ -44,16 +62,8 @@
     
 </script>
 <div class="box">
-    <div class="box-header with-border">
-        <h3 class="box-title"></h3>
-        <div class="box-tools" id="btn-toolbar">
-            <div id="btn-group-4">
-                <button class="btn btn-info btn-sm" id="btn-sp2"><i class="fa fa-plus"></i> &nbsp;CREATE SP2</button>
-            </div>
-        </div>
-    </div>
     <div class="box-body table-responsive">
-        <div class="row" style="margin-bottom: 30px;margin-right: 0;">
+        <div class="row" style="margin-bottom: 20px;margin-right: 0;">
             <div class="col-md-12">
                 <form action="" method="GET">
                     <div class="col-xs-12">Search By Date</div>
@@ -72,6 +82,18 @@
                 </form>
             </div>
         </div>
+    </div>
+</div>
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">FCL Container Data</h3>
+        <div class="box-tools" id="btn-toolbar">
+            <div id="btn-group-4">
+                <button class="btn btn-success btn-md" id="btn-sp2"><i class="fa fa-paperclip"></i> &nbsp;CREATE SP2 FCL</button>
+            </div>
+        </div>
+    </div>
+    <div class="box-body table-responsive">
         {{
             GridRender::setGridId("fclContainerOutGrid")
             ->enableFilterToolbar()
@@ -117,6 +139,61 @@
     </div>  
 </div>
 
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">LCL Manifest Data</h3>
+        <div class="box-tools" id="btn-toolbar">
+            <div id="btn-group-4">
+                <button class="btn btn-success btn-md" id="btn-sp2-lcl"><i class="fa fa-paperclip"></i> &nbsp;CREATE SP2 LCL</button>
+            </div>
+        </div>
+    </div>
+    <div class="box-body table-responsive">
+        {{
+            GridRender::setGridId("lclManifestOutGrid")
+            ->enableFilterToolbar()
+            ->setGridOption('filename', 'LCL_DailyReportContOut_'.Auth::getUser()->name)
+            ->setGridOption('mtype', 'POST')
+            ->setGridOption('url', URL::to('/lcl/manifest/grid-data?report=1&date='.$date.'&type=out&_token='.csrf_token()))
+            ->setGridOption('rowNum', 50)
+            ->setGridOption('shrinkToFit', true)
+            ->setGridOption('sortname','TMANIFEST_PK')
+            ->setGridOption('sortorder','DESC')
+            ->setGridOption('rownumbers', true)
+            ->setGridOption('height', '300')
+            ->setGridOption('rowList',array(50,100,200))
+            ->setGridOption('useColSpanStyle', true)
+            ->setNavigatorOptions('navigator', array('viewtext'=>'view'))
+            ->setNavigatorOptions('view',array('closeOnEscape'=>false))
+            ->setFilterToolbarOptions(array('autosearch'=>true))
+            ->addColumn(array('key'=>true,'index'=>'TMANIFEST_PK','hidden'=>true))
+            ->addColumn(array('label'=>'No. B/L','index'=>'NOHBL','width'=>160))
+            ->addColumn(array('label'=>'Ex Container','index'=>'NOCONTAINER', 'width'=>150))
+            ->addColumn(array('label'=>'Ex Kapal','index'=>'VESSEL','width'=>160,'align'=>'center'))
+            ->addColumn(array('label'=>'Tgl. Tiba','index'=>'ETA', 'width'=>120,'align'=>'center','hidden'=>false))
+            ->addColumn(array('label'=>'Tgl. OB','index'=>'tglmasuk', 'width'=>120,'align'=>'center','hidden'=>false))
+            ->addColumn(array('index'=>'TCONSIGNEE_FK','hidden'=>true))
+            ->addColumn(array('label'=>'Consignee','index'=>'CONSIGNEE', 'width'=>350))
+            ->addColumn(array('label'=>'NPWP Consignee','index'=>'ID_CONSIGNEE','width'=>160))
+            ->addColumn(array('label'=>'Jumlah','index'=>'QUANTITY', 'width'=>80,'align'=>'center'))
+            ->addColumn(array('label'=>'Packing','index'=>'NAMAPACKING', 'width'=>120,'align'=>'center'))
+            ->addColumn(array('label'=>'Kode Kemas','index'=>'KODE_KEMAS', 'width'=>100,'align'=>'center')) 
+            ->addColumn(array('label'=>'KGS','index'=>'WEIGHT', 'width'=>120,'align'=>'center'))               
+            ->addColumn(array('label'=>'M3','index'=>'MEAS', 'width'=>120,'align'=>'center'))
+            ->addColumn(array('label'=>'Kode Dokumen','index'=>'KD_DOK_INOUT', 'width'=>120,'align'=>'center','hidden'=>true))
+            ->addColumn(array('label'=>'Nama Dokumen','index'=>'KODE_DOKUMEN', 'width'=>120))
+            ->addColumn(array('label'=>'No. Dokumen','index'=>'NO_SPPB', 'width'=>160,'align'=>'center'))
+            ->addColumn(array('label'=>'Tgl. Dokumen','index'=>'TGL_SPPB', 'width'=>120,'align'=>'center'))
+            ->addColumn(array('label'=>'Pengeluaran','index'=>'tglrelease', 'width'=>150,'align'=>'center'))
+            ->addColumn(array('label'=>'TPS Asal','index'=>'KD_TPS_ASAL', 'width'=>100,'align'=>'center'))
+            ->addColumn(array('label'=>'No. BC 1.1','index'=>'NO_BC11', 'width'=>120,'align'=>'center'))
+            ->addColumn(array('label'=>'Tgl. BC 1.1','index'=>'TGL_BC11', 'width'=>120,'align'=>'center'))
+            ->addColumn(array('label'=>'No. POS BC11','index'=>'NO_POS_BC11', 'width'=>150,'align'=>'center'))
+            ->renderGrid()
+        }}
+    </div>
+</div>
+
 <div id="create-sp2-modal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -130,7 +207,9 @@
                         <div class="col-md-12">
                             <input name="_token" type="hidden" value="{{ csrf_token() }}" />
                             <input name="id" type="hidden" id="container_id_selected" />
+                            <input name="manifest_id" type="hidden" id="manifest_id" />    
                             <input name="consignee_id" type="hidden" id="consignee_id" />
+                            <input name="type" type="hidden" id="type" />    
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">NLE Server</label>
                                 <div class="col-sm-6">

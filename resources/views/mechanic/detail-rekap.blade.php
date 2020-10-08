@@ -22,7 +22,7 @@
     <!-- info row -->
     <div class="row invoice-info">
         <div class="col-xs-12 text-center margin-bottom">
-            <h2><b>REKAP MECHANIC</b></h2>
+            <h2><b>REKAP INVOICE</b></h2>
             <!--<h4>{{$rekap->number.'/LTT/GDYS/'.$bulan.'/'.date('Y')}}</h4>-->
             <h4>{{$rekap->number}}</h4>
         </div>

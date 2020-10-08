@@ -53,79 +53,138 @@ class NleController extends Controller
     public function create(Request $request)
     {
         $data = $request->all(); 
-        $ids = explode(',', $data['id']);        
+        $ids = explode(',', $data['id']);   
+        $manifest_id = $data['manifest_id'];
         $consignee_id = $data['consignee_id'];
         $server = $data['server'];
+        $type = $data['type'];
         
-        unset($data['id'], $data['consignee_id'], $data['server'], $data['_token']);
+        unset($data['id'], $data['consignee_id'], $data['server'], $data['manifest_id'], $data['type'], $data['_token']);
         
-        $containers = \App\Models\Containercy::whereIn('TCONTAINER_PK', $ids)->orderBy('TCONTAINER_PK', 'ASC')->get();
+        if($type == 'fcl'){
+            
+            $containers = \App\Models\Containercy::whereIn('TCONTAINER_PK', $ids)->orderBy('TCONTAINER_PK', 'ASC')->get();
         
-        if(count($containers) > 0){
-        
-            $datacont = array();
-            foreach ($containers as $cont):
-                $contheader = $cont;
-                $datacont[] = array(
-                    "container_no" => $cont->NOCONTAINER,
-                    "container_size" => $cont->SIZE,
-                    "container_type" => $cont->jenis_container,
-                    "gate_pass" => route('barcode-print-pdf', array('fcl', $cont->TCONTAINER_PK))
-                );
-            endforeach;
+            if(count($containers) > 0){
 
-            if(in_array($contheader->KD_DOK_INOUT, array(1,2,41))){
-                if($contheader->KD_DOK_INOUT == 41){
+                $datacont = array();
+                foreach ($containers as $cont):
+                    $contheader = $cont;
+                    $datacont[] = array(
+                        "container_no" => $cont->NOCONTAINER,
+                        "container_size" => $cont->SIZE,
+                        "container_type" => $cont->jenis_container,
+                        "gate_pass" => route('barcode-print-pdf', array('fcl', $cont->TCONTAINER_PK))
+                    );
+                endforeach;
+
+                if(in_array($contheader->KD_DOK_INOUT, array(1,2,41))){
+                    if($contheader->KD_DOK_INOUT == 41){
+                        $kd_doc = 3;
+                    }else{
+                        $kd_doc = $contheader->KD_DOK_INOUT;
+                    }
+                }else{
+                    return back()->with('error', 'Kode Dokumen Tidak Sesuai.');
+                }
+
+                //99.999.999.9-999.999
+    //            $npwp = $data['npwp_cargo_owner'];
+    //            $split = str_split($npwp);
+    //            $format = $split[0].$split[1].'.'.$split[2].$split[3].$split[4].'.'.$split[5].$split[6].$split[7].'.'.$split[8].'-'.$split[9].$split[10].$split[11].'.'.$split[12].$split[13].$split[14];
+    //
+    //            $data['npwp_cargo_owner'] = $format;
+
+                $data['kd_document_type'] = $kd_doc;
+                $data['document_no'] = $contheader->NO_DAFTAR_PABEAN;
+                $data['document_date'] = $contheader->TGL_DAFTAR_PABEAN;
+                $data['no_doc_release'] = $contheader->NO_SPPB;
+                $data['date_doc_release'] = $contheader->TGL_SPPB;
+                $data['document_status'] = "SPPB";
+                $data['bl_no'] = $contheader->NO_BL_AWB;
+                $data['bl_date'] = $contheader->TGL_BL_AWB;  
+                $data['id_platform'] = $this->platform_id;
+                $data['terminal'] = $contheader->KD_TPS_ASAL;
+                $data['status'] = "Finish";
+                $data['is_finished'] = 1;
+                $data['party'] = count($datacont);
+                $data['container'] = @serialize($datacont);
+                $data['uid'] = \Auth::getUser()->name;
+
+                if($server == 'dev'){
+                    $url = $this->dev_url;
+                    $url_name = 'Development';
+                }elseif($server == 'prod'){
+                    $url = $this->prod_url;
+                    $url_name = 'Production';
+                }
+
+                $data['url'] = $url;
+                $data['url_name'] = $url_name;
+
+                // Insert Data
+                $insert = \App\Models\NleSp2::insert($data);
+
+                if($insert){
+                    return back()->with('success', 'Dokumen SP2 FCL berhasih dibuat.');
+                }
+            }
+        }elseif($type == 'lcl'){
+            $manifest = \App\Models\Manifest::find($manifest_id);
+            
+            if(in_array($manifest->KD_DOK_INOUT, array(1,2,41))){
+                if($manifest->KD_DOK_INOUT == 41){
                     $kd_doc = 3;
                 }else{
-                    $kd_doc = $contheader->KD_DOK_INOUT;
+                    $kd_doc = $manifest->KD_DOK_INOUT;
                 }
             }else{
                 return back()->with('error', 'Kode Dokumen Tidak Sesuai.');
             }
             
-            //99.999.999.9-999.999
-//            $npwp = $data['npwp_cargo_owner'];
-//            $split = str_split($npwp);
-//            $format = $split[0].$split[1].'.'.$split[2].$split[3].$split[4].'.'.$split[5].$split[6].$split[7].'.'.$split[8].'-'.$split[9].$split[10].$split[11].'.'.$split[12].$split[13].$split[14];
-//
-//            $data['npwp_cargo_owner'] = $format;
+            $datacont[] = array(
+                "container_no" => $manifest->NOCONTAINER,
+                "container_size" => $manifest->SIZE,
+                "container_type" => '',
+                "gate_pass" => route('barcode-print-pdf', array('lcl', $manifest->TCONTAINER_FK))
+            );
             
-            $data['kd_document_type'] = $kd_doc;
-            $data['document_no'] = $contheader->NO_DAFTAR_PABEAN;
-            $data['document_date'] = $contheader->TGL_DAFTAR_PABEAN;
-            $data['no_doc_release'] = $contheader->NO_SPPB;
-            $data['date_doc_release'] = $contheader->TGL_SPPB;
-            $data['document_status'] = "SPPB";
-            $data['bl_no'] = $contheader->NO_BL_AWB;
-            $data['bl_date'] = $contheader->TGL_BL_AWB;  
-            $data['id_platform'] = $this->platform_id;
-            $data['terminal'] = $contheader->KD_TPS_ASAL;
-            $data['status'] = "Finish";
-            $data['is_finished'] = 1;
-            $data['party'] = count($datacont);
-            $data['container'] = @serialize($datacont);
-            $data['uid'] = \Auth::getUser()->name;
-            
-            if($server == 'dev'){
-                $url = $this->dev_url;
-                $url_name = 'Development';
-            }elseif($server == 'prod'){
-                $url = $this->prod_url;
-                $url_name = 'Production';
-            }
-            
-            $data['url'] = $url;
-            $data['url_name'] = $url_name;
+                $data['kd_document_type'] = $kd_doc;
+                $data['document_no'] = $manifest->no_pabean;
+                $data['document_date'] = $manifest->tgl_pabean;
+                $data['no_doc_release'] = $manifest->NO_SPPB;
+                $data['date_doc_release'] = $manifest->TGL_SPPB;
+                $data['document_status'] = "SPPB";
+                $data['bl_no'] = $manifest->NOHBL;
+                $data['bl_date'] = $manifest->TGL_HBL;  
+                $data['id_platform'] = $this->platform_id;
+                $data['terminal'] = $manifest->KD_TPS_ASAL;
+                $data['status'] = "Finish";
+                $data['is_finished'] = 1;
+                $data['party'] = count($datacont);
+                $data['container'] = @serialize($datacont);
+                $data['uid'] = \Auth::getUser()->name;
 
-            // Insert Data
-            $insert = \App\Models\NleSp2::insert($data);
+                if($server == 'dev'){
+                    $url = $this->dev_url;
+                    $url_name = 'Development';
+                }elseif($server == 'prod'){
+                    $url = $this->prod_url;
+                    $url_name = 'Production';
+                }
 
-            if($insert){
-                return back()->with('success', 'Dokumen SP2 berhasih dibuat.');
-            }
+                $data['url'] = $url;
+                $data['url_name'] = $url_name;
+
+                // Insert Data
+                $insert = \App\Models\NleSp2::insert($data);
+
+                if($insert){
+                    return back()->with('success', 'Dokumen SP2 LCL berhasih dibuat.');
+                }
+            
         }
-        
+
         return back()->with('error', 'Something went wrong, please try again later.');
     }
     
