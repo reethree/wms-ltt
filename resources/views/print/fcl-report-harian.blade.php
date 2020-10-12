@@ -249,7 +249,7 @@
                         <th>Doc</th>
                         <th>Box</th>
                       </tr>
-                        <?php $sumdoc = 0;$i = 1;?>
+                        <?php $sumdoc = 0;$sumbox = 0;$i = 1;?>
                         @foreach($countbydoc as $key=>$value)
                         <tr>
                             <td style="text-align: center;border-top: none;border-bottom: none;">{{$i}}</td>
