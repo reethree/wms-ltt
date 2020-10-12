@@ -1017,15 +1017,98 @@ class FclController extends Controller
             $data['date'] = date('Y-m-d');
         }
         
-        // BY DOKUMEN
-        $bc20 = DBContainer::where('KD_DOK_INOUT', 1)->where('TGLRELEASE', $data['date'])->count();
-        $bc23 = DBContainer::where('KD_DOK_INOUT', 2)->where('TGLRELEASE', $data['date'])->count();
-        $bc12 = DBContainer::where('KD_DOK_INOUT', 4)->where('TGLRELEASE', $data['date'])->count();
-        $bc15 = DBContainer::where('KD_DOK_INOUT', 9)->where('TGLRELEASE', $data['date'])->count();
-        $bc11 = DBContainer::where('KD_DOK_INOUT', 20)->where('TGLRELEASE', $data['date'])->count();
-        $bcf26 = DBContainer::where('KD_DOK_INOUT', 5)->where('TGLRELEASE', $data['date'])->count();
-        $data['countbydoc'] = array('BC 2.0' => $bc20, 'BC 2.3' => $bc23, 'BC 1.2' => $bc12, 'BC 1.5' => $bc15, 'BC 1.1' => $bc11, 'BCF 2.6' => $bcf26);
+        // BY PLP
+        $byplps = DBContainer::select('SIZE', \DB::raw('count(*) as total'))
+                ->where('TGLMASUK', $data['date'])
+                ->groupBy('NO_PLP')
+                ->get();
+        $cont_in = 0;
         
+        foreach ($byplps as $byplp):
+            $cont_in += $byplp->total;
+        endforeach;
+         
+        $data['countbyplp'] = array(count($byplps), $cont_in);
+
+        // BY DOKUMEN
+        $bc23 = DBContainer::where('KD_DOK_INOUT', 2)->where('TGLRELEASE', $data['date'])->count();
+        $dok23 = DBContainer::select('NO_SPPB', 'KD_DOK_INOUT', \DB::raw('count(*) as total'))               
+                ->where('KD_DOK_INOUT', 2)
+                ->where('TGLRELEASE', $data['date'])
+                ->groupBy('NO_SPPB')
+                ->get();
+        $bc12 = DBContainer::where('KD_DOK_INOUT', 4)->where('TGLRELEASE', $data['date'])->count();
+        $dok12 = DBContainer::select('NO_SPPB', 'KD_DOK_INOUT', \DB::raw('count(*) as total'))           
+                ->where('KD_DOK_INOUT', 4)
+                ->where('TGLRELEASE', $data['date'])
+                ->groupBy('NO_SPPB')
+                ->get();
+        $pprp = DBContainer::where('KD_DOK_INOUT', 27)->where('TGLRELEASE', $data['date'])->count();
+        $dokpprp = DBContainer::select('NO_SPPB', 'KD_DOK_INOUT', \DB::raw('count(*) as total'))                
+                ->where('KD_DOK_INOUT', 27)
+                ->where('TGLRELEASE', $data['date'])
+                ->groupBy('NO_SPPB')
+                ->get();
+        $bc15 = DBContainer::where('KD_DOK_INOUT', 9)->where('TGLRELEASE', $data['date'])->count();
+        $dok15 = DBContainer::select('NO_SPPB', 'KD_DOK_INOUT', \DB::raw('count(*) as total'))                
+                ->where('KD_DOK_INOUT', 9)
+                ->where('TGLRELEASE', $data['date'])
+                ->groupBy('NO_SPPB')
+                ->get();
+        $bc11 = DBContainer::where('KD_DOK_INOUT', 41)->where('TGLRELEASE', $data['date'])->count();
+        $dok11 = DBContainer::select('NO_SPPB', 'KD_DOK_INOUT', \DB::raw('count(*) as total'))                
+                ->where('KD_DOK_INOUT', 41)
+                ->where('TGLRELEASE', $data['date'])
+                ->groupBy('NO_SPPB')
+                ->get();
+        $bc20 = DBContainer::where('KD_DOK_INOUT', 1)->where('TGLRELEASE', $data['date'])->count();
+        $dok20 = DBContainer::select('NO_SPPB', 'KD_DOK_INOUT', \DB::raw('count(*) as total'))                
+                ->where('KD_DOK_INOUT', 1)
+                ->where('TGLRELEASE', $data['date'])
+                ->groupBy('NO_SPPB')
+                ->get();
+        
+        $data['countbydoc'] = array(
+            'BC 1.2' => array('dok' => count($dok12), 'box' => $bc12),
+            'BC 1.5' => array('dok' => count($dok15), 'box' => $bc15),
+            'BC 1.6' => array('dok' => count($dok11), 'box' => $bc11), 
+            'BC 2.0' => array('dok' => count($dok20), 'box' => $bc20),
+            'BC 2.3' => array('dok' => count($dok23), 'box' => $bc23), 
+            'PPRP' => array('dok' => count($dokpprp), 'box' => $pprp)
+        );
+        
+        // YOR
+        $awal = DBContainer::select('SIZE', \DB::raw('count(*) as total'))
+                ->where('TGLMASUK', '<', $data['date'])
+                ->where(function($query) use ($data){
+                    $query->whereNull('TGLRELEASE')
+                        ->orWhere('TGLRELEASE','>=', $data['date']);
+                })
+                ->groupBy('SIZE')
+                ->orderBy('SIZE','ASC')
+                ->get();
+
+        $masuk = DBContainer::select('SIZE', \DB::raw('count(*) as total'))
+                ->where('TGLMASUK', $data['date'])
+                ->groupBy('SIZE')
+                ->orderBy('SIZE','ASC')
+                ->get();
+
+        $keluar = DBContainer::select('SIZE', \DB::raw('count(*) as total'))
+                ->where('TGLRELEASE', $data['date'])
+                ->groupBy('SIZE')
+                ->orderBy('SIZE','ASC')
+                ->get();
+
+        $data['stok'] = array(
+            'awal' => $awal,
+            'masuk' => $masuk,
+            'keluar' => $keluar
+        );
+        
+
+        $data['yor'] = \App\Models\SorYor::where('type', 'yor')->first();
+
         return view('import.fcl.report-harian')->with($data);
     }
     
@@ -1037,14 +1120,98 @@ class FclController extends Controller
         // KELUAR
         $data['out'] = DBContainer::where('TGLRELEASE', $date)->orderBy('JAMRELEASE', 'DESC')->get();
         
+        // BY PLP
+        $byplps = DBContainer::select('SIZE', \DB::raw('count(*) as total'))
+                ->where('TGLMASUK', $date)
+                ->groupBy('NO_PLP')
+                ->get();
+        $cont_in = 0;
+        
+        foreach ($byplps as $byplp):
+            $cont_in += $byplp->total;
+        endforeach;
+         
+        $data['countbyplp'] = array(count($byplps), $cont_in);
+        
         // BY DOKUMEN
-        $bc20 = DBContainer::where('KD_DOK_INOUT', 1)->where('TGLRELEASE', $date)->count();
         $bc23 = DBContainer::where('KD_DOK_INOUT', 2)->where('TGLRELEASE', $date)->count();
+        $dok23 = DBContainer::select('NO_SPPB', 'KD_DOK_INOUT', \DB::raw('count(*) as total'))                
+                ->where('KD_DOK_INOUT', 2)
+                ->where('TGLRELEASE', $date)
+                ->groupBy('NO_SPPB')
+                ->get();
         $bc12 = DBContainer::where('KD_DOK_INOUT', 4)->where('TGLRELEASE', $date)->count();
+        $dok12 = DBContainer::select('NO_SPPB', 'KD_DOK_INOUT', \DB::raw('count(*) as total'))                
+                ->where('KD_DOK_INOUT', 4)
+                ->where('TGLRELEASE', $date)
+                ->groupBy('NO_SPPB')
+                ->get();
+        $pprp = DBContainer::where('KD_DOK_INOUT', 27)->where('TGLRELEASE', $date)->count();
+        $dokpprp = DBContainer::select('NO_SPPB', 'KD_DOK_INOUT', \DB::raw('count(*) as total'))
+                
+                ->where('KD_DOK_INOUT', 27)
+                ->where('TGLRELEASE', $date)
+                ->groupBy('NO_SPPB')
+                ->get();
         $bc15 = DBContainer::where('KD_DOK_INOUT', 9)->where('TGLRELEASE', $date)->count();
-        $bc11 = DBContainer::where('KD_DOK_INOUT', 20)->where('TGLRELEASE', $date)->count();
-        $bcf26 = DBContainer::where('KD_DOK_INOUT', 5)->where('TGLRELEASE', $date)->count();
-        $data['countbydoc'] = array('BC 2.0' => $bc20, 'BC 2.3' => $bc23, 'BC 1.2' => $bc12, 'BC 1.5' => $bc15, 'BC 1.1' => $bc11, 'BCF 2.6' => $bcf26);
+        $dok15 = DBContainer::select('NO_SPPB', 'KD_DOK_INOUT', \DB::raw('count(*) as total'))                
+                ->where('KD_DOK_INOUT', 9)
+                ->where('TGLRELEASE', $date)
+                ->groupBy('NO_SPPB')
+                ->get();
+        $bc11 = DBContainer::where('KD_DOK_INOUT', 41)->where('TGLRELEASE', $date)->count();
+        $dok11 = DBContainer::select('NO_SPPB', 'KD_DOK_INOUT', \DB::raw('count(*) as total'))               
+                ->where('KD_DOK_INOUT', 41)
+                ->where('TGLRELEASE', $date)
+                ->groupBy('NO_SPPB')
+                ->get();
+        $bc20 = DBContainer::where('KD_DOK_INOUT', 1)->where('TGLRELEASE', $date)->count();
+        $dok20 = DBContainer::select('NO_SPPB', 'KD_DOK_INOUT', \DB::raw('count(*) as total'))                
+                ->where('KD_DOK_INOUT', 1)
+                ->where('TGLRELEASE', $date)
+                ->groupBy('NO_SPPB')
+                ->get();
+
+        $data['countbydoc'] = array(
+            'BC 1.2' => array('dok' => count($dok12), 'box' => $bc12),
+            'BC 1.5' => array('dok' => count($dok15), 'box' => $bc15),
+            'BC 1.6' => array('dok' => count($dok11), 'box' => $bc11), 
+            'BC 2.0' => array('dok' => count($dok20), 'box' => $bc20),
+            'BC 2.3' => array('dok' => count($dok23), 'box' => $bc23), 
+            'PPRP' => array('dok' => count($dokpprp), 'box' => $pprp)
+        );
+        
+        // YOR
+        $awal = DBContainer::select('SIZE', \DB::raw('count(*) as total'))
+                ->where('TGLMASUK', '<', $date)
+                ->where(function($query) use ($date){
+                    $query->whereNull('TGLRELEASE')
+                        ->orWhere('TGLRELEASE','>=', $date)
+                            ;
+                })
+                ->groupBy('SIZE')
+                ->orderBy('SIZE','ASC')
+                ->get();
+
+        $masuk = DBContainer::select('SIZE', \DB::raw('count(*) as total'))
+                ->where('TGLMASUK', $date)
+                ->groupBy('SIZE')
+                ->orderBy('SIZE','ASC')
+                ->get();
+
+        $keluar = DBContainer::select('SIZE', \DB::raw('count(*) as total'))
+                ->where('TGLRELEASE', $date)
+                ->groupBy('SIZE')
+                ->orderBy('SIZE','ASC')
+                ->get();
+
+        $data['stok'] = array(
+            'awal' => $awal,
+            'masuk' => $masuk,
+            'keluar' => $keluar
+        );
+
+        $data['yor'] = \App\Models\SorYor::where('type', 'yor')->first();
 
         $data['date'] = $date;
         $data['type'] = $type;

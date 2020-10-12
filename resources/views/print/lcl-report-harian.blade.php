@@ -194,8 +194,63 @@
                 <tr>
                     <td>
                         <div class="col-xs-4 table-responsive">
+                            <table border="1" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                    <thead>
+                                        <tr>
+                                            <th>Keterangan</th>
+                                            <th>Jumlah</th>
+                                            <th>Quantity</th>
+                                            <th>Weight</th>
+                                            <th>Measurement</th>
+                                            <th>SOR %</th>
+                                        </tr>
+
+                                    </thead>
+                                    <tbody>
+                                        <?php 
+                                            $meas_count = $bl_awal[0]->Meas+$bl_in[0]->Meas-$bl_out[0]->Meas;
+                                            $k_trisi = $meas_count*1000;     
+                                            $tot_sor = ($k_trisi / ($sor->kapasitas_default*1000)) * 100;
+                                        ?>
+                                        <tr>
+                                            <th>Stok Awal</th>
+                                            <td style="text-align: center;">{{ $bl_awal[0]->Jumlah }}</td>
+                                            <td style="text-align: center;">{{ $bl_awal[0]->Quantity }}</td>
+                                            <td style="text-align: center;">{{ $bl_awal[0]->Weight }}</td>
+                                            <td style="text-align: center;">{{ $bl_awal[0]->Meas }}</td>
+                                            <td rowspan="4" style="text-align: center;vertical-align: middle;">{{ number_format($tot_sor,'2',',','.') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Masuk</th>
+                                            <td style="text-align: center;">{{ $bl_in[0]->Jumlah }}</td>
+                                            <td style="text-align: center;">{{ $bl_in[0]->Quantity }}</td>
+                                            <td style="text-align: center;">{{ $bl_in[0]->Weight }}</td>
+                                            <td style="text-align: center;">{{ $bl_in[0]->Meas }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Keluar</th>
+                                            <td style="text-align: center;">{{ $bl_out[0]->Jumlah }}</td>
+                                            <td style="text-align: center;">{{ $bl_out[0]->Quantity }}</td>
+                                            <td style="text-align: center;">{{ $bl_out[0]->Weight }}</td>
+                                            <td style="text-align: center;">{{ $bl_out[0]->Meas }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Stok Akhir</th>
+                                            <td style="text-align: center;">{{ $bl_awal[0]->Jumlah+$bl_in[0]->Jumlah-$bl_out[0]->Jumlah }}</td>
+                                            <td style="text-align: center;">{{ $bl_awal[0]->Quantity+$bl_in[0]->Quantity-$bl_out[0]->Quantity }}</td>
+                                            <td style="text-align: center;">{{ $bl_awal[0]->Weight+$bl_in[0]->Weight-$bl_out[0]->Weight }}</td>
+                                            <td style="text-align: center;">{{ $bl_awal[0]->Meas+$bl_in[0]->Meas-$bl_out[0]->Meas }}</td>
+                                        </tr>
+                                    </tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="col-xs-4 table-responsive">
                             <p>RINCIAN JENIS DOKUMEN PENGELUARAN</p>
-                            <table border="1" cellspacing="0" cellpadding="0" style="width: 300px;">
+                            <table border="1" cellspacing="0" cellpadding="0">
                                 <thead>
                                     <tr>
                                       <th>No.</th>
@@ -219,25 +274,10 @@
                             </table>
                         </div>
                     </td>
-                    <td>
-                        <div class="col-xs-4 table-responsive">
-                            <table border="1" cellspacing="0" cellpadding="0">
-                                <tbody>
-                                    @foreach($sum_bl_out as $key=>$value)
-                                    <tr>
-                                        <th style="border-top: none;border-bottom: none;">{{ $key }}</th>
-                                        <td  style="border-top: none;border-bottom: none;text-align: center;">{{ $value }}</td>
                                     </tr>
-                                    @endforeach
-                                </tbody>
                             </table>
                         </div>
-                    </td>
-
-                </tr>
-            </table>
         </div>
-    </div>
     
     <div class="row">
         <div class="table-responsive">

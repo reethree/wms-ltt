@@ -93,7 +93,7 @@
                           <td style="text-align: center;border-top: none;border-bottom: none;">{{ date('d-M-y',strtotime($masuk->ETA)) }}</td>
                           <td style="text-align: center;border-top: none;border-bottom: none;">{{ date('d-M-y',strtotime($masuk->TGLMASUK)) }}</td>
                           <td style="text-align: left;border-top: none;border-bottom: none;">{{ $masuk->CONSIGNEE }}</td>
-                          <td style="text-align: center;border-top: none;border-bottom: none;"></td>
+                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ $masuk->NAMACONSOLIDATOR }}</td>
 
                           <td style="text-align: center;border-top: none;border-bottom: none;">{{ $masuk->NO_PLP }}</td>
                           <td style="text-align: center;border-top: none;border-bottom: none;">{{ date('d-M-y',strtotime($masuk->TGL_PLP)) }}</td>
@@ -124,6 +124,27 @@
                   </tbody>
               </table>
           </div>
+        </div>
+        <div class="row">
+            <div class="table-responsive" style="max-width: 300px;">
+              <p>RINCIAN JENIS DOKUMEN MASUK</p>
+                <table border="1" cellspacing="0" cellpadding="0">
+                    <tbody>
+                        <tr>
+                            <th>No.</th>
+                            <th>Jenis Dokumen</th>
+                            <th>Dok</th>
+                            <th>Box</th>
+                        </tr>
+                        <tr>
+                            <th style="text-align: center;">1</th>
+                            <td align="center">PLP</td>
+                            <td style="text-align: center;"align="center">{{ $countbyplp[0] }}</td>
+                            <td style="text-align: center;" align="center">{{ $countbyplp[1] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+    </div>
         </div>
     </div>
     
@@ -183,7 +204,7 @@
                           <td style="text-align: center;border-top: none;border-bottom: none;">{{ date('d-M-y',strtotime($keluar->ETA)) }}</td>
                           <td style="text-align: center;border-top: none;border-bottom: none;">{{ date('d-M-y',strtotime($keluar->TGLMASUK)) }}</td>
                           <td style="text-align: left;border-top: none;border-bottom: none;">{{ $keluar->CONSIGNEE }}</td>
-                          <td style="text-align: center;border-top: none;border-bottom: none;"></td>
+                          <td style="text-align: center;border-top: none;border-bottom: none;">{{ $keluar->NAMACONSOLIDATOR }}</td>
 
                           <td style="text-align: center;border-top: none;border-bottom: none;">{{ $keluar->KODE_DOKUMEN }}</td>
                           <td style="text-align: center;border-top: none;border-bottom: none;">{{ $keluar->NO_SPPB }}</td>
@@ -217,32 +238,107 @@
           </div>
         </div>
 
-        <div class="row">
+        <div class="row" style="float: left;">
             <div class="table-responsive" style="max-width: 300px;">
-              <p>RINCIAN JENIS DOKUMEN PENGELUARAN</p>
+              <p>RINCIAN JENIS DOKUMEN KELUAR</p>
               <table border="1" cellspacing="0" cellpadding="0">
-                  <thead>
+                  <tbody>
                       <tr>
                         <th>No.</th>
                         <th>Jenis Dokumen</th>
-                        <th>Jumlah</th>
+                        <th>Doc</th>
+                        <th>Box</th>
                       </tr>
                         <?php $sumdoc = 0;$i = 1;?>
                         @foreach($countbydoc as $key=>$value)
                         <tr>
                             <td style="text-align: center;border-top: none;border-bottom: none;">{{$i}}</td>
                             <td style="border-top: none;border-bottom: none;">{{ $key }}</td>
-                            <td style="text-align: center;border-top: none;border-bottom: none;">{{ $value }}</td>
+                            <td style="text-align: center;border-top: none;border-bottom: none;">{{ $value['dok'] }}</td>
+                            <td style="text-align: center;border-top: none;border-bottom: none;">{{ $value['box'] }}</td>
                         </tr>
-                        <?php $sumdoc += $value;$i++;?>
+                        <?php $sumdoc += $value['dok'];$sumbox += $value['box'];$i++;?>
                         @endforeach
                         <tr>
                             <th colspan="2">Jumlah Total</th>
                             <th align="center" style="text-align: center;">{{$sumdoc}}</th>
+                            <th align="center" style="text-align: center;">{{$sumbox}}</th>
                         </tr>
-                  </thead>
+                  </tbody>
+                  
               </table>
           </div>
+        </div>
+         <div class="row" style="float: right;">
+            <div class="table-responsive" style="max-width: 500px;">
+            <p>STOCK CONTAINER LAPANGAN LAUTAN TIRTA TRANSPORTAMA</p>
+                <table border="1" cellspacing="0" cellpadding="0">
+                    <tbody>
+                        <tr>
+                            <th>Keterangan</th>
+                            <th style="text-align: center;">20'</th>
+                            <th style="text-align: center;">40'</th>
+                            <th style="text-align: center;">45'</th>
+                            <th style="text-align: center;">Total</th>
+                            <th style="text-align: center;">Teus</th>
+                            <th style="text-align: center;">YOR %</th>
+                        </tr>
+                        <?php
+                            $stok_awal_20 = (isset($stok['awal'][0])) ? $stok['awal'][0]->total : 0;
+                            $stok_awal_40 = (isset($stok['awal'][1])) ? $stok['awal'][1]->total : 0;
+                            $stok_awal_45 = (isset($stok['awal'][2])) ? $stok['awal'][2]->total : 0;
+                            $stok_masuk_20 = (isset($stok['masuk'][0])) ? $stok['masuk'][0]->total : 0;
+                            $stok_masuk_40 = (isset($stok['masuk'][1])) ? $stok['masuk'][1]->total : 0;
+                            $stok_masuk_45 = (isset($stok['masuk'][2])) ? $stok['masuk'][2]->total : 0;
+                            $stok_keluar_20 = (isset($stok['keluar'][0])) ? $stok['keluar'][0]->total : 0;
+                            $stok_keluar_40 = (isset($stok['keluar'][1])) ? $stok['keluar'][1]->total : 0;
+                            $stok_keluar_45 = (isset($stok['keluar'][2])) ? $stok['keluar'][2]->total : 0;
+                        
+                            $akhir_20 = $stok_awal_20+$stok_masuk_20-$stok_keluar_20;
+                            $akhir_40 = $stok_awal_40+$stok_masuk_40-$stok_keluar_40;
+                            $akhir_45 = $stok_awal_45+$stok_masuk_45-$stok_keluar_45;
+                            $akhir_total = $akhir_20+$akhir_40+$akhir_45;
+                            $akhir_teus = $akhir_20+($akhir_40*2)+($akhir_45*2);
+                            
+                            $k_trisi = $akhir_teus;     
+                            $tot_sor = ($k_trisi / ($yor->kapasitas_default)) * 100;
+                        ?>
+                        <tr>
+                            <th>Stock Awal</th>
+                            <td align="center" style="text-align: center;border-top: none;border-bottom: none;">{{ $stok_awal_20 }}</td>
+                            <td align="center" style="text-align: center;border-top: none;border-bottom: none;">{{ $stok_awal_40 }}</td>
+                            <td align="center" style="text-align: center;border-top: none;border-bottom: none;">{{ $stok_awal_45 }}</td>
+                            <td align="center" style="text-align: center;border-top: none;border-bottom: none;">{{ $stok_awal_20+$stok_awal_40+$stok_awal_45}}</td>
+                            <td align="center" style="text-align: center;border-top: none;border-bottom: none;">{{ ($stok_awal_20)+($stok_awal_40*2)+($stok_awal_45*2) }}</td>
+                            <th rowspan="4" align="center" style="text-align: center;vertical-align: middle;">{{ number_format($tot_sor,'2',',','.') }}</th>
+                        </tr>
+                        <tr>
+                            <th>Cont Masuk</th>
+                            <td align="center" style="text-align: center;border-top: none;border-bottom: none;">{{ $stok_masuk_20 }}</td>
+                            <td align="center" style="text-align: center;border-top: none;border-bottom: none;">{{ $stok_masuk_40 }}</td>
+                            <td align="center" style="text-align: center;border-top: none;border-bottom: none;">{{ $stok_masuk_45 }}</td>
+                            <td align="center" style="text-align: center;border-top: none;border-bottom: none;">{{ $stok_masuk_20+$stok_masuk_40+$stok_masuk_45}}</td>
+                            <td align="center" style="text-align: center;border-top: none;border-bottom: none;">{{ ($stok_masuk_20)+($stok_masuk_40*2)+($stok_masuk_45*2) }}</td>
+                        </tr>
+                        <tr>
+                            <th>Cont Keluar</th>
+                            <td align="center" style="text-align: center;border-top: none;border-bottom: none;">{{ $stok_keluar_20 }}</td>
+                            <td align="center" style="text-align: center;border-top: none;border-bottom: none;">{{ $stok_keluar_40 }}</td>
+                            <td align="center" style="text-align: center;border-top: none;border-bottom: none;">{{ $stok_keluar_45 }}</td>
+                            <td align="center" style="text-align: center;border-top: none;border-bottom: none;">{{ $stok_keluar_20+$stok_keluar_40+$stok_keluar_45}}</td>
+                            <td align="center" style="text-align: center;border-top: none;border-bottom: none;">{{ ($stok_keluar_20)+($stok_keluar_40*2)+($stok_keluar_45*2) }}</td>
+                        </tr>
+                        <tr>
+                            <th>Stock Akhir</th>
+                            <th style="text-align: center;">{{$akhir_20}}</th>
+                            <th style="text-align: center;">{{$akhir_40}}</th>
+                            <th style="text-align: center;">{{$akhir_45}}</th>
+                            <th style="text-align: center;">{{$akhir_total}}</th>
+                            <th style="text-align: center;">{{$akhir_teus}}</th>
+                        </tr>
+                    </tbody>
+                </table>
+    </div>
         </div>
     </div>
     <div class="row">

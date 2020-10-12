@@ -78,7 +78,28 @@
             ->addColumn(array('label'=>'Jam Masuk','index'=>'JAMMASUK', 'width'=>100,'align'=>'center'))
             ->renderGrid()
         }}
-        <br /><hr /><br />
+        <br />
+        <div class="row" style="margin-bottom: 30px;margin-right: 0;">
+            <div class="col-sm-4">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th>No.</th>
+                            <th>Jenis Dokumen</th>
+                            <th>Dok</th>
+                            <th>Box</th>
+                        </tr>
+                        <tr>
+                            <th style="text-align: center;">1</th>
+                            <td align="center">PLP</td>
+                            <td align="center">{{ $countbyplp[0] }}</td>
+                            <td align="center">{{ $countbyplp[1] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr />
         <div class="row" style="margin-bottom: 30px;margin-right: 0;">
             <div class="col-md-12">
                 <button class="btn btn-info pull-right" id="btn-print-out"><i class="fa fa-print"></i> Cetak Laporan Pengeluaran</button>
@@ -134,27 +155,97 @@
                         <tr>
                             <th>No.</th>
                             <th>Jenis Dokumen</th>
-                            <th>Jumlah</th>
+                            <th>Doc</th>
+                            <th>Box</th>
                         </tr>
-                        <?php $sumdoc = 0;$i = 1;?>
+                        <?php $sumdoc = 0;$sumbox = 0;$i = 1;?>
                         @foreach($countbydoc as $key=>$value)
                         <tr>
                             <th style="text-align: center;">{{$i}}</th>
                             <th>{{ $key }}</th>
-                            <td align="center">{{ $value }}</td>
+                            <td align="center">{{ $value['dok'] }}</td>
+                            <td align="center">{{ $value['box'] }}</td>
                         </tr>
-                        <?php $sumdoc += $value;$i++;?>
+                        <?php $sumdoc += $value['dok'];$sumbox += $value['box'];$i++;?>
                         @endforeach
                         <tr>
                             <th colspan="2">Jumlah Total</th>
                             <th align="center" style="text-align: center;">{{$sumdoc}}</th>
+                            <th align="center" style="text-align: center;">{{$sumbox}}</th>
                         </tr>
                     </tbody>
                 </table>
             </div>
+            <div class="col-sm-6">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th>Keterangan</th>
+                            <th style="text-align: center;">20'</th>
+                            <th style="text-align: center;">40'</th>
+                            <th style="text-align: center;">45'</th>
+                            <th style="text-align: center;">Total</th>
+                            <th style="text-align: center;">Teus</th>
+                            <th style="text-align: center;">YOR %</th>
+                        </tr>
+                        <?php
+                            $stok_awal_20 = (isset($stok['awal'][0])) ? $stok['awal'][0]->total : 0;
+                            $stok_awal_40 = (isset($stok['awal'][1])) ? $stok['awal'][1]->total : 0;
+                            $stok_awal_45 = (isset($stok['awal'][2])) ? $stok['awal'][2]->total : 0;
+                            $stok_masuk_20 = (isset($stok['masuk'][0])) ? $stok['masuk'][0]->total : 0;
+                            $stok_masuk_40 = (isset($stok['masuk'][1])) ? $stok['masuk'][1]->total : 0;
+                            $stok_masuk_45 = (isset($stok['masuk'][2])) ? $stok['masuk'][2]->total : 0;
+                            $stok_keluar_20 = (isset($stok['keluar'][0])) ? $stok['keluar'][0]->total : 0;
+                            $stok_keluar_40 = (isset($stok['keluar'][1])) ? $stok['keluar'][1]->total : 0;
+                            $stok_keluar_45 = (isset($stok['keluar'][2])) ? $stok['keluar'][2]->total : 0;
+                        
+                            $akhir_20 = $stok_awal_20+$stok_masuk_20-$stok_keluar_20;
+                            $akhir_40 = $stok_awal_40+$stok_masuk_40-$stok_keluar_40;
+                            $akhir_45 = $stok_awal_45+$stok_masuk_45-$stok_keluar_45;
+                            $akhir_total = $akhir_20+$akhir_40+$akhir_45;
+                            $akhir_teus = $akhir_20+($akhir_40*2)+($akhir_45*2);
+                            
+                            $k_trisi = $akhir_teus;     
+                            $tot_sor = ($k_trisi / ($yor->kapasitas_default)) * 100;
+                        ?>
+                        <tr>
+                            <th>Stock Awal</th>
+                            <td align="center">{{ $stok_awal_20 }}</td>
+                            <td align="center">{{ $stok_awal_40 }}</td>
+                            <td align="center">{{ $stok_awal_45 }}</td>
+                            <td align="center">{{ $stok_awal_20+$stok_awal_40+$stok_awal_45}}</td>
+                            <td align="center">{{ ($stok_awal_20)+($stok_awal_40*2)+($stok_awal_45*2) }}</td>
+                            <th rowspan="4" align="center" style="text-align: center;vertical-align: middle;">{{ number_format($tot_sor,'2',',','.') }}</th>
+                        </tr>
+                        <tr>
+                            <th>Cont Masuk</th>
+                            <td align="center">{{ $stok_masuk_20 }}</td>
+                            <td align="center">{{ $stok_masuk_40 }}</td>
+                            <td align="center">{{ $stok_masuk_45 }}</td>
+                            <td align="center">{{ $stok_masuk_20+$stok_masuk_40+$stok_masuk_45}}</td>
+                            <td align="center">{{ ($stok_masuk_20)+($stok_masuk_40*2)+($stok_masuk_45*2) }}</td>
+                        </tr>
+                        <tr>
+                            <th>Cont Keluar</th>
+                            <td align="center">{{ $stok_keluar_20 }}</td>
+                            <td align="center">{{ $stok_keluar_40 }}</td>
+                            <td align="center">{{ $stok_keluar_45 }}</td>
+                            <td align="center">{{ $stok_keluar_20+$stok_keluar_40+$stok_keluar_45}}</td>
+                            <td align="center">{{ ($stok_keluar_20)+($stok_keluar_40*2)+($stok_keluar_45*2) }}</td>
+                        </tr>
+                        <tr>
+                            <th>Stock Akhir</th>
+                            <th style="text-align: center;">{{$akhir_20}}</th>
+                            <th style="text-align: center;">{{$akhir_40}}</th>
+                            <th style="text-align: center;">{{$akhir_45}}</th>
+                            <th style="text-align: center;">{{$akhir_total}}</th>
+                            <th style="text-align: center;">{{$akhir_teus}}</th>
+                        </tr>
+                    </tbody>
+                </table>
         </div>
     </div>
-    
+</div>
 </div>
 @endsection
 
