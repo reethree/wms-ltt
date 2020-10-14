@@ -105,12 +105,22 @@
             <div class="col-xs-4 table-responsive" style="max-width: 300px;">
                 <table border="1" cellspacing="0" cellpadding="0">
                     <tbody>
-                        @foreach($sum_bl_in as $key=>$value)
                         <tr>
-                            <th style="border-top: none;border-bottom: none;">{{ $key }}</th>
-                            <td  style="border-top: none;border-bottom: none;text-align: center;">{{ $value }}</td>
+                            <th style="border-top: none;border-bottom: none;">Jumlah B/L</th>
+                            <td align="center" style="border-top: none;border-bottom: none;text-align: center;">{{ $bl_in[0]->Jumlah }}</td>
                         </tr>
-                        @endforeach
+                        <tr>
+                            <th style="border-top: none;border-bottom: none;">Quantity</th>
+                            <td align="center" style="border-top: none;border-bottom: none;text-align: center;">{{ $bl_in[0]->Quantity }}</td>
+                        </tr>
+                        <tr>
+                            <th style="border-top: none;border-bottom: none;">Weight</th>
+                            <td align="center" style="border-top: none;border-bottom: none;text-align: center;">{{ $bl_in[0]->Weight }}</td>
+                        </tr>
+                        <tr>
+                            <th style="border-top: none;border-bottom: none;">Measurement</th>
+                            <td align="center" style="border-top: none;border-bottom: none;text-align: center;">{{ $bl_in[0]->Meas }}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
