@@ -878,7 +878,7 @@ class FclController extends Controller
     {
         $data = $request->json()->all(); 
         unset($data['TCONTAINER_PK'], $data['_token'], $data['container_type']);
-        
+        $data['uid_dispatche'] = \Auth::getUser()->name;
         $update = DBContainer::where('TCONTAINER_PK', $id)
             ->update($data);
         
