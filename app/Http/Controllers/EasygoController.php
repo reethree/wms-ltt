@@ -14,7 +14,7 @@ class EasygoController extends Controller
 
     public function __construct() {
         
-        $this->url = 'http://vts.easygo-gps.co.id/api/';
+        $this->url = 'https://vts.easygo-gps.co.id/api/';
         $this->url_reply = route('easygo-inputdo-callback');
         $this->token = '0CF0027B21D742C08374F1267F55F6FE';
     }
