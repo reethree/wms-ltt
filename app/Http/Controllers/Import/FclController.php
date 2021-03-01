@@ -2052,6 +2052,7 @@ class FclController extends Controller
         $container->status_bc = 'RELEASE';
         $container->release_bc = 'Y';
         $container->release_bc_date = date('Y-m-d H:i:s');
+        $container->release_bc_uid = \Auth::getUser()->name;
               
         if($container->save()){
             $this->changeBarcodeStatus($container->TCONTAINER_PK, $container->NOCONTAINER, 'Fcl', 'active');

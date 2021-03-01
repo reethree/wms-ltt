@@ -2848,7 +2848,7 @@ class LclController extends Controller
         $manifest->status_bc = 'RELEASE';
         $manifest->release_bc = 'Y';
         $manifest->release_bc_date = date('Y-m-d H:i:s');
-//        $manifest->release_bc_uid = \Auth::getUser()->name;
+        $manifest->release_bc_uid = \Auth::getUser()->name;
         
         if($manifest->save()){
             $this->changeBarcodeStatus($manifest->TMANIFEST_PK, $manifest->NOHBL, 'Manifest', 'active');

@@ -40,7 +40,8 @@
                 vi = '<button style="margin:5px;" class="btn btn-default btn-xs" disabled><i class="fa fa-photo"></i> Not Found</button>';
             }
             
-            @if(Auth::getUser()->username == 'bcgaters' || Auth::getUser()->username == 'bchanggar') 
+{{--            @if(Auth::getUser()->username == 'bcgaters' || Auth::getUser()->username == 'bchanggar')--}}
+            @if(in_array(\Auth::getUser()->id, [80,81]) || \Auth::getUser()->username == 'bchanggar')
                 jQuery("#lclHoldGrid").jqGrid('setRowData',ids[i],{photo: vi,hold: apv}); 
             @else
                 jQuery("#lclHoldGrid").jqGrid('setRowData',ids[i],{photo: vi}); 
