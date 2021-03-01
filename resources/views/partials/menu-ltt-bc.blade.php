@@ -53,7 +53,7 @@
         </li>
         @role('bea-cukai')
 {{--            @if(\Auth::getUser()->username == 'bcgaters' || \Auth::getUser()->username == 'bchanggar')--}}
-            @if(in_array(\Auth::getUser()->id, [80,81]) || \Auth::getUser()->username == 'bchanggar')
+            @if(in_array(\Auth::getUser()->id, [80,81]) || Auth::getUser()->username == 'bcgaters' || \Auth::getUser()->username == 'bchanggar')
         <li class="treeview">
           <a href="#">
             <i class="fa fa-th"></i> <span>Import LCL</span>

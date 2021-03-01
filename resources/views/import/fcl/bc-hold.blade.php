@@ -35,7 +35,7 @@
             }
             
 {{--            @if(Auth::getUser()->username == 'bcgaters' || Auth::getUser()->username == 'bchanggar')--}}
-            @if(in_array(\Auth::getUser()->id, [80,81]) || \Auth::getUser()->username == 'bchanggar')
+            @if(in_array(\Auth::getUser()->id, [80,81]) || Auth::getUser()->username == 'bcgaters' || \Auth::getUser()->username == 'bchanggar')
                 jQuery("#fclHoldGrid").jqGrid('setRowData',ids[i],{photo: vi, hold: apv});
             @else
                 jQuery("#fclHoldGrid").jqGrid('setRowData',ids[i],{photo: vi});
