@@ -50,7 +50,7 @@
                     $("#" + cl).find("td").css("background", "#008D4D").css("color", "#FFF");
                 }
             @else
-                @role('administrator')
+                @role('admin')
                     if(rowdata.payment == 'N') {
                         pay = '<button style="margin:5px;" class="btn btn-success btn-xs" data-id="'+cl+'" onclick="if (confirm(\'Apakah anda yakin invoice ini sudah di bayar? ?\')){ approvePayment('+rowdata.manifest_id+',\'Y\'); }else{return false;};"><i class="fa fa-check"></i> Approve</button> Unpaid';
                     } else {
