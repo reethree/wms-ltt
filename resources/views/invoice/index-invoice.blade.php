@@ -50,11 +50,20 @@
                     $("#" + cl).find("td").css("background", "#008D4D").css("color", "#FFF");
                 }
             @else
-                if(rowdata.payment == 'N') {
-                    pay = 'Unpaid';
-                }else{
-                    pay = 'Paid';
-                }
+                @role('administrator')
+                    if(rowdata.payment == 'N') {
+                        pay = '<button style="margin:5px;" class="btn btn-success btn-xs" data-id="'+cl+'" onclick="if (confirm(\'Apakah anda yakin invoice ini sudah di bayar? ?\')){ approvePayment('+rowdata.manifest_id+',\'Y\'); }else{return false;};"><i class="fa fa-check"></i> Approve</button> Unpaid';
+                    } else {
+                        pay = '<button style="margin:5px;" class="btn btn-danger btn-xs" data-id="'+cl+'" onclick="if (confirm(\'Apakah anda yakin akan membatalkan pembayaran invoice ini?\')){ approvePayment('+rowdata.manifest_id+',\'N\'); }else{return false;};"><i class="fa fa-check"></i> Cancel</button> Paid';
+                        $("#" + cl).find("td").css("background", "#008D4D").css("color", "#FFF");
+                    }
+                @else
+                    if(rowdata.payment == 'N') {
+                        pay = 'Unpaid';
+                    }else{
+                        pay = 'Paid';
+                    }
+                @endrole
             @endrole
         
             edt = '<a href="{{ route("invoice-edit",'') }}/'+cl+'"><i class="fa fa-pencil"></i></a> ';
