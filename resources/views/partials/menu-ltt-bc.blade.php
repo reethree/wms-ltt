@@ -658,20 +658,22 @@
                 </li>-->
             </ul>
         </li>
-        <li class="treeview">
-            <a href="#">
-              <i class="fa fa-users"></i>
-              <span>Users</span>
-              <span class="pull-right-container">
-                <i class="fa fa-angle-left pull-right"></i>
-              </span>
-            </a>
-            <ul class="treeview-menu">
-                <li><a href="{{route('user-index')}}">User Lists</a></li>
-                <li><a href="{{route('role-index')}}">Roles</a></li>
-                <li><a href="{{route('permission-index')}}">Permissions</a></li>
-            </ul>
-        </li>
+                @role('super-admin')
+                    <li class="treeview">
+                        <a href="#">
+                          <i class="fa fa-users"></i>
+                          <span>Users</span>
+                          <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                          </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="{{route('user-index')}}">User Lists</a></li>
+                            <li><a href="{{route('role-index')}}">Roles</a></li>
+                            <li><a href="{{route('permission-index')}}">Permissions</a></li>
+                        </ul>
+                    </li>
+                @endrole
             @endrole
         @endrole
     </ul>
